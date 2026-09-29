@@ -1,0 +1,8 @@
+﻿Sent: 2026-09-29T00:28:31
+Repo commit: 12cb24b Merge 2.5.3 / CLAUDE.md into the enc=3 work; spec gains its Encoding 3 section
+Repo versions: COD2EFT v2.6.0, EFT Tools v1.7.0
+
+Unity last loaded: [EFT Tools] v1.7.0 (2026-09-29) loaded
+ONLY on PC     [COD2EFT (Blender)] BACKLOG.md
+ONLY on PC     [COD2EFT (Blender)] NEXT_SESSION.md
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe
