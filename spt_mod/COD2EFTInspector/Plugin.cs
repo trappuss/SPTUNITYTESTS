@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.3.1";
+        public const string Version = "0.4.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -30,6 +30,10 @@ namespace COD2EFTInspector
         ConfigEntry<bool> _hideHud, _others, _unlockCursor;
         ConfigEntry<float> _scale;
         ConfigEntry<string> _serverDir;
+        ConfigEntry<bool> _autoWear;
+        Component _autoFor;
+        float _autoAt;
+        bool _allSets;
 
         bool _open, _capturing;
         Rect _win = new Rect(40, 40, 540, 660);
@@ -70,6 +74,8 @@ namespace COD2EFTInspector
             _scale = Config.Bind("3. Panel", "Scale", 1f, new ConfigDescription("Panel size.", new AcceptableValueRange<float>(0.75f, 2.5f)));
             _serverDir = Config.Bind("4. Outfits", "Server folder", "",
                 "SPT server folder (the one with user\\mods and SPT_Data). Empty = search next to / inside the game folder.");
+            _autoWear = Config.Bind("4. Outfits", "Auto-wear newest mod outfit in the hideout", false,
+                "When the hideout loads, put the newest mod's outfit on your character (try-on, not saved).");
             _lightStrength = Config.Bind("5. Photo mode", "Studio light strength", 1f,
                 new ConfigDescription("Multiplier for the key / fill / rim lights.", new AcceptableValueRange<float>(0f, 4f)));
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
@@ -136,6 +142,7 @@ namespace COD2EFTInspector
                 {
                     _nextTick = Time.unscaledTime + 1f;
                     Reassert();
+                    AutoWearTick();
                     if (_open) Refresh(false);
                 }
                 if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
@@ -252,14 +259,14 @@ namespace COD2EFTInspector
             GUI.DragWindow();
         }
 
-        int _tab;   // 0 meshes, 1 outfits, 2 photo
+        int _tab = 1;   // 0 meshes, 1 outfits / try on (opens here), 2 photo
 
         void DrawContents()
         {
             GUILayout.BeginHorizontal();
             if (GUILayout.Toggle(_tab == 0, " Meshes", GUILayout.Width(90))) _tab = 0;
             if (GUILayout.Toggle(_tab == 2, " Photo", GUILayout.Width(80))) _tab = 2;
-            if (GUILayout.Toggle(_tab == 1, " Outfits (read-only list)", GUILayout.Width(190))) _tab = 1;
+            if (GUILayout.Toggle(_tab == 1, " Outfits / try on", GUILayout.Width(190))) _tab = 1;
             GUILayout.EndHorizontal();
             if (_tab == 1) { DrawOutfits(); return; }
             if (_tab == 2) { DrawPhoto(); return; }
@@ -355,6 +362,67 @@ namespace COD2EFTInspector
         bool IsWorn(Outfit o) => _worn.Contains(o.Id ?? "") ||
             (o.Bundle != null && _worn.Contains(Path.GetFileNameWithoutExtension(o.Bundle.Replace('\\', '/').Split('/').Last())));
 
+        void WearItems(List<Outfit> items)
+        {
+            if (Wearer.Busy || items == null || items.Count == 0) return;
+            var cat = GetCatalog();
+            var all = new List<Outfit>(items);
+            foreach (var top in items.Where(o => o.Part == "Top").ToList())
+                if (!all.Any(o => o.Part == "Hands")) { var h = cat.HandsFor(top); if (h != null) all.Add(h); }
+            _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
+            StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } }));
+        }
+
+        void AutoWearTick()
+        {
+            if (!_autoWear.Value || Wearer.Busy) return;
+            var p = Game.MainPlayer();
+            if (p == null || Game.Location(p) != "hideout") { _autoFor = null; return; }
+            if (p != _autoFor) { _autoFor = p; _autoAt = Time.unscaledTime + 5f; return; }   // let the hideout finish loading
+            if (_autoAt <= 0f || Time.unscaledTime < _autoAt) return;
+            _autoAt = 0f;
+            var set = GetCatalog().ModSets().FirstOrDefault();
+            if (set == null) { Log.LogInfo("Auto-wear: no mod outfit in the catalog"); return; }
+            Log.LogInfo($"Auto-wear: [{set.Source}] {set.Name}");
+            WearItems(set.Pieces);
+        }
+
+        void DrawTryOn(Catalog cat)
+        {
+            GUILayout.Label("Try on your character (raid / hideout; not saved, a reload shows your real outfit). Newest mod first:");
+            var sets = cat.ModSets();
+            bool can = Game.MainPlayer() != null && !Wearer.Busy;
+            int n = 0;
+            foreach (var set in sets)
+            {
+                if (!_allSets && n++ >= 6) break;
+                GUILayout.BeginHorizontal();
+                GUI.enabled = can;
+                if (GUILayout.Button("Wear", GUILayout.Width(55))) WearItems(set.Pieces);
+                GUI.enabled = true;
+                GUILayout.Label($"[{set.Source}] {set.Name}   " + string.Join(" + ", set.Pieces.Select(o => o.Part)));
+                GUILayout.EndHorizontal();
+            }
+            var head = Worn().Select(id => cat.ById(id)).FirstOrDefault(o => o != null && o.Part == "Head");
+            if (Wearer.HasOriginal && head != null)
+            {
+                GUILayout.BeginHorizontal();
+                GUI.enabled = cat.HasHeadVoiceSelector && !Wearer.Busy;
+                if (GUILayout.Button("Save this head to my profile", GUILayout.Width(200)))
+                    StartCoroutine(Wearer.SaveHead(head.Id, msg => _status = msg));
+                GUI.enabled = true;
+                GUILayout.Label(cat.HasHeadVoiceSelector ? $"{head.Name} (kept after restart)" : "needs the WTT HeadVoiceSelector server mod");
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.BeginHorizontal();
+            if (sets.Count > 6) _allSets = GUILayout.Toggle(_allSets, $" all {sets.Count} mod outfits");
+            GUI.enabled = can && Wearer.HasOriginal;
+            if (GUILayout.Button("Restore my outfit", GUILayout.Width(140))) WearItems(Wearer.OriginalOutfit(cat));
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+            if (Game.MainPlayer() == null) GUILayout.Label("(Wear needs your character: go to the hideout or a raid.)");
+        }
+
         void DrawOutfits()
         {
             var cat = GetCatalog();
@@ -364,6 +432,7 @@ namespace COD2EFTInspector
             GUILayout.Label($"{cat.Items.Count} entries, {cat.Items.Count(o => o.BundleFound == false)} missing bundle");
             GUILayout.EndHorizontal();
             if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            DrawTryOn(cat);
             foreach (var n in cat.Notes.Where(n => n.StartsWith("Server") || n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(4))
                 GUILayout.Label(n);
 
@@ -397,10 +466,18 @@ namespace COD2EFTInspector
                     .ThenBy(o => o.Part).ThenBy(o => o.Name, StringComparer.OrdinalIgnoreCase).ToList();
             }
             GUILayout.Label($"{_shown.Count} shown" + (_shown.Count > 300 ? " (first 300; narrow the filter)" : "") +
-                            ". Switching outfits from here is the next stage (see docs/SPT_INSPECTOR.md).");
+                            ". Wear = try on (tops bring their hands).");
             _scroll2 = GUILayout.BeginScrollView(_scroll2);
+            bool canWear = Game.MainPlayer() != null && !Wearer.Busy;
             foreach (var o in _shown.Take(300))
+            {
+                GUILayout.BeginHorizontal();
+                GUI.enabled = canWear && o.Part != "Hands" && o.BundleFound != false;
+                if (GUILayout.Button("Wear", GUILayout.Width(50))) WearItems(new List<Outfit> { o });
+                GUI.enabled = true;
                 GUILayout.Label($"{(IsWorn(o) ? "WORN  " : "")}[{o.Source}] {o.Part}: {o.Name}   {o.Id}" + (o.BundleFound == false ? "   BUNDLE MISSING" : ""));
+                GUILayout.EndHorizontal();
+            }
             GUILayout.EndScrollView();
         }
 

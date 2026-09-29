@@ -25,6 +25,7 @@ namespace COD2EFTInspector
         public string ServerDir, GameDir;
         public List<Outfit> Items = new List<Outfit>();
         public List<string> Notes = new List<string>();
+        public Dictionary<string, DateTime> ModTimes = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
 
         static readonly Dictionary<string, string> VanillaPart = new Dictionary<string, string>
             { { "Body", "Top" }, { "Feet", "Pants" }, { "Head", "Head" }, { "Hands", "Hands" } };
@@ -118,6 +119,19 @@ namespace COD2EFTInspector
             foreach (var mod in Directory.GetDirectories(mods).OrderBy(d => d, StringComparer.OrdinalIgnoreCase))
             {
                 string name = Path.GetFileName(mod);
+                try
+                {
+                    // newest file in the mod's db / bundles = when it was last built or installed
+                    var t = Directory.GetLastWriteTime(mod);
+                    foreach (var sub in new[] { "db", "bundles" })
+                    {
+                        var d = Path.Combine(mod, sub);
+                        if (Directory.Exists(d))
+                            foreach (var f in Directory.GetFiles(d, "*", SearchOption.AllDirectories)) { var ft = File.GetLastWriteTime(f); if (ft > t) t = ft; }
+                    }
+                    ModTimes[name] = t;
+                }
+                catch { }
                 int before = Items.Count, bad = 0;
                 foreach (var f in JsonFiles(Path.Combine(mod, "db", "CustomClothing")))
                 {
@@ -192,6 +206,53 @@ namespace COD2EFTInspector
             int missing = Items.Count(o => o.BundleFound == false);
             if (missing > 0) Notes.Add($"{missing} entr{(missing == 1 ? "y has" : "ies have")} no bundle file where expected");
         }
+
+        /// <summary>One outfit of a mod: the pieces whose names differ only by a trailing part word
+        /// ("x upper" / "x lower" / "x head", as the Mod Builder names them).</summary>
+        public sealed class OutfitSet
+        {
+            public string Source, Name;
+            public Outfit Top, Pants, Head, Hands;
+            public List<Outfit> Pieces => new[] { Top, Pants, Head, Hands }.Where(o => o != null).ToList();
+        }
+
+        static readonly string[] PartWords = { "upper", "lower", "top", "bottom", "pants", "head", "hands", "(hands)", "body", "legs" };
+
+        public static string SetKey(string name)
+        {
+            var words = (name ?? "").Trim().Split(new[] { ' ', '_' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            while (words.Count > 1 && PartWords.Contains(words[words.Count - 1].ToLowerInvariant())) words.RemoveAt(words.Count - 1);
+            return string.Join(" ", words);
+        }
+
+        /// <summary>Outfit sets of every mod, newest mod first.</summary>
+        public List<OutfitSet> ModSets()
+        {
+            var sets = new List<OutfitSet>();
+            foreach (var g in Items.Where(o => o.Source != "vanilla").GroupBy(o => o.Source + "|" + SetKey(o.Name)))
+            {
+                var set = new OutfitSet { Source = g.First().Source, Name = SetKey(g.First().Name) };
+                foreach (var o in g)
+                {
+                    if (o.Part == "Top" && set.Top == null) set.Top = o;
+                    else if (o.Part == "Pants" && set.Pants == null) set.Pants = o;
+                    else if (o.Part == "Head" && set.Head == null) set.Head = o;
+                    else if (o.Part == "Hands" && set.Hands == null) set.Hands = o;
+                }
+                sets.Add(set);
+            }
+            Func<string, DateTime> T = src => { DateTime t; return ModTimes.TryGetValue(src, out t) ? t : DateTime.MinValue; };
+            return sets.OrderByDescending(x => T(x.Source)).ThenBy(x => x.Source, StringComparer.OrdinalIgnoreCase).ThenBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        /// <summary>The first-person hands that belong to a top (same mod and outfit name).</summary>
+        public Outfit HandsFor(Outfit top) =>
+            top == null ? null : Items.FirstOrDefault(o => o.Part == "Hands" && o.Source == top.Source && o.File == top.File && SetKey(o.Name) == SetKey(top.Name));
+
+        /// <summary>WTT HeadVoiceSelector's server mod is installed (its route saves a head to the profile).</summary>
+        public bool HasHeadVoiceSelector =>
+            ServerDir != null && Directory.Exists(Path.Combine(ServerDir, "user", "mods")) &&
+            Directory.GetDirectories(Path.Combine(ServerDir, "user", "mods")).Any(d => Path.GetFileName(d).IndexOf("HeadVoice", StringComparison.OrdinalIgnoreCase) >= 0);
 
         public Outfit ById(string id) => id == null ? null : Items.FirstOrDefault(o => o.Id == id);
 

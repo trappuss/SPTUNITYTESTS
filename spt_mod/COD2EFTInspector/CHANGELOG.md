@@ -3,6 +3,18 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.4.0 (2026-09-29)
+- **Try on** (Outfits / try on tab, now the tab the panel opens on): in the hideout or a raid, *Wear* puts any top, pants
+  or head from the catalog on your own character, live and client-side only (nothing saved; a reload shows your real
+  outfit). Tops bring their first-person hands. Mod outfits are grouped into sets (top + pants + head + hands by name,
+  as the Mod Builder names them), **newest mod first**, one *Wear* click each. *Restore my outfit* puts the original back.
+  Recipe from SkinService (github.com/kmyuhkyuk/SkinService): customization ids → `LoadBundlesAndCreatePools` →
+  `PlayerBody.Init` (8 parameters, as in the SPT 4.1.6 log) → `UpdatePlayerRenders`. The loader is found by name and
+  its signature logged.
+- Option *4. Outfits / Auto-wear newest mod outfit in the hideout* (off by default).
+- **Save this head to my profile**: keeps a head after restart through the WTT HeadVoiceSelector server mod's route
+  (github.com/sgtlaggy/spt-HeadVoiceSelector-server, `/WTT/WTTChangeHead`), if that mod is installed.
+
 ## 0.3.1 (2026-09-29)
 - Photo mode safeguards taken from CineKit (github.com/Hysocs/cinekit-spt): the camera's culling mask gets the layers of
   the visible body renderers, shadows-only body renderers are drawn, and leaving restores the previous point of view

@@ -44,7 +44,7 @@ static class CatalogTest
         string mod = Path.Combine(server, "user", "mods", "COD2EFT-Kleo");
         var clothes = new List<EFTModBuilderCore.ClothingEntry> {
             new EFTModBuilderCore.ClothingEntry { Kind = ClothingKind.Top, SuiteId = "s1", OutfitId = "o1", TopId = "top1", HandsId = "hands1",
-                Name = "Kleo \"MW2\" top", Description = "d", BundlePath = "cod2eft/kleo_top.bundle", HandsBundlePath = "cod2eft/kleo_hands.bundle", Trader = "t", CurrencyTpl = "c" },
+                Name = "Kleo top", Description = "d", BundlePath = "cod2eft/kleo_top.bundle", HandsBundlePath = "cod2eft/kleo_hands.bundle", Trader = "t", CurrencyTpl = "c" },
             new EFTModBuilderCore.ClothingEntry { Kind = ClothingKind.Bottom, SuiteId = "s2", OutfitId = "o2", BottomId = "bot1",
                 Name = "Kleo pants", Description = "d", BundlePath = "cod2eft/kleo_lower.bundle", Trader = "t", CurrencyTpl = "c" },
         };
@@ -75,10 +75,15 @@ static class CatalogTest
         Check(c.ById("5cc085bb14c02e000e67a5c5")?.BundleFound == false, "vanilla hands: missing bundle flagged");
         var k = c.Items.Where(o => o.Source == "COD2EFT-Kleo").ToList();
         Check(k.Count == 4, "mod: top + hands + pants + head, got " + k.Count);
-        Check(c.ById("top1")?.Name == "Kleo \"MW2\" top" && c.ById("top1")?.Bundle == "cod2eft/kleo_top.bundle", "mod top: name + bundle");
+        Check(c.ById("top1")?.Name == "Kleo top" && c.ById("top1")?.Bundle == "cod2eft/kleo_top.bundle", "mod top: name + bundle");
         Check(c.ById("hands1")?.Part == "Hands" && c.ById("bot1")?.Part == "Pants" && c.ById("head1")?.Part == "Head", "mod parts");
         Check(c.ById("bot1")?.BundleFound == false && c.ById("head1")?.BundleFound == true, "mod bundle check (pants missing, head present)");
         Check(c.ById("t9")?.BundleFound == true && c.ById("t9").BundleElsewhere, "bundle found elsewhere in the mod folder");
+        var sets = c.ModSets();
+        var ks = sets.FirstOrDefault(x => x.Source == "COD2EFT-Kleo");
+        Check(Catalog.SetKey("mp valeria 2 1 enc=3 upper") == "mp valeria 2 1 enc=3" && Catalog.SetKey("Kleo top (hands)") == "Kleo", "set key strips part words");
+        Check(ks != null && ks.Pants?.Id == "bot1" && ks.Head?.Id == "head1", "Kleo pants + head form one set, got " + string.Join("; ", sets.Select(x => x.Source + ":" + x.Name)));
+        Check(c.HandsFor(c.ById("top1"))?.Id == "hands1", "hands found for the top");
         Check(c.ByBundleStem("kleo_top").Count == 1 && c.ByBundleStem("USEC_TOP_DEFAULT").Count == 1, "match by bundle file name");
         Check(c.Notes.Any(n => n.StartsWith("Broken:")), "broken mod file reported, others still read");
         Check(Catalog.Load(Path.Combine(root, "nope"), game).Notes.Any(n => n.Contains("Configured server folder")), "bad configured folder reported, falls back to search");

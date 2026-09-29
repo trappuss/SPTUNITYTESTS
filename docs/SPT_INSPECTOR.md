@@ -31,6 +31,13 @@ levels inside it, or next to it); otherwise set *4. Outfits / Server folder* in 
 
 Output in `<SPT game>\COD2EFT_Screenshots\`: `<time>_<top+pants+head>.png` + `.txt`, and `<time>_…_materials.txt`.
 
+**Try on (0.4.0, Outfits / try on tab):** in the hideout or a raid, *Wear* puts a catalog entry (or a whole mod outfit
+set, newest mod first) on your character, client-side only, not saved; *Restore my outfit* undoes it. The intended flow:
+install the mod built by the Mod Builder → start the game → hideout → open the panel (F12 → *0. Inspector* or F9) → the
+newest mod's outfit is at the top → *Wear* → Photo tab. Option *Auto-wear newest mod outfit in the hideout* skips the
+click. *Save this head to my profile* keeps a head after restart when the WTT HeadVoiceSelector server mod is installed.
+Tops / pants are not saved: SPT only lets a profile wear suits it owns (the trader), so saving them is a separate question.
+
 **Photo mode (0.3.0, Photo tab or F12 → *0. Inspector*):** in raid or the hideout the camera orbits your own character
 (third person, the character takes no input, HUD hidden). Angle and framing presets, sliders, right-mouse drag / wheel,
 studio lights (key / fill / rim; follow the camera or stay fixed to the character), and *Turntable* (4 screenshots).
