@@ -3,6 +3,11 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.3.1 (2026-09-29)
+- Photo mode safeguards taken from CineKit (github.com/Hysocs/cinekit-spt): the camera's culling mask gets the layers of
+  the visible body renderers, shadows-only body renderers are drawn, and leaving restores the previous point of view
+  (not always first person), the culling mask and the shadows.
+
 ## 0.3.0 (2026-09-29)
 - First PC run (from_pc/20260929-071416) worked: build clean, every game type found, raid (Factory) + hideout + menu previews
   listed, catalog 568 entries from `SPT_Runtime`, the screenshot `.txt` names mod / id / bundle of each worn part.

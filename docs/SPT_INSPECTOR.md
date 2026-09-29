@@ -83,6 +83,21 @@ server round-trip?
 - In raid, re-running `PlayerBody.Init` on the live player is riskier (skeleton, hands, armor-mesh state). The menu
   preview is the realistic target; in-raid swapping is a later step if needed.
 
+**Update 2026-09-29, from the first PC log and Improved Customization UI** (github.com/hjal-dev/Improved-Customization-UI, MIT,
+the mod the user linked; commit aa520af):
+- SPT 4.1.6 signatures (0.1.0 research dump): `PlayerBody.Init(BodyCustomization, int layer, EPlayerSide)` (a short
+  overload), `PlayerBody.BodyCustomization`, `PlayerModelView.Show(Profile, InventoryController, Action, float, Vector3?, bool)`
+  and `Show(PlayerVisualRepresentation, …)`, `TacticalClothingView.UpdateCustomization(EBodyModelPart, string id)` / `OnTestFit`.
+- That mod adds a CUSTOMIZATION tab to the inventory screen and previews suits **client-side**: it copies a suite into a
+  preview profile (`UpperBodySuit/LowerBodySuit.SetClothingsToProfile(previewProfile.Customization)`) and calls
+  `PlayerProfilePreview.Show(previewProfile)` (the character-creation `HeadSelectionState` preview, with its own camera,
+  lights and animations). The server is only called on Save. So a client-only preview is confirmed possible.
+- Its lists come from `solver.GetAvailableSuites(side)` / `GetAvailableHeads`: **only what the profile already owns**.
+  For testing converted outfits the user can use that mod as it is (buy/unlock the COD outfit once), or the Inspector's
+  browser can feed catalog entries (any id) into the same preview path. Preferred next step: reuse its approach for
+  catalog entries, not a separate preview scene. Its preview lighting (`PreviewLighting.cs`: scales the preview's own
+  light rig and adds one directional light) is the "controlled lighting" reference for the menu.
+
 **Plan (not built; needs Assembly-CSharp references or more reflection, and in-game checks):**
 1. v0.1.0 logs the members of `PlayerBody`, `PlayerModelView` and `TacticalClothingView` on the first panel open;
    read them from the first `LogOutput.log` to pin the exact signatures for SPT 4.1.6.

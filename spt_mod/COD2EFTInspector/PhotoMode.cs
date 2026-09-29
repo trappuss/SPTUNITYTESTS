@@ -3,6 +3,9 @@
 // The camera recipe follows the open-source SPT Freecam mod (github.com/acidphantasm/SPT-Freecam, FreecamController.cs):
 //   Player.PointOfView = ThirdPerson; PlayerBody.PointOfView.Value = FreeCamera; PlayerCameraController.UpdatePointOfView();
 //   GamePlayerOwner.enabled = false (the player takes no input); CameraManager.ForceSetPosition blocked (it snaps the camera back).
+// Safeguards from CineKit (github.com/Hysocs/cinekit-spt, Client/Plugin.cs ShowLocalThirdPersonBody): the camera's
+// culling mask gets the layers of the visible body renderers, shadows-only body renderers are drawn, the previous
+// point of view is restored on exit.
 // All game types are reached by name (Game.cs) and every step logs what it could not find.
 using System;
 using System.Collections.Generic;
@@ -23,6 +26,11 @@ namespace COD2EFTInspector
         Camera _cam;
         Behaviour _owner;
         float _oldFov;
+        int _oldMask;
+        object _oldPov;
+        Component _body;
+        float _nextBodyFix;
+        readonly Dictionary<Renderer, UnityEngine.Rendering.ShadowCastingMode> _shadowFix = new Dictionary<Renderer, UnityEngine.Rendering.ShadowCastingMode>();
         readonly List<Light> _lights = new List<Light>();
         static bool _blockForceSet;
 
@@ -82,8 +90,10 @@ namespace COD2EFTInspector
 
             try
             {
+                _oldPov = Game.Get(player, "PointOfView");
                 if (!SetEnumProperty(player, "PointOfView", "ThirdPerson")) log.LogWarning("Photo mode: Player.PointOfView not settable");
                 var body = Game.Get(player, "_playerBody") ?? Game.Get(player, "PlayerBody");
+                _body = body as Component;
                 if (!SetBindable(Game.Get(body, "PointOfView"), "FreeCamera")) log.LogWarning("Photo mode: PlayerBody.PointOfView.Value not settable");
                 var upd = _pcc?.GetType().GetMethod("UpdatePointOfView", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
                 if (upd != null) upd.Invoke(_pcc, null); else log.LogWarning("Photo mode: PlayerCameraController.UpdatePointOfView() not found");
@@ -95,6 +105,8 @@ namespace COD2EFTInspector
             if (_owner != null) _owner.enabled = false; else log.LogWarning("Photo mode: GamePlayerOwner not found; the character still takes input");
 
             _oldFov = _cam.fieldOfView;
+            _oldMask = _cam.cullingMask;
+            _nextBodyFix = 0f;
             _blockForceSet = true;
             Active = true;
             if (Lights) MakeLights();
@@ -112,9 +124,12 @@ namespace COD2EFTInspector
             try
             {
                 if (_owner != null) _owner.enabled = true;
-                if (_cam != null) _cam.fieldOfView = _oldFov;
-                if (Game.Alive(_player) && !SetEnumProperty(_player, "PointOfView", "FirstPerson"))
-                    InspectorPlugin.Log.LogWarning("Photo mode: could not switch back to first person");
+                if (_cam != null) { _cam.fieldOfView = _oldFov; _cam.cullingMask = _oldMask; }
+                foreach (var kv in _shadowFix) if (kv.Key != null) kv.Key.shadowCastingMode = kv.Value;
+                _shadowFix.Clear();
+                string back = _oldPov != null && _oldPov.ToString() != "FreeCamera" ? _oldPov.ToString() : "FirstPerson";
+                if (Game.Alive(_player) && !SetEnumProperty(_player, "PointOfView", back))
+                    InspectorPlugin.Log.LogWarning("Photo mode: could not switch back to " + back);
             }
             catch (Exception e) { InspectorPlugin.Log.LogError("Photo mode: leaving failed: " + e); }
             InspectorPlugin.Log.LogInfo("Photo mode off");
@@ -166,6 +181,27 @@ namespace COD2EFTInspector
             _lastMouse = m;
         }
 
+        /// <summary>Makes sure the enabled body renderers are drawn by this camera and cast normal shadows.</summary>
+        void FixBody()
+        {
+            var root = _body != null ? _body : _player;
+            if (root == null) return;
+            int added = 0;
+            foreach (var r in root.GetComponentsInChildren<Renderer>(false))
+            {
+                if (r == null || !r.enabled) continue;
+                int bit = 1 << r.gameObject.layer;
+                if ((_cam.cullingMask & bit) == 0) { _cam.cullingMask |= bit; added++; }
+                if (r.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly && !_shadowFix.ContainsKey(r))
+                {
+                    _shadowFix[r] = r.shadowCastingMode;
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                }
+            }
+            if (added > 0) Game.LogOnce("photo-mask", $"Photo mode: added {added} body layer(s) to the camera's culling mask", false);
+            if (_shadowFix.Count > 0) Game.LogOnce("photo-shadow", $"Photo mode: {_shadowFix.Count} shadows-only body renderer(s) made visible", false);
+        }
+
         public void LateUpdate()
         {
             if (!Active) return;
@@ -177,6 +213,7 @@ namespace COD2EFTInspector
             _cam.transform.position = camPos;
             _cam.transform.rotation = Quaternion.LookRotation(target - camPos, Vector3.up);
             _cam.fieldOfView = Fov;
+            if (Time.unscaledTime >= _nextBodyFix) { _nextBodyFix = Time.unscaledTime + 0.5f; FixBody(); }
             float lightYaw = LightsFollowCamera ? baseYaw + Yaw : baseYaw;
             for (int i = 0; i < _lights.Count && i < Rig.Length; i++)
             {
