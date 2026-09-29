@@ -1,0 +1,42 @@
+﻿[EFT Tools] v1.6.1 (2026-09-29) loaded
+NullReferenceException: Object reference not set to an instance of an object
+[EFT Mod Builder] Found 11 clothing/head/hands bundle(s) in the project.
+[EFT Mod Builder] Forgot 3 bundle(s) that are no longer in the project and were never built into this mod.
+[EFT Mod Builder] Found 0 clothing/head/hands bundle(s) in the project.
+[EFT Mod Builder] Clean: removed 11 unused AssetBundle name(s) from the project.
+[EFT Mod Builder] Clean: done.
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Hands' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Hands.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Head_alpha' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Head_alpha.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Head' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Head.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Lower' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Lower.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Lower_alpha' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Lower_alpha.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Upper' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Upper.mat
+[EFT Auto Prefabber] Materials: extracted 'mp_western_t9mi6_24_1_Upper_alpha' -> Assets/COD2EFT/Materials/mp_western_t9mi6_24_1_Upper_alpha.mat
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Hands': albedo mp_western_t9mi6_24_1_Hands_d, COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Hands_n OpenGL (setting), p0/Reflective/Bumped Specular SMap (hands (COD2EFT) values), gloss mp_western_t9mi6_24_1_Hands_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.6, _Specularness 0.8
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Head_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Head_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (cutout values), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Head': albedo mp_western_t9mi6_24_1_Head_d, COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Head_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (head (COD2EFT) values), gloss mp_western_t9mi6_24_1_Head_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.2, _Specularness 0.6
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Lower': albedo mp_western_t9mi6_24_1_Lower_d, COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Lower_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (pants (COD2EFT) values), gloss mp_western_t9mi6_24_1_Lower_g -> _SpecMap, _d alpha = COD specular, _Glossness 2, _Specularness 0.75
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Lower_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Lower_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (cutout values), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Upper': albedo mp_western_t9mi6_24_1_Upper_d, COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Upper_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (top (COD2EFT) values), gloss mp_western_t9mi6_24_1_Upper_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.4, _Specularness 1
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Upper_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Upper_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (cutout values), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Scanned 1 object(s), 4 skinned mesh(es).
+[EFT Auto Prefabber] Built Assets/COD2EFT/Prefabs/mp_western_t9mi6_24_1_upper.prefab  [1 mesh(es)]  ->  clothing/mp_western_t9mi6_24_1_top.bundle
+[EFT Auto Prefabber] Built Assets/COD2EFT/Prefabs/mp_western_t9mi6_24_1_lower.prefab  [1 mesh(es); pistol holster vanilla right]  ->  clothing/mp_western_t9mi6_24_1_bottom.bundle
+[EFT Auto Prefabber] Built Assets/COD2EFT/Prefabs/mp_western_t9mi6_24_1_head.prefab  [1 mesh(es)]  ->  heads/mp_western_t9mi6_24_1_head.bundle
+[EFT Auto Prefabber] Built Assets/COD2EFT/Prefabs/mp_western_t9mi6_24_1_hands.prefab  [1 mesh(es)]  ->  clothing/mp_western_t9mi6_24_1_hands.bundle
+[EFT Auto Prefabber] Done: 4 prefab(s) built, 0 skipped.
+[EFT Mod Builder] Found 4 clothing/head/hands bundle(s) in the project.
+[EFT Mod Builder] Also building dependency bundle 'shaders'.
+[EFT Mod Builder] Also building dependency bundle 'cubemaps'.
+[EFT Mod Builder] Built 4 bundle(s) (LZ4, StandaloneWindows) into C:\Users\notso\Desktop\RIP\EFT2\Tools\WTT-SDK-2022\Assets\RCTA Working Folder\Build.
+[EFT Mod Builder] Built 'RCTA_ClothingMod_Test' (com.wuvgawore.rcta-clothingmod-test) -> G:/G Games/SPT4.1/SPT4.1 Game/SPT_Runtime/user/mods\RCTA_ClothingMod_Test  [9 files]
+[EFT Tools] v1.6.2 (2026-09-29) loaded
+NullReferenceException: Object reference not set to an instance of an object
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Hands': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Hands_n OpenGL (setting), p0/Reflective/Bumped Specular SMap (values kept), gloss mp_western_t9mi6_24_1_Hands_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.6, _Specularness 0.8
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Head_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Head_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (values kept), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Head': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Head_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (values kept), gloss mp_western_t9mi6_24_1_Head_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.2, _Specularness 0.6
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Lower': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Lower_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (values kept), gloss mp_western_t9mi6_24_1_Lower_g -> _SpecMap, _d alpha = COD specular, _Glossness 2, _Specularness 0.75
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Lower_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Lower_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (values kept), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Upper': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Upper_n OpenGL (setting), p0/Reflective/Bumped Specular SMap_Decal (values kept), gloss mp_western_t9mi6_24_1_Upper_g -> _SpecMap, _d alpha = COD specular, _Glossness 2.4, _Specularness 1
+[EFT Auto Prefabber] Materials: 'mp_western_t9mi6_24_1_Upper_alpha': COD2EFT enc=2 textures, normal mp_western_t9mi6_24_1_Upper_alpha_n OpenGL (setting), p0/Cutout/Bumped Diffuse (values kept), Cutout 0.5 (albedo alpha = opacity)
+[EFT Auto Prefabber] Scanned 1 object(s), 4 skinned mesh(es).

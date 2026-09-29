@@ -1,0 +1,6 @@
+﻿Sent: 2026-09-28T23:08:05
+Repo commit: eef2dcc PC results 20260928-223915
+Repo versions: COD2EFT v2.5.0, EFT Tools v1.6.2
+
+Unity last loaded: [EFT Tools] v1.6.2 (2026-09-29) loaded
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe

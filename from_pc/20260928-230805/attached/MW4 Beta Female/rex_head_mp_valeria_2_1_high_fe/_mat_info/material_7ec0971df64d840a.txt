@@ -1,0 +1,25 @@
+Name: material_7ec0971df64d840a
+
+Techset: techset_6c3db87fab030d9f
+
+semantic,image_name
+unk_semantic_3,base_eye_infrared
+unk_semantic_4,$black
+unk_semantic_5,image_34c30d61ec370668
+unk_semantic_a,$white
+unk_semantic_12,$black
+unk_semantic_3f,$black
+unk_semantic_40,$black
+unk_semantic_41,$black
+unk_semantic_42,$black
+unk_semantic_47,image_2dfa757637f44d8d
+unk_semantic_48,image_23968cb2ef47fe93
+unk_semantic_49,$black
+unk_semantic_4a,image_2cd94823cf70410
+unk_semantic_4b,$black
+unk_semantic_4c,$white
+unk_semantic_4d,$white
+unk_semantic_4e,$white
+unk_semantic_51,$white
+unk_semantic_52,$white
+unk_semantic_55,$white
