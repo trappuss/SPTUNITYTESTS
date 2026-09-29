@@ -32,8 +32,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.4.4** (2026-09-29) | 2.4.3 is deployed on the PC. 2.4.4 = two long-path import fixes from the audit; not run in Blender (none here) |
-| EFT Tools | **1.6.1** (2026-09-29) | 1.6.0 is deployed and loaded on the PC. 1.6.1 = a null-reference fix from the audit; not compiled (no Unity here) |
+| COD2EFT | **2.4.4** (2026-09-29) | Deployed to the PC by sync, files hash-verified (from_pc/20260928-210810). The two long-path import fixes haven't been run in Blender yet |
+| EFT Tools | **1.6.1** (2026-09-29) | Deployed, compiled and loaded on the PC with no compile errors (Editor.log, from_pc/20260928-210810) |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -44,7 +44,7 @@ See the root `README.md`. This replaces the Cowork `device_commit_files` route, 
 
 ## The contract between the halves
 The source of truth is `COD2EFT_TEXTURE_SPEC.md`. **It is not in the repo yet** (`blender/COD2EFT/unity/`).
-One run of `SEND_RESULTS_TO_CLAUDE.bat` brings it in automatically. The audit (below) checked it against the code of both sides.
+It was **not** found at `COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md` on the PC (first send, 2026-09-28), so its location is unknown. The audit (below) checked it against the code of both sides.
 
 | Item | Agreed | Code status |
 |---|---|---|
