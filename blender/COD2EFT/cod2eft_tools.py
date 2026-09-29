@@ -630,8 +630,10 @@ def _set_mode(obj, mode):
         bpy.ops.object.mode_set(mode=mode)
 
 
-def adjust_start(eft, meshes, restore_pose=None):
-    """Adds the adjust layer to `meshes`. Returns the adjust armature."""
+def adjust_start(eft, meshes, restore_pose=None, unparent=False):
+    """Adds the adjust layer to `meshes`. Returns the adjust armature.
+    unparent: the copy's bones get no parents either, so moving / rotating one bone never
+    carries its children along (like unparenting all bones by hand)."""
     if adjust_rig() is not None:
         raise RuntimeError("An adjustment is already in progress - apply or cancel it first")
     if not meshes:
@@ -657,14 +659,15 @@ def adjust_start(eft, meshes, restore_pose=None):
     _set_mode(adj, "EDIT")
     for eb in adj.data.edit_bones:
         eb.use_connect = False
+    if unparent:
+        for eb in adj.data.edit_bones:
+            eb.parent = None
     bpy.ops.object.mode_set(mode="OBJECT")
+    adj["cod2eft_unparented"] = bool(unparent)
     adj.show_in_front = True
     adj.data.display_type = "OCTAHEDRAL"
     if restore_pose:
-        for n, m in restore_pose.items():
-            pb = adj.pose.bones.get(n)
-            if pb is not None:
-                pb.matrix_basis = Matrix(m)
+        _restore_adjust_pose(adj, restore_pose)
     for o in meshes:
         md = o.modifiers.new(ADJUST_MOD, "ARMATURE")
         md.object = adj
@@ -739,9 +742,11 @@ def _adjust_end(apply):
         bpy.ops.object.mode_set(mode="OBJECT")
     changed = 0
     if adj is not None and apply:
-        bpy.context.scene["cod2eft_adjust_last"] = json.dumps(
-            {pb.name: [list(r) for r in pb.matrix_basis] for pb in adj.pose.bones
-             if pb.matrix_basis != Matrix()})
+        # every bone, in armature space: restores the same with or without bone parents (a bone
+        # that didn't move must stay put even when its parent did)
+        last = {pb.name: [list(r) for r in pb.matrix] for pb in adj.pose.bones}
+        last["_space"] = "armature"
+        bpy.context.scene["cod2eft_adjust_last"] = json.dumps(last)
         done = set()
         for o in meshes:
             if o.data in done:                     # linked duplicates share their mesh
@@ -770,6 +775,26 @@ def _adjust_end(apply):
     if eft is not None:
         _set_mode(eft, "OBJECT")
     return changed
+
+
+def _restore_adjust_pose(adj, pose):
+    if pose.get("_space") != "armature":            # saved by 2.5.0 - 2.5.2: local (basis)
+        for n, m in pose.items():
+            pb = adj.pose.bones.get(n)
+            if pb is not None and isinstance(m, list):
+                pb.matrix_basis = Matrix(m)
+        return
+    depth = {}
+    for b in adj.data.bones:
+        d, p = 0, b.parent
+        while p is not None:
+            d, p = d + 1, p.parent
+        depth[b.name] = d
+    for lvl in sorted(set(depth.values())):         # parents first: a child's matrix needs them
+        for n, d in depth.items():
+            if d == lvl and n in pose:
+                adj.pose.bones[n].matrix = Matrix(pose[n])
+        bpy.context.view_layer.update()
 
 
 def adjust_apply():

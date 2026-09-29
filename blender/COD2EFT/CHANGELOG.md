@@ -2,6 +2,11 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.5.3 — 2026-09-29
+- **Adjust by hand: "Unparent bones" option** (on by default, in the Start Adjusting dialog). The adjust copy's bones get no parents, so moving or rotating one bone never carries its children along. This matches the user's manual workflow. Off: bones stay in their hierarchy, only disconnected (as in 2.5.0).
+- *Start from last applied pose* now saves every bone in armature space, so a pose restores identically whether the bones are unparented or not. Poses saved by 2.5.0–2.5.2 still load.
+- Tested headless in Blender 4.4: moving the pelvis leaves the spine bones untouched; the baked mesh equals the live preview to within 0.0004 mm; a pose saved unparented restores identically into a parented rig.
+
 ## 2.5.2 — 2026-09-29
 - **Swayback / twisted waist on curvy characters fixed** (MW4 Beta Female valeria).
   - Cause: the fit lines up the middle of the hip cross-section with EFT's. On a character with wide hips or glutes, that middle sits far back (valeria: 12.3 cm behind her waist section; EFT's own body: 4.3 cm; other test characters: 0.6–3.2 cm). The whole body got pushed 4.8 cm forward, and the waist ended up 4 cm behind EFT's, so the spine bent.

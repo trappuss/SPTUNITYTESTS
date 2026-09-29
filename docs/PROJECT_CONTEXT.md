@@ -72,13 +72,13 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 **Done and verified (history):**
 - Long-path fix verified on real Windows: Park 24_1 (COD2EFT 2.4.4, from_pc/20260928-211853).
 - First complete character in game: Park 24_1 (from_pc/20260928-221326). The user's verdict: "looks good".
-- Hand-adjust layer works on the PC (2.5.0).
+- Hand-adjust layer works on the PC (2.5.0). 2.5.3 adds *Unparent bones* (the user asked for it).
+- Swayback fix confirmed by the user on valeria (2.5.2): "looks better".
 
 **Waiting on the user (PC):**
-1. Check 2.5.2 on valeria: re-convert and look at the side view (the swayback fix).
-2. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
-3. After the material session: convert one character with enc2 and with enc3, run the Unity one-click build, and take in-game screenshots next to vanilla.
-4. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
+1. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
+2. After the material session: convert one character with enc2 and with enc3, run the Unity one-click build, and take in-game screenshots next to vanilla.
+3. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
 
 **Queue, in order.** Each is a separate step. Items touching material code wait for the material session.
 1. **Unify the contract (after the material session).** Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
@@ -90,7 +90,15 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 7. **Mod Builder:** show "has not been built" before the first build as a note, not an error.
 8. **Bundle check after build:** Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin.
 9. **Unity step in batch mode** (a `.bat`: COD model in, SPT mod out). Blockers are listed in the audit below. Best done once the materials settle.
-10. **Smaller items:**
+10. **SPT client mod: "COD2EFT Inspector"** (BepInEx plugin, user idea 2026-09-29). Build it after the material work lands, since it tests it. Stages:
+    1. an outfit/head browser: switch to and preview any top, pants or head in game, sorted and filtered by the mod it comes from vs vanilla;
+    2. live material tweaking on the equipped outfit (sliders for `_Glossness` / `_Specularness` / `_ReflectColor` …, side by side with vanilla), with values exported to a JSON that `SEND_RESULTS_TO_CLAUDE.bat` picks up;
+    3. a material report per equipped outfit (shader and textures as the game actually loaded them);
+    4. a fixed screenshot setup (same light, camera and angles, next to a vanilla outfit);
+    5. pose tests (crouch, aim, sprint).
+
+    Constraints: it must be compiled on the PC against the user's own SPT/EFT assemblies, through a `.bat`. Never commit game DLLs. Calibrate in raid or hideout lighting, not the menu preview. First check the SPT hub for existing freecam / photo-mode / outfit-preview mods to reuse.
+11. **Smaller items:**
     - the neck ring (if confirmed);
     - drop `COD_original_UV` from the FBX;
     - calibration heads A/B/C against a vanilla head;

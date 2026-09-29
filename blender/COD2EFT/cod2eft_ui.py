@@ -1046,6 +1046,11 @@ class COD2EFT_OT_adjust_start(bpy.types.Operator):
                                             "accessory that clips) - the rest stays as it is")
     reuse_last: BoolProperty(name="Start from the last applied pose", default=False,
                              options={"SKIP_SAVE"})
+    unparent: BoolProperty(name="Unparent bones", default=True,
+                           description="Bones move on their own: moving or rotating one never "
+                                       "carries its children along (like unparenting every bone "
+                                       "by hand). Off: bones stay in their hierarchy, only "
+                                       "disconnected")
 
     def invoke(self, context, event):
         self.selected_only = any(o.select_get() and o.type == "MESH" for o in context.scene.objects)
@@ -1060,7 +1065,8 @@ class COD2EFT_OT_adjust_start(bpy.types.Operator):
         if self.selected_only:
             meshes = [o for o in meshes if o.select_get()]
         try:
-            TL.adjust_start(eft, meshes, TL.adjust_last_pose() if self.reuse_last else None)
+            TL.adjust_start(eft, meshes, TL.adjust_last_pose() if self.reuse_last else None,
+                            unparent=self.unparent)
         except RuntimeError as e:
             self.report({"ERROR"}, str(e))
             return {"CANCELLED"}
@@ -1273,7 +1279,8 @@ class COD2EFT_PT_panel(bpy.types.Panel):
                 b.operator("cod2eft.adjust_start", text="Start from last applied pose",
                            icon="RECOVER_LAST").reuse_last = True
         else:
-            b.label(text=f"Posing '{adj.name}': {len(TL.adjust_meshes(context.scene))} mesh(es) follow",
+            b.label(text=f"Posing '{adj.name}': {len(TL.adjust_meshes(context.scene))} mesh(es) follow"
+                         + (" (bones unparented)" if adj.get("cod2eft_unparented") else ""),
                     icon="INFO")
             r = b.row(align=True)
             r.operator("cod2eft.adjust_apply", icon="CHECKMARK")

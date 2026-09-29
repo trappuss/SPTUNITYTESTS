@@ -34,7 +34,7 @@ Each run writes a log to the `COD2EFT_Report` text block (Scripting workspace).
 
 The automatic fit can leave a shape you want to change, like a twisted waist or an accessory that clips. The **Adjust by hand** box in the COD2EFT tab does this without breaking the rig:
 
-1. **Start Adjusting.** Tick *Only selected meshes* to fix just one accessory. A copy of the EFT armature appears in pose mode with its bones disconnected.
+1. **Start Adjusting.** Tick *Only selected meshes* to fix just one accessory. A copy of the EFT armature appears in pose mode with its bones disconnected. With *Unparent bones* on (the default), each bone also moves on its own, without carrying its children along.
 2. Pose it with **G / R / S** on any bone. The meshes follow live.
 3. **Apply** bakes the pose into the meshes (shape keys included). **Cancel** discards it. Ctrl+Z works too.
 
