@@ -32,7 +32,7 @@ COD export (.fbx/.cast, Greyhound etc.)
 |---|---|---|
 | COD2EFT | **2.6.2** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
 | EFT Tools | **1.7.2** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
-| COD2EFT Inspector (SPT client plugin) | **0.2.0** (2026-09-29) | Stage 1: in-game show/hide per mesh, screenshots + outfit .txt, material report; 0.2.0 adds a read-only outfit catalog (vanilla + every mod). Compiled here with mono against Unity 2021.3 reference modules + BepInEx 5.4.23, catalog unit-tested under mono; not yet built against SPT 4.1.6 or run in game. `docs/SPT_INSPECTOR.md` |
+| COD2EFT Inspector (SPT client plugin) | **0.3.0** (2026-09-29) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.0 adds photo mode (orbit camera, studio lights, turntable) and F12 buttons, compiled with mcs only. |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:

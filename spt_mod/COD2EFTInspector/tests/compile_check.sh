@@ -19,5 +19,5 @@ for m in UnityEngine UnityEngine.CoreModule UnityEngine.IMGUIModule UnityEngine.
          UnityEngine.ImageConversionModule UnityEngine.ScreenCaptureModule UnityEngine.UIModule UnityEngine.AssetBundleModule UnityEngine.SharedInternalsModule; do
   [ -f "$U/$m.dll" ] && REFS="$REFS -r:$U/$m.dll"
 done
-mcs -target:library -out:"${TMPDIR:-/tmp}/COD2EFTInspector.dll" -r:"$R/bep/BepInEx/core/BepInEx.dll" $REFS -r:System.Core.dll *.cs
+mcs -target:library -out:"${TMPDIR:-/tmp}/COD2EFTInspector.dll" -r:"$R/bep/BepInEx/core/BepInEx.dll" -r:"$R/bep/BepInEx/core/0Harmony.dll" $REFS -r:System.Core.dll *.cs
 echo "compile OK"

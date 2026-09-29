@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BepInEx" HintPath="$(GamePath)\BepInEx\core\BepInEx.dll" Private="False" />
+    <Reference Include="0Harmony" HintPath="$(GamePath)\BepInEx\core\0Harmony.dll" Private="False" />
     <Reference Include="UnityEngine" HintPath="$(Managed)\UnityEngine.dll" Private="False" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)\UnityEngine.CoreModule.dll" Private="False" />
     <Reference Include="UnityEngine.IMGUIModule" HintPath="$(Managed)\UnityEngine.IMGUIModule.dll" Private="False" />

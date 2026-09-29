@@ -90,11 +90,12 @@ namespace COD2EFTInspector
             sb.AppendLine();
         }
 
-        public static string ScreenshotInfo(Scan scan, string png, int supersize, int w, int h, ICollection<Renderer> hidden)
+        public static string ScreenshotInfo(Scan scan, string png, int supersize, int w, int h, ICollection<Renderer> hidden, string photo)
         {
             var sb = new StringBuilder();
             Header(sb, "screenshot " + System.IO.Path.GetFileName(png), scan);
             sb.AppendLine($"Image: {w} x {h} (supersize {supersize})");
+            sb.AppendLine(photo);
             sb.AppendLine();
             Outfit(sb, scan);
             sb.AppendLine("Hidden meshes:");

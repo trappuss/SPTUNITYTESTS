@@ -3,6 +3,21 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.3.0 (2026-09-29)
+- First PC run (from_pc/20260929-071416) worked: build clean, every game type found, raid (Factory) + hideout + menu previews
+  listed, catalog 568 entries from `SPT_Runtime`, the screenshot `.txt` names mod / id / bundle of each worn part.
+- **Photo mode** (Photo tab, raid / hideout): the camera orbits your own character (third person), the character takes no
+  input, the HUD is hidden. Angle presets (front, 3/4, left, back, right), framing presets (full body, upper body, head),
+  sliders for yaw / pitch / distance / height / FOV, right-mouse drag to orbit and wheel to zoom.
+  **Studio lights**: key / fill / rim spot lights that follow the camera (or stay fixed to the character), strength in the config.
+  **Turntable**: 4 screenshots (front, left, back, right) with one click. The screenshot `.txt` records the camera and light settings.
+  Camera recipe from the open-source SPT Freecam (third-person POV, `GamePlayerOwner` off, `CameraManager.ForceSetPosition` blocked with Harmony).
+- **F12 buttons**: *0. Inspector* in ConfigurationManager has *Open Inspector panel* and *Photo mode ON/OFF*, so the hotkeys
+  are optional (set them to None).
+- Catalog: a mod bundle not at `<mod>\bundles\<path>` is also looked for by file name anywhere in the mod folder
+  (c11-tn-4 showed 8 "missing" bundles that are probably just stored elsewhere).
+- The scan is logged once per distinct result (the first log repeated it on every switch).
+
 ## 0.2.0 (2026-09-29)
 - **Outfits tab** (read-only): every top / pants / head / hands the SPT server knows, from vanilla
   (`SPT_Data\database\templates\customization.json`) and from each mod's WTT `db/CustomClothing` and `db/CustomHeads`.

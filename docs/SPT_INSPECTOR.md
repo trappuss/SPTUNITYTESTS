@@ -31,9 +31,16 @@ levels inside it, or next to it); otherwise set *4. Outfits / Server folder* in 
 
 Output in `<SPT game>\COD2EFT_Screenshots\`: `<time>_<top+pants+head>.png` + `.txt`, and `<time>_…_materials.txt`.
 
-**Seeing your own body in raid:** EFT is first-person only; the panel hides meshes, it doesn't move the camera.
-Use the hideout, the menu character preview, or a freecam mod (not bundled; check the SPT Forge for one that
-supports 4.1.x). A fixed photo camera is stage 4.
+**Photo mode (0.3.0, Photo tab or F12 → *0. Inspector*):** in raid or the hideout the camera orbits your own character
+(third person, the character takes no input, HUD hidden). Angle and framing presets, sliders, right-mouse drag / wheel,
+studio lights (key / fill / rim; follow the camera or stay fixed to the character), and *Turntable* (4 screenshots).
+For the same light every time use the hideout with the studio lights. The recipe is the open-source SPT Freecam's
+(`github.com/acidphantasm/SPT-Freecam`): `Player.PointOfView = ThirdPerson`, `PlayerBody.PointOfView.Value = FreeCamera`,
+`PlayerCameraController.UpdatePointOfView()`, `GamePlayerOwner.enabled = false`, `CameraManager.ForceSetPosition` blocked.
+Don't use it at the same time as another camera mod (Freecam, CineKit): they take over the same camera.
+
+**F12:** ConfigurationManager → *COD2EFT Inspector* → *0. Inspector* has *Open Inspector panel* and *Photo mode* buttons;
+the hotkeys can be set to None.
 
 ## How it finds things (and what can break)
 All game classes are reached by reflection by name (`Game.cs`); the project references only Unity and BepInEx, so

@@ -60,6 +60,12 @@ static class CatalogTest
         Directory.CreateDirectory(bad);
         File.WriteAllText(Path.Combine(bad, "x.json"), "{ nope");
 
+        // a mod that keeps its bundles in another sub-folder (found by file name)
+        string other = Path.Combine(server, "user", "mods", "OtherLoader");
+        Directory.CreateDirectory(Path.Combine(other, "db", "CustomClothing"));
+        Directory.CreateDirectory(Path.Combine(other, "assets", "x"));
+        File.WriteAllText(Path.Combine(other, "db", "CustomClothing", "c.json"), "[{\"topId\": \"t9\", \"topBundlePath\": \"gorka_top.bundle\", \"locales\": {\"en\": {\"name\": \"Gorka\"}}}]");
+        File.WriteAllText(Path.Combine(other, "assets", "x", "gorka_top.bundle"), "x");
         var c = Catalog.Load("", game);
         foreach (var n in c.Notes) Console.WriteLine("     note: " + n);
         Check(c.ServerDir == server, "server folder found inside the game folder");
@@ -72,6 +78,7 @@ static class CatalogTest
         Check(c.ById("top1")?.Name == "Kleo \"MW2\" top" && c.ById("top1")?.Bundle == "cod2eft/kleo_top.bundle", "mod top: name + bundle");
         Check(c.ById("hands1")?.Part == "Hands" && c.ById("bot1")?.Part == "Pants" && c.ById("head1")?.Part == "Head", "mod parts");
         Check(c.ById("bot1")?.BundleFound == false && c.ById("head1")?.BundleFound == true, "mod bundle check (pants missing, head present)");
+        Check(c.ById("t9")?.BundleFound == true && c.ById("t9").BundleElsewhere, "bundle found elsewhere in the mod folder");
         Check(c.ByBundleStem("kleo_top").Count == 1 && c.ByBundleStem("USEC_TOP_DEFAULT").Count == 1, "match by bundle file name");
         Check(c.Notes.Any(n => n.StartsWith("Broken:")), "broken mod file reported, others still read");
         Check(Catalog.Load(Path.Combine(root, "nope"), game).Notes.Any(n => n.Contains("Configured server folder")), "bad configured folder reported, falls back to search");

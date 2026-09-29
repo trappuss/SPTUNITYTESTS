@@ -20,9 +20,10 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.2.0";
+        public const string Version = "0.3.0";
 
         internal static ManualLogSource Log;
+        internal static InspectorPlugin Instance;
 
         ConfigEntry<KeyboardShortcut> _panelKey, _shotKey;
         ConfigEntry<int> _supersize;
@@ -44,12 +45,22 @@ namespace COD2EFTInspector
         // renderers hidden by us -> their forceRenderingOff before we touched them
         // (forceRenderingOff, not enabled: the game switches LODs / armor meshes with enabled and active, and would undo it)
         readonly Dictionary<Renderer, bool> _hidden = new Dictionary<Renderer, bool>();
+        readonly PhotoMode _photo = new PhotoMode();
+        ConfigEntry<float> _lightStrength;
+        readonly List<Canvas> _photoHud = new List<Canvas>();
+        readonly HashSet<string> _loggedScans = new HashSet<string>();
 
         void Awake()
         {
             Log = Logger;
-            _panelKey = Config.Bind("1. Hotkeys", "Open panel", new KeyboardShortcut(KeyCode.F9), "Shows / hides the inspector panel.");
-            _shotKey = Config.Bind("1. Hotkeys", "Screenshot", new KeyboardShortcut(KeyCode.F10), "Saves a screenshot (panel and HUD hidden).");
+            Instance = this;
+            // F12 (ConfigurationManager) buttons, so the panel and photo mode don't need hotkeys
+            Config.Bind("0. Inspector", "Buttons", "", new ConfigDescription("Open the panel / photo mode from here.", null,
+                new ConfigurationManagerAttributes { CustomDrawer = DrawF12Buttons, HideDefaultButton = true, Order = 100 }));
+            _panelKey = Config.Bind("1. Hotkeys", "Open panel", new KeyboardShortcut(KeyCode.F9),
+                "Shows / hides the inspector panel. Set to None to use only the F12 button.");
+            _shotKey = Config.Bind("1. Hotkeys", "Screenshot", new KeyboardShortcut(KeyCode.F10),
+                "Saves a screenshot (panel and HUD hidden). Set to None to use only the panel button.");
             _supersize = Config.Bind("2. Screenshot", "Supersize", 2,
                 new ConfigDescription("Resolution multiplier (1 = screen size).", new AcceptableValueRange<int>(1, 4)));
             _hideHud = Config.Bind("2. Screenshot", "Hide HUD", true,
@@ -59,9 +70,60 @@ namespace COD2EFTInspector
             _scale = Config.Bind("3. Panel", "Scale", 1f, new ConfigDescription("Panel size.", new AcceptableValueRange<float>(0.75f, 2.5f)));
             _serverDir = Config.Bind("4. Outfits", "Server folder", "",
                 "SPT server folder (the one with user\\mods and SPT_Data). Empty = search next to / inside the game folder.");
+            _lightStrength = Config.Bind("5. Photo mode", "Studio light strength", 1f,
+                new ConfigDescription("Multiplier for the key / fill / rim lights.", new AcceptableValueRange<float>(0f, 4f)));
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
             try { Game.LogStartup(); } catch (Exception e) { Log.LogError("Startup check failed: " + e); }
+            PhotoMode.InstallPatch(Guid);
+            Camera.onPreCull += OnPreCullCamera;
+        }
+
+        // the camera is placed again right before it renders, after every LateUpdate, so the game can't move it back
+        void OnPreCullCamera(Camera c) { if (_photo.Active) try { _photo.LateUpdate(); } catch { } }
+
+        void LateUpdate()
+        {
+            try { _photo.LightStrength = _lightStrength.Value; _photo.LateUpdate(); }
+            catch (Exception e) { Game.LogOnce("photo:" + e.Message, "Photo mode update failed: " + e); }
+        }
+
+        static void DrawF12Buttons(ConfigEntryBase entry)
+        {
+            var p = Instance;
+            if (p == null) return;
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(p._open ? "Close Inspector panel" : "Open Inspector panel")) p.TogglePanel();
+            if (GUILayout.Button(p._photo.Active ? "Photo mode OFF" : "Photo mode ON")) p.TogglePhoto();
+            GUILayout.EndHorizontal();
+        }
+
+        void TogglePhoto()
+        {
+            if (_photo.Active)
+            {
+                _photo.Exit();
+                foreach (var c in _photoHud) if (c != null) c.enabled = true;
+                _photoHud.Clear();
+                if (!_open && _unlockCursor.Value) { Cursor.lockState = _prevLock; Cursor.visible = _prevVisible; }
+                return;
+            }
+            _photo.LightStrength = _lightStrength.Value;
+            var err = _photo.Enter(Game.MainPlayer());
+            if (err != null) { _status = err; Log.LogWarning("Photo mode: " + err); return; }
+            if (_hideHud.Value)
+                foreach (var c in FindObjectsOfType<Canvas>())
+                    if (c != null && c.enabled && c.isRootCanvas) { c.enabled = false; _photoHud.Add(c); }
+            if (!_open) TogglePanel();
+            _tab = 2;
+        }
+
+        bool MouseOverPanel()
+        {
+            if (!_open) return false;
+            float s = Mathf.Clamp(_scale.Value, 0.75f, 2.5f);
+            var m = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y) / s;
+            return _win.Contains(m);
         }
 
         void Update()
@@ -76,7 +138,8 @@ namespace COD2EFTInspector
                     Reassert();
                     if (_open) Refresh(false);
                 }
-                if (_open && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+                if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+                if (_photo.Active) _photo.HandleMouse(MouseOverPanel());
             }
             catch (Exception e) { Game.LogOnce("update:" + e.GetType().Name + e.Message, "Update failed: " + e); }
         }
@@ -90,7 +153,7 @@ namespace COD2EFTInspector
                 try { Game.LogResearchOnce(); } catch (Exception e) { Log.LogError("Research dump failed: " + e); }
                 Refresh(true);
             }
-            else if (_unlockCursor.Value) { Cursor.lockState = _prevLock; Cursor.visible = _prevVisible; }
+            else if (_unlockCursor.Value && !_photo.Active) { Cursor.lockState = _prevLock; Cursor.visible = _prevVisible; }
         }
 
         // ------------------------------------------------------------------ scanning / hiding
@@ -104,7 +167,7 @@ namespace COD2EFTInspector
             string sig = _scan?.Signature ?? "none";
             if (sig != _lastSignature || force)
             {
-                if (sig != _lastSignature) LogScan();
+                if (sig != _lastSignature && _loggedScans.Add(sig)) LogScan();
                 _lastSignature = sig;
             }
         }
@@ -189,20 +252,22 @@ namespace COD2EFTInspector
             GUI.DragWindow();
         }
 
-        bool _outfitsTab;
+        int _tab;   // 0 meshes, 1 outfits, 2 photo
 
         void DrawContents()
         {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(!_outfitsTab, " Meshes", GUILayout.Width(90))) _outfitsTab = false;
-            if (GUILayout.Toggle(_outfitsTab, " Outfits (read-only list)", GUILayout.Width(190))) _outfitsTab = true;
+            if (GUILayout.Toggle(_tab == 0, " Meshes", GUILayout.Width(90))) _tab = 0;
+            if (GUILayout.Toggle(_tab == 2, " Photo", GUILayout.Width(80))) _tab = 2;
+            if (GUILayout.Toggle(_tab == 1, " Outfits (read-only list)", GUILayout.Width(190))) _tab = 1;
             GUILayout.EndHorizontal();
-            if (_outfitsTab) { DrawOutfits(); return; }
+            if (_tab == 1) { DrawOutfits(); return; }
+            if (_tab == 2) { DrawPhoto(); return; }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("<", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + _targets.Count - 1) % _targets.Count; _scan = Run(_targets[_ti]); LogScan(); }
+            if (GUILayout.Button("<", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + _targets.Count - 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
             GUILayout.Label(_targets.Count > 0 ? $"{_ti + 1}/{_targets.Count}  {_targets[_ti].Label}" : "No character found");
-            if (GUILayout.Button(">", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + 1) % _targets.Count; _scan = Run(_targets[_ti]); LogScan(); }
+            if (GUILayout.Button(">", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
             if (GUILayout.Button("Refresh", GUILayout.Width(70))) Refresh(true);
             GUILayout.EndHorizontal();
             if (_targets.Count == 0)
@@ -371,12 +436,70 @@ namespace COD2EFTInspector
             catch (Exception e) { _status = "Material report failed: " + e.Message; Log.LogError("Material report failed: " + e); }
         }
 
-        void TakeScreenshot()
+        void DrawPhoto()
         {
-            if (!_capturing) StartCoroutine(Capture());
+            var ph = _photo;
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(ph.Active ? "Photo mode OFF (back to first person)" : "Photo mode ON")) TogglePhoto();
+            if (GUILayout.Button($"Screenshot ({_shotKey.Value})", GUILayout.Width(150))) TakeScreenshot();
+            GUILayout.EndHorizontal();
+            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            if (!ph.Active)
+            {
+                GUILayout.Label("Photo mode puts the camera around your own character (raid or hideout) and stops the character taking input. " +
+                                "For the same light every time, use the hideout and the studio lights. In the main menu, use the game's own character preview.");
+                return;
+            }
+            GUILayout.Label("Right mouse drag = orbit, wheel = zoom (outside this panel).");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Angle:", GUILayout.Width(50));
+            foreach (var a in PhotoMode.Angles) if (GUILayout.Button(a.Name)) ph.Yaw = a.Yaw;
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Framing:", GUILayout.Width(60));
+            foreach (var f in PhotoMode.Framings) if (GUILayout.Button(f.Name)) { ph.Height = f.Height; ph.Distance = f.Distance; }
+            GUILayout.EndHorizontal();
+            ph.Yaw = Slider("Yaw", ph.Yaw, 0f, 360f);
+            ph.Pitch = Slider("Pitch", ph.Pitch, -60f, 80f);
+            ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f);
+            ph.Height = Slider("Height", ph.Height, 0f, 2.2f);
+            ph.Fov = Slider("FOV", ph.Fov, 10f, 90f);
+            GUILayout.BeginHorizontal();
+            bool li = GUILayout.Toggle(ph.Lights, " Studio lights (key / fill / rim)");
+            if (li != ph.Lights) ph.SetLights(li);
+            ph.LightsFollowCamera = GUILayout.Toggle(ph.LightsFollowCamera, " follow the camera");
+            GUILayout.EndHorizontal();
+            _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f);
+            if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
         }
 
-        IEnumerator Capture()
+        static float Slider(string label, float v, float min, float max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"{label} {v:0.##}", GUILayout.Width(120));
+            v = GUILayout.HorizontalSlider(v, min, max);
+            GUILayout.EndHorizontal();
+            return v;
+        }
+
+        IEnumerator Turntable()
+        {
+            float yaw = _photo.Yaw;
+            foreach (var a in new[] { ("front", 0f), ("left", 90f), ("back", 180f), ("right", 270f) })
+            {
+                _photo.Yaw = a.Item2;
+                for (int i = 0; i < 3; i++) yield return null;
+                yield return StartCoroutine(Capture("_" + a.Item1));
+            }
+            _photo.Yaw = yaw;
+        }
+
+        void TakeScreenshot()
+        {
+            if (!_capturing) StartCoroutine(Capture(""));
+        }
+
+        IEnumerator Capture(string suffix)
         {
             _capturing = true;
             var canvases = new List<Canvas>();
@@ -386,7 +509,7 @@ namespace COD2EFTInspector
             {
                 Refresh(false);
                 Directory.CreateDirectory(_outDir);
-                png = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}.png");
+                png = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}{suffix}.png");
                 if (_hideHud.Value && Game.GameWorld() != null)
                     foreach (var c in FindObjectsOfType<Canvas>())
                         if (c != null && c.enabled && c.isRootCanvas) { c.enabled = false; canvases.Add(c); }
@@ -419,7 +542,11 @@ namespace COD2EFTInspector
                 try
                 {
                     GetCatalog();
-                    File.WriteAllText(Path.ChangeExtension(png, ".txt"), Reports.ScreenshotInfo(_scan, png, ss, w, h, _hidden.Keys));
+                    File.WriteAllText(Path.ChangeExtension(png, ".txt"), Reports.ScreenshotInfo(_scan, png, ss, w, h, _hidden.Keys,
+                        _photo.Active ? $"Photo mode: yaw {_photo.Yaw:0.#} pitch {_photo.Pitch:0.#} distance {_photo.Distance:0.##} height {_photo.Height:0.##} " +
+                                        $"fov {_photo.Fov:0.#}, studio lights {(_photo.Lights ? "on x" + _photo.LightStrength.ToString("0.##") : "off")}" +
+                                        (_photo.LightsFollowCamera ? " (follow camera)" : " (fixed to character)")
+                                      : "Photo mode: off"));
                     _status = $"Saved {Path.GetFileName(png)} ({w}x{h})";
                     Log.LogInfo($"Screenshot saved: {png} ({w}x{h}, supersize {ss}, {canvases.Count} HUD canvases hidden, {_hidden.Count} meshes hidden)");
                 }
@@ -428,6 +555,6 @@ namespace COD2EFTInspector
             else _status = "Screenshot failed: " + err;
         }
 
-        void OnDestroy() { try { ShowAll(); } catch { } }
+        void OnDestroy() { try { ShowAll(); _photo.Exit(); Camera.onPreCull -= OnPreCullCamera; } catch { } }
     }
 }

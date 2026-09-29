@@ -15,6 +15,7 @@ namespace COD2EFTInspector
     {
         public string Id, Name, Part, Bundle, Source, File;   // Part: Top / Pants / Head / Hands; Source: "vanilla" or the mod folder
         public bool? BundleFound;                              // null = not checked (folder unknown)
+        public bool BundleElsewhere;                           // found by file name, not at <mod>\bundles\<path>
         public override string ToString() =>
             $"[{Source}] {Part} '{Name}' id {Id} bundle {Bundle}" + (BundleFound == false ? "  (BUNDLE FILE MISSING)" : "");
     }
@@ -157,6 +158,8 @@ namespace COD2EFTInspector
         static IEnumerable<string> JsonFiles(string dir) =>
             Directory.Exists(dir) ? Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.OrdinalIgnoreCase) : Enumerable.Empty<string>();
 
+        readonly Dictionary<string, HashSet<string>> _modFiles = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+
         void CheckBundles()
         {
             string streaming = GameDir == null ? null : Path.Combine(GameDir, "EscapeFromTarkov_Data", "StreamingAssets", "Windows");
@@ -173,6 +176,18 @@ namespace COD2EFTInspector
                     places.Add(Path.Combine(mod, rel));
                 }
                 o.BundleFound = places.Count == 0 ? (bool?)null : places.Any(File.Exists);
+                if (o.BundleFound == false && o.Source != "vanilla")
+                {
+                    // other loaders keep bundles elsewhere in the mod folder: accept the same file name anywhere in it
+                    if (!_modFiles.TryGetValue(o.Source, out var names))
+                    {
+                        var mod = Path.Combine(ServerDir, "user", "mods", o.Source);
+                        try { names = new HashSet<string>(Directory.GetFiles(mod, "*.bundle", SearchOption.AllDirectories).Select(Path.GetFileName), StringComparer.OrdinalIgnoreCase); }
+                        catch { names = new HashSet<string>(); }
+                        _modFiles[o.Source] = names;
+                    }
+                    if (names.Contains(Path.GetFileName(rel))) { o.BundleFound = true; o.BundleElsewhere = true; }
+                }
             }
             int missing = Items.Count(o => o.BundleFound == false);
             if (missing > 0) Notes.Add($"{missing} entr{(missing == 1 ? "y has" : "ies have")} no bundle file where expected");
@@ -196,7 +211,7 @@ namespace COD2EFTInspector
             {
                 sb.AppendLine($"=== {g.Key}: " + string.Join(", ", g.GroupBy(o => o.Part).Select(p => $"{p.Count()} {p.Key}")));
                 foreach (var o in g.OrderBy(o => o.Part).ThenBy(o => o.Name, StringComparer.OrdinalIgnoreCase))
-                    sb.AppendLine($"  {o.Part,-6} {o.Name}  id {o.Id}  bundle {o.Bundle}" + (o.BundleFound == false ? "  <-- BUNDLE FILE MISSING" : ""));
+                    sb.AppendLine($"  {o.Part,-6} {o.Name}  id {o.Id}  bundle {o.Bundle}" + (o.BundleFound == false ? "  <-- BUNDLE FILE MISSING" : o.BundleElsewhere ? "  (bundle file found elsewhere in the mod folder)" : ""));
                 sb.AppendLine();
             }
             return sb.ToString();
