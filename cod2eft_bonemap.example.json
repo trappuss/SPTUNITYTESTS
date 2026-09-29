@@ -1,0 +1,6 @@
+{
+  "_readme": "Copy/rename to cod2eft_bonemap.json to use. Keys = COD bone names. Value = one EFT bone ('LForearm2' or 'Base HumanLForearm2') or a split {'LThigh1': 0.5, 'LCalf': 0.5}. Only list bones you want to override; everything else uses the built-in map, and unlisted helper bones follow their nearest mapped parent. The 58 valid EFT names are the bones of the EFT BASIC template armature.",
+  "j_proc_hip_back_le": {"Pelvis": 0.5, "LThigh1": 0.5},
+  "j_proc_hip_back_ri": {"Pelvis": 0.5, "RThigh1": 0.5},
+  "j_radio": "Spine3"
+}
