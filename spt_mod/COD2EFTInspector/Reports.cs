@@ -63,14 +63,14 @@ namespace COD2EFTInspector
             if (cat == null) return Enumerable.Empty<Outfit>();
             string part = Catalog.PartOfBodyKey(g.Part);
             var byId = cust.Where(l => l.StartsWith(g.Part + " = ", StringComparison.Ordinal))
-                           .Select(l => cat.ById(l.Substring(g.Part.Length + 3))).Where(o => o != null).ToList();
+                           .Select(l => cat.ById(l.Substring(g.Part.Length + 3).Split(' ')[0])).Where(o => o != null).ToList();
             return byId.Count > 0 ? byId : cat.ByBundleStem(g.Source).Where(o => o.Part == part);
         }
 
         static void Outfit(StringBuilder sb, Scan scan)
         {
             sb.AppendLine("Profile customization (ids):");
-            var cust = scan?.Target?.Player != null ? Game.Customization(scan.Target.Player) : new List<string>();
+            var cust = scan?.Target?.Player != null ? Wearer.WithTryOn(Game.Customization(scan.Target.Player)) : new List<string>();
             if (cust.Count == 0) sb.AppendLine("  not available (menu preview, or Profile.Customization not found)");
             foreach (var c in cust) sb.AppendLine("  " + c);
             sb.AppendLine();

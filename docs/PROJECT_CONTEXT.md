@@ -32,7 +32,7 @@ COD export (.fbx/.cast, Greyhound etc.)
 |---|---|---|
 | COD2EFT | **2.6.2** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
 | EFT Tools | **1.7.2** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
-| COD2EFT Inspector (SPT client plugin) | **0.5.0** (2026-09-29) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.x adds photo mode (orbit camera, studio lights, turntable; safeguards from CineKit) and F12 buttons; 0.4.0 live try-on of any catalog outfit (hideout / raid) and saving a head via HeadVoiceSelector; 0.5.0 material checks, one-click A/B turntables (the material A/B, item 2 above), solo; compiled with mcs only. Stage-2 route found in Improved Customization UI (client-side preview), see `docs/SPT_INSPECTOR.md`. |
+| COD2EFT Inspector (SPT client plugin) | **0.5.1** (2026-09-29) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.x adds photo mode (orbit camera, studio lights, turntable; safeguards from CineKit) and F12 buttons; 0.4.0 live try-on of any catalog outfit (hideout / raid) and saving a head via HeadVoiceSelector; 0.5.0 material checks, one-click A/B turntables (the material A/B, item 2 above), solo; compiled with mcs only. Stage-2 route found in Improved Customization UI (client-side preview), see `docs/SPT_INSPECTOR.md`. |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:

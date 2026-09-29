@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.5.0";
+        public const string Version = "0.5.1";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -147,6 +147,13 @@ namespace COD2EFTInspector
                 }
                 if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
                 if (_photo.Active) _photo.HandleMouse(MouseOverPanel());
+                // photo mode can end by itself (player gone: hideout / raid left); its hidden UI must come back, some of it is the menu's
+                if (!_photo.Active && _photoHud.Count > 0)
+                {
+                    foreach (var c in _photoHud) if (c != null) c.enabled = true;
+                    _photoHud.Clear();
+                    Log.LogInfo("Photo mode ended; UI canvases restored");
+                }
             }
             catch (Exception e) { Game.LogOnce("update:" + e.GetType().Name + e.Message, "Update failed: " + e); }
         }
@@ -362,7 +369,7 @@ namespace COD2EFTInspector
         {
             var w = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (_scan?.Target?.Player != null)
-                foreach (var line in Game.Customization(_scan.Target.Player)) { int i = line.IndexOf(" = ", StringComparison.Ordinal); if (i > 0) w.Add(line.Substring(i + 3)); }
+                foreach (var line in Wearer.WithTryOn(Game.Customization(_scan.Target.Player))) { int i = line.IndexOf(" = ", StringComparison.Ordinal); if (i > 0) w.Add(line.Substring(i + 3).Split(' ')[0]); }
             if (_scan != null) foreach (var g in _scan.Body) w.Add(g.Source);
             return w;
         }

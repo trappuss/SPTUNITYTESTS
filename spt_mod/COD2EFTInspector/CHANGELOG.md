@@ -3,6 +3,16 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.5.1 (2026-09-29)
+Review fixes (found by reading; nothing tested in game yet):
+- Try-on no longer leaves the try-on ids in your profile: as soon as the body is rebuilt (or on any failure) the
+  profile's `Customization` gets its real ids back, so a try-on can't reach the server (SPT sends profile data back at
+  raid end: hunch, not checked, but not worth the risk). The try-on is tracked by the plugin; reports mark it
+  "(try-on, not saved; real: …)". The original outfit is remembered per profile (PMC / scav / new session).
+- Photo mode that ends by itself (hideout or raid left while it was on) now brings back the UI canvases it hid; some of
+  them belong to the menu, which could otherwise stay unclickable.
+- `tools/contact_sheet.py`: turns a send's screenshots into one labelled grid (turntables as rows), for cheap review.
+
 ## 0.5.0 (2026-09-29)
 - **Material checks**: the material report starts with a *Checks* section and the panel shows the count. Flags a missing
   shader (pink), a non-EFT shader (e.g. Standard left in), the wrong shader / `_StencilType` for body parts (SMap_Decal, 1)

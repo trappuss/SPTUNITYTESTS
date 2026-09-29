@@ -67,6 +67,7 @@ an EFT update can't break the build, only a lookup, which is logged once as a wa
 - Bundle of an outfit: loaded `AssetBundle`s that contain a prefab named like the skin object (without `(Clone)`).
 
 ## Testing in the cloud (no game, no Unity)
+- `tools/contact_sheet.py from_pc/<time>/COD2EFT_Screenshots`: one labelled grid of a send's screenshots (needs Pillow).
 - `spt_mod/COD2EFTInspector/tests/compile_check.sh`: compiles the plugin with mono `mcs` against public reference DLLs
   (Unity 2021.3 modules from NuGet, BepInEx 5.4.23.2). Needs `apt-get install mono-mcs`. mcs has no C# 7 type
   patterns (`x is T t`), so the plugin avoids them.
