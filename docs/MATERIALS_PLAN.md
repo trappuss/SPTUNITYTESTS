@@ -98,6 +98,20 @@ This is still useful for another reason: texture resolution on big characters. W
 4. ✅ **Unity 1.7.0:** the `enc=3` branch with neutral values (not compiled here).
 5. **In-game A/B:** the same character with `enc=2` and with `enc=3`, next to vanilla.
 
+## Colour, AO and compression (measured 2026-09-29, COD2EFT 2.6.4 / EFT Tools 1.7.3)
+- **Texture formats (15 vanilla bundles):**
+  - `_MainTex` DXT5, `_SpecMap` DXT1, `_BumpMap` DXT5, all with mipmaps; 1024 px (one head 2048).
+  - COD2EFT writes `_d` RGBA, `_g` RGB and `_n` as a normal map. Unity's defaults turn these into the same formats, so we are at parity.
+  - BC7 is an opt-in in Unity 1.7.3 (a hunch that it helps smooth gradients).
+- **Colour brightness** (median luminance over UV-covered texels):
+  - Vanilla cloth: 0.13–0.35 (median of materials ≈ 0.19). Vanilla heads: 0.15 / 0.35. Wild body: 0.28.
+  - COD2EFT atlases (4 test characters): Upper / Lower 0.05–0.27, excluding Kleo's white jacket and sunflower's black and white outfit, which are their real colours.
+  - No systematic offset, so no automatic remap. *Colour brightness* and *Colour saturation* (default 1) are there for manual tuning.
+- **AO** (enc=2 atlases with AO 1 vs 0):
+  - Median factor 0.975. The 10th percentile is 0.54–0.95, and 1–26 % of texels are darkened below 0.8 (creases).
+  - AO adds crease detail, not a global darkening, so *AO strength* stays 1 (adjustable). Whether it causes Park's neck ring is still open.
+- **Gloss match** (enc=3, default 1) blends COD's own gloss (0) with the fitted vanilla curve (1). At 0 the `_g` equals enc=2's exactly (checked on Kleo).
+
 ## enc=3 contract (COD2EFT 2.6.0 ↔ EFT Tools 1.7.0, 2026-09-29)
 Built from the measurements above. **Default stays `enc=2`** until the in-game A/B decides.
 

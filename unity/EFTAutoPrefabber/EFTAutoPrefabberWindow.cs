@@ -118,6 +118,7 @@ namespace EFTAutoPrefab
             _holsterLeft = EditorPrefs.GetBool(Pref + "holsterLeft", false);
             _mat.Mode = (ShaderMode)EditorPrefs.GetInt(Pref + "mat.mode", (int)ShaderMode.EFT);
             _mat.ReapplyValues = EditorPrefs.GetBool(Pref + "mat.reapply", false);
+            _mat.HighQualityCompression = EditorPrefs.GetBool(Pref + "mat.bc7", false);
             _mat.MaskSlope = EditorPrefs.GetFloat(Pref + "mat.maskSlope", EFTMaterialCore.DefaultMaskSlope);
             _mat.MaskOffset = EditorPrefs.GetFloat(Pref + "mat.maskOffset", EFTMaterialCore.DefaultMaskOffset);
             _mat.Aliases = _aliases;
@@ -158,6 +159,7 @@ namespace EFTAutoPrefab
             EditorPrefs.SetBool(Pref + "mat.gloss", _mat.UseGloss);
             EditorPrefs.SetString(Pref + "mat.cutoutKeys", _mat.CutoutKeywords);
             EditorPrefs.SetFloat(Pref + "mat.cutoff", _mat.Cutoff);
+            EditorPrefs.SetBool(Pref + "mat.bc7", _mat.HighQualityCompression);
             foreach (var kv in _mat.Suffixes) EditorPrefs.SetString(Pref + "mat.suffix." + kv.Key, kv.Value);
         }
 
@@ -848,6 +850,10 @@ namespace EFTAutoPrefab
                         _mat.UseGloss = EditorGUILayout.ToggleLeft("Use gloss (_g) / roughness (_r) maps for smoothness (writes <base>_ms.png)", _mat.UseGloss);
                     _mat.CutoutKeywords = EditorGUILayout.TextField(new GUIContent("Cutout if name has", "Materials whose name or albedo texture contains one of these become Cutout; all others Opaque"), _mat.CutoutKeywords);
                     _mat.Cutoff = EditorGUILayout.Slider("Alpha cutoff", _mat.Cutoff, 0.01f, 0.99f);
+                    _mat.HighQualityCompression = EditorGUILayout.ToggleLeft(new GUIContent("High-quality compression (BC7) for COD2EFT textures",
+                        "Off (default): Unity's DXT5 / DXT1, the formats vanilla EFT uses. On: BC7 - fewer compression blocks on smooth " +
+                        "gradients (skin, gloss); the gloss map doubles in size. Turning it off again removes only overrides this tool set."),
+                        _mat.HighQualityCompression);
                     foreach (var r in EFTMaterialCore.DefaultSuffixes.Keys.ToList())
                         _mat.Suffixes[r] = EditorGUILayout.TextField(r + " suffixes", _mat.Suffixes[r]);
                 }
@@ -868,6 +874,7 @@ namespace EFTAutoPrefab
                     _mat.MaskSlope = EFTMaterialCore.DefaultMaskSlope; _mat.MaskOffset = EFTMaterialCore.DefaultMaskOffset;
                     _addHolster = true; _holsterLeft = false;
                     _mat.CutoutKeywords = EFTMaterialCore.DefaultCutoutKeywords; _mat.Cutoff = EFTMaterialCore.DefaultCutoff;
+                    _mat.HighQualityCompression = false;
                     foreach (var r in EFTMaterialCore.DefaultSuffixes.Keys.ToList()) _mat.Suffixes[r] = EFTMaterialCore.DefaultSuffixes[r];
                     GUI.FocusControl(null);
                 }

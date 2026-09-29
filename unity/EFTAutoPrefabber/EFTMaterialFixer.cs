@@ -25,6 +25,7 @@ namespace EFTAutoPrefab
     public class MaterialFixOptions
     {
         public ShaderMode Mode = ShaderMode.EFT;
+        public bool HighQualityCompression;  // COD2EFT textures: BC7 instead of Unity's default DXT1/DXT5 (1.7.3, opt-in)
         public bool ReapplyValues;           // EFT mode: re-apply vanilla values to materials already on EFT shaders
         public float MaskSlope = EFTMaterialCore.DefaultMaskSlope;
         public float MaskOffset = EFTMaterialCore.DefaultMaskOffset;
@@ -492,6 +493,11 @@ namespace EFTAutoPrefab
             if (oldEnc != newEnc) mat.SetOverrideTag(EncTag, newEnc);   // "" clears it (enc=2 materials stay as before)
             EnsureMaxSize(albPath);
             EnsureMaxSize(glossPath);
+            if (cod)
+            {
+                string c1 = SetCompression(albPath, o.HighQualityCompression), c2 = SetCompression(glossPath, o.HighQualityCompression);
+                if (c1 != null || c2 != null) notes.Add(c1 ?? c2);
+            }
 
             if (nrmTex != null) mat.SetTexture("_BumpMap", nrmTex);
 
@@ -803,6 +809,36 @@ namespace EFTAutoPrefab
             if (ti.maxTextureSize >= need) return;
             ti.maxTextureSize = need;
             ti.SaveAndReimport();
+        }
+
+        const string Bc7Mark = "COD2EFT:bc7";
+
+        /// <summary>
+        /// Opt-in (1.7.3): a Windows override to BC7 for a COD2EFT texture. By default Unity picks DXT5 for the RGBA _d and
+        /// DXT1 for the RGB _g - the same formats vanilla uses (15 vanilla bundles: _MainTex DXT5, _SpecMap DXT1, _BumpMap
+        /// DXT5). BC7 keeps smooth gradients (skin gloss, the small enc=3 _d alpha values) without block banding; _g doubles
+        /// in size. Off again: only an override this tool set (importer userData mark) is removed, never the user's own.
+        /// Returns a note when something changed.
+        /// </summary>
+        static string SetCompression(string texPath, bool hq)
+        {
+            if (string.IsNullOrEmpty(texPath) || !(AssetImporter.GetAtPath(texPath) is TextureImporter ti)) return null;
+            var ps = ti.GetPlatformTextureSettings("Standalone");
+            if (hq)
+            {
+                if (ps.overridden && ps.format == TextureImporterFormat.BC7 && ps.maxTextureSize >= ti.maxTextureSize) return null;
+                if (ps.overridden && ti.userData != Bc7Mark) return null;          // the user's own override: leave it
+                ps.overridden = true; ps.format = TextureImporterFormat.BC7; ps.maxTextureSize = ti.maxTextureSize;
+                ti.SetPlatformTextureSettings(ps);
+                ti.userData = Bc7Mark;
+                ti.SaveAndReimport();
+                return "BC7 compression (high quality)";
+            }
+            if (ti.userData != Bc7Mark) return null;
+            ti.ClearPlatformTextureSettings("Standalone");
+            ti.userData = "";
+            ti.SaveAndReimport();
+            return "BC7 override removed (default compression)";
         }
 
         /// <summary>Cut-out albedo: keep the alpha-tested coverage in the mip maps so thin strands don't vanish at a distance.</summary>

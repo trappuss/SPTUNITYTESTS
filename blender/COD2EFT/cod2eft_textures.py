@@ -807,7 +807,7 @@ def _load_region(path, crop, W, H):
 
 
 def material_maps(roles, W, H, spec_scale=SPEC_SCALE, ao_strength=1.0, crop=FULL,
-                  ao_in_spec=True, metal_keep=METAL_KEEP):
+                  ao_in_spec=True, metal_keep=METAL_KEEP, colour_gain=1.0, colour_sat=1.0):
     """EFT maps for region `crop` (UV 0..1) of one material at W x H:
     d (H,W,4), n (H,W,3), g (H,W,1), info.
       ao_strength  how much of the COD occlusion is multiplied into the colour (0 = none)
@@ -894,6 +894,11 @@ def material_maps(roles, W, H, spec_scale=SPEC_SCALE, ao_strength=1.0, crop=FULL
         diffuse = diffuse * occ[..., None]
         if ao_in_spec:
             f0 = f0 * occ
+    if colour_sat != 1.0 or colour_gain != 1.0:
+        # user look adjustments (2.6.4; defaults 1 = untouched): saturation around the pixel's
+        # own luminance, then a brightness gain
+        lw = (diffuse @ np.array([0.2126, 0.7152, 0.0722], np.float32))[..., None]
+        diffuse = np.clip((lw + (diffuse - lw) * colour_sat) * colour_gain, 0, 1)
     d = np.concatenate([diffuse, np.clip(f0 * spec_scale, 0, 1)[..., None]], -1)
     return d.astype(np.float32), (n * 0.5 + 0.5).astype(np.float32), gloss[..., None], info
 
@@ -1445,7 +1450,7 @@ def gloss_curve(cls, g):
     return np.interp(g, xs, ys).astype(np.float32)
 
 
-def bake_enc3(d, g, m, cls, part):
+def bake_enc3(d, g, m, cls, part, gloss_match=1.0):
     """d (H,W,4: colour, F0), g (H,W,1: COD gloss), m (H,W) metal share or None -> the enc=3
     d, g in place: _d.a = F0 / (SpecVals.x / 2), _g = the class's gloss curve, blended per pixel
     towards the metal curve by the metal share.  Returns the share of pixels whose F0 was cut
@@ -1462,6 +1467,9 @@ def bake_enc3(d, g, m, cls, part):
         gb = gloss_curve(base, g0)
         if m is not None and m.shape == g0.shape and float(m.max()) > 0:
             gb = gb * (1 - m) + gloss_curve("metal", g0) * m
+        if gloss_match != 1.0:
+            # "Gloss match" (2.6.4): 0 = COD's own gloss, 1 = the full vanilla curve
+            gb = g0 + (gb - g0) * gloss_match
         g[..., 0] = gb
     else:
         return 0.0
@@ -1484,7 +1492,8 @@ def load_class_overrides(path):
 
 def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_strength=1.0,
                  log=print, ao_in_spec=True, normal_style="OPENGL", uv_layout="ISLANDS",
-                 metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None):
+                 metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None,
+                 colour_gain=1.0, colour_sat=1.0, gloss_match=1.0):
     """Replace the materials of converted part `o` by one EFT material (+ one cut-out material
     for hair/lash cards if any) with atlas textures written to out_dir.  Returns dict.
     uv_layout "ISLANDS": only the parts of each COD texture the mesh uses go into the atlas,
@@ -1653,7 +1662,7 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
             ku, kv = Wu / (U[2] - U[0]), Hu / (U[3] - U[1])      # exact sampling density
             try:
                 d, n, g, info = material_maps(found[idx], Wu, Hu, spec_scale, ao_strength, U,
-                                              ao_in_spec, metal_keep)
+                                              ao_in_spec, metal_keep, colour_gain, colour_sat)
                 am = alpha_mask(found[idx], Wu, Hu, U) if gname == "alpha" else None
             except Exception as e:
                 # one unreadable image must not stop the whole character (before 2.4.3 it did:
@@ -1684,7 +1693,7 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
                 if ov and gname == "main" and ov != cls:
                     cls, why = ov, f"override (auto: {auto}, {why})"
                 g_before = st["gloss_med"]
-                clipped = bake_enc3(d, g, mm, cls, part)
+                clipped = bake_enc3(d, g, mm, cls, part, gloss_match)
                 g_after = material_stats(d, g, mm, px, far[faces])["gloss_med"]
                 for nm in names:
                     result["classes"].append({"material": nm, "class": cls, "auto": auto,
@@ -1974,23 +1983,27 @@ def fbx_colour_links(objs):
 
 def convert_textures(objs, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_strength=1.0,
                      log=print, ao_in_spec=True, normal_style="OPENGL", uv_layout="ISLANDS",
-                     metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None):
+                     metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None,
+                     colour_gain=1.0, colour_sat=1.0, gloss_match=1.0):
     log(f"Texture options: {size} px, normals {normal_style}, specular x{spec_scale:g}, "
         f"metal colour kept {metal_keep:g}, "
         f"AO {ao_strength:g} into colour" + (" and specular" if ao_in_spec and ao_strength > 0
                                               else "") +
         (", only the used parts of each texture" if uv_layout == "ISLANDS"
          else ", whole textures"))
+    if colour_gain != 1.0 or colour_sat != 1.0:
+        log(f"Colour adjusted: brightness x{colour_gain:g}, saturation x{colour_sat:g}")
     if material_mode == "ENC3":
         log("Materials: enc=3 - each COD material's class sets its gloss curve, baked into the "
             "textures for EFT's neutral values" +
-            (f" ({len(class_overrides)} class override(s))" if class_overrides else ""))
+            (f" ({len(class_overrides)} class override(s))" if class_overrides else "") +
+            (f", gloss match {gloss_match:g}" if gloss_match != 1.0 else ""))
     res = []
     for o in objs:
         log(f"Textures for {o.name}:")
         r = convert_part(o, out_dir, basename, size, spec_scale, ao_strength, log,
                          ao_in_spec, normal_style, uv_layout, metal_keep, material_mode,
-                         class_overrides)
+                         class_overrides, colour_gain, colour_sat, gloss_match)
         if r:
             res.append(r)
             for c in r.get("classes", []):

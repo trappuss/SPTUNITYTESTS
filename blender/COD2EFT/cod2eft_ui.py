@@ -231,6 +231,18 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
         name="AO into specular too", default=True,
         description="Also multiply the occlusion into the specular, so creases and gaps don't "
                     "shine")
+    tex_colour_gain: FloatProperty(
+        name="Colour brightness", default=1.0, min=0.25, max=2.0, step=5,
+        description="Multiplier on the colour map. 1 = COD's own colours. Measured on the test "
+                    "characters: COD cloth atlases have median brightness 0.12 - 0.27, vanilla "
+                    "EFT cloth 0.13 - 0.35 - no systematic gap, so the default is 1")
+    tex_colour_sat: FloatProperty(
+        name="Colour saturation", default=1.0, min=0.0, max=2.0, step=5,
+        description="0 = grey, 1 = COD's own colours, above 1 = more saturated")
+    tex_gloss_match: FloatProperty(
+        name="Gloss match", default=1.0, min=0.0, max=1.0, subtype="FACTOR",
+        description="enc=3 only: how far each material's gloss moves onto vanilla EFT's range "
+                    "for its class. 1 = the full fitted curve, 0 = COD's own gloss")
     tex_material_mode: EnumProperty(
         name="Materials", default="ENC2",
         items=[("ENC2", "enc=2 (per-part values in Unity)",
@@ -445,8 +457,14 @@ def _batch_cmd(st, tp, data_dir, paths):
                 "--texture-layout", st.tex_layout.lower()]
         if not st.tex_ao_spec:
             cmd.append("--no-ao-spec")
+        for flag, val in (("--colour-brightness", st.tex_colour_gain),
+                          ("--colour-saturation", st.tex_colour_sat)):
+            if abs(val - 1.0) > 1e-6:
+                cmd += [flag, f"{val:g}"]
         if st.tex_material_mode == "ENC3":
             cmd += ["--material-mode", "enc3"]
+            if abs(st.tex_gloss_match - 1.0) > 1e-6:
+                cmd += ["--gloss-match", f"{st.tex_gloss_match:g}"]
             ov = _class_overrides(st)
             if ov:
                 fn = os.path.join(data_dir, "cod2eft_class_overrides.json")
@@ -666,7 +684,8 @@ SETTINGS = (("prefer_cast", "Prefer .cast"), ("match_body", "Match body volume")
             ("tex_layout", "Texture layout"), ("tex_normals", "Normal maps"),
             ("tex_spec", "Specular strength"), ("tex_metal", "Metal colour kept"),
             ("tex_ao", "AO strength"), ("tex_material_mode", "Materials"),
-            ("tex_ao_spec", "AO into specular"))
+            ("tex_ao_spec", "AO into specular"), ("tex_colour_gain", "Colour brightness"),
+            ("tex_colour_sat", "Colour saturation"), ("tex_gloss_match", "Gloss match"))
 
 
 def changed_settings(st):
@@ -853,6 +872,8 @@ def _tex_kwargs(st):
     return dict(size=int(st.texture_size), spec_scale=st.tex_spec, ao_strength=st.tex_ao,
                 ao_in_spec=st.tex_ao_spec, normal_style=st.tex_normals, uv_layout=st.tex_layout,
                 metal_keep=st.tex_metal, material_mode=st.tex_material_mode,
+                colour_gain=st.tex_colour_gain, colour_sat=st.tex_colour_sat,
+                gloss_match=st.tex_gloss_match,
                 class_overrides=_class_overrides(st))
 
 
@@ -1413,6 +1434,8 @@ class COD2EFT_PT_settings_textures(_Panel, bpy.types.Panel):
         col.enabled = st.convert_textures
         col.prop(st, "texture_size")
         col.prop(st, "tex_material_mode", text="")
+        if st.tex_material_mode == "ENC3":
+            col.prop(st, "tex_gloss_match", slider=True)
         _draw_classes(col, st)
 
 
@@ -1434,6 +1457,9 @@ class COD2EFT_PT_settings_tex_options(_Panel, bpy.types.Panel):
         r = c.row()
         r.enabled = st.tex_ao > 0
         r.prop(st, "tex_ao_spec")
+        c.separator()
+        c.prop(st, "tex_colour_gain")
+        c.prop(st, "tex_colour_sat")
 
 
 class COD2EFT_PT_check(_SubPanel, bpy.types.Panel):

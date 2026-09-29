@@ -30,6 +30,9 @@ Options:
   --material-mode M enc2 (default: COD's values, Unity calibrates per part) or enc3 (each COD
                     material classified, its look baked into the textures for EFT's neutral
                     values; the report lists every material's class)
+  --colour-brightness F   multiplier on the colour map (default 1 = as COD)
+  --colour-saturation F   0 = grey .. 1 = as COD (default) .. 2
+  --gloss-match F   enc3 only: 0 = COD's own gloss .. 1 = the full vanilla curve (default)
   --class-overrides FILE  JSON {"COD material name": "cloth|skin|leather|metal|glass"} that wins
                     over the enc3 classifier (the panel writes one from its class list)
   --no-lengths      aim only (don't stretch limb segments onto their targets)
@@ -70,7 +73,7 @@ def parse(argv):
              split=False, fp_hands=False, fp_source="AUTO", textures=True, tex_size=2048, inputs=[],
              tex=dict(normal_style="OPENGL", spec_scale=1.0, ao_strength=1.0, ao_in_spec=True,
                       uv_layout="ISLANDS", metal_keep=0.7, material_mode="ENC2",
-                      class_overrides={}))
+                      class_overrides={}, colour_gain=1.0, colour_sat=1.0, gloss_match=1.0))
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -99,6 +102,12 @@ def parse(argv):
         elif a == "--material-mode":
             o["tex"]["material_mode"] = "ENC3" if argv[i + 1].lower() == "enc3" else "ENC2"
             i += 1
+        elif a == "--colour-brightness":
+            o["tex"]["colour_gain"] = min(2.0, max(0.25, float(argv[i + 1]))); i += 1
+        elif a == "--colour-saturation":
+            o["tex"]["colour_sat"] = min(2.0, max(0.0, float(argv[i + 1]))); i += 1
+        elif a == "--gloss-match":
+            o["tex"]["gloss_match"] = min(1.0, max(0.0, float(argv[i + 1]))); i += 1
         elif a == "--class-overrides":
             o["tex"]["class_overrides"] = TX.load_class_overrides(argv[i + 1]); i += 1
         elif a == "--texture-layout":

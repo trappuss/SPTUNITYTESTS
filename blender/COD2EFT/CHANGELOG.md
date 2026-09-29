@@ -2,6 +2,15 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.4 — 2026-09-29
+- **New adjustable look settings**, all off by default (the output is byte-identical unless you change them):
+  - **Colour brightness** and **Colour saturation** (Texture Options; batch: `--colour-brightness`, `--colour-saturation`).
+  - **Gloss match** (enc=3, under *Materials*; batch: `--gloss-match`): 1 = the full vanilla curve, 0 = COD's own gloss, anything in between for tuning after the A/B.
+- Why they default to 1, from measurements (`docs/MATERIALS_PLAN.md`, "Colour, AO and compression"):
+  - Colour: COD cloth atlases have a median brightness of 0.12–0.27, vanilla cloth 0.13–0.35. There's no systematic gap, so no automatic remap.
+  - AO: it darkens the typical texel by only 2.5 %; creases by 10–46 %. That's detail, not an overall darkening, so AO strength stays 1.
+- Tested: `tools/regress.py` gives 2.6.4 identical to the 2.6.1 baselines (enc=2 and enc=3). On Kleo, *Gloss match* 0 gives the enc=2 gloss exactly, saturation 0 gives grey, and brightness 0.8 gives ×0.80.
+
 ## 2.6.3 — 2026-09-29
 - **Tidier panel.** The COD2EFT tab is split into sub-panels in the order you use them: the status at the top (version, template, EFT armature, and any changed settings in red, as before), then **1. Convert a Character** and **2. Export for Unity** (open), and collapsed: **Extra Parts** (Separate by COD Material, First-Person Hands), **Batch Convert**, **Settings** (sub-panels **Fit**, **Parts & Weights**, **Textures** with a tick in its title, **Texture Options**), **Check the Fit**, **Adjust by Hand**, **Step by Step**. Click a title to open it; Blender remembers it. Every setting and button is still there; setting names and defaults are unchanged, so saved .blend files and the batch keep working. A few settings got tooltips they lacked.
 - Files: none moved or removed (see the report; the folder is a live install and the .bat files are double-clicked).

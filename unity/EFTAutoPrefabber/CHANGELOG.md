@@ -2,6 +2,14 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.3 — 2026-09-29
+- **Optional high-quality compression (BC7) for COD2EFT textures** (Materials options, off by default).
+  - Off: Unity's default DXT5 for `_d` and DXT1 for `_g`. These are the formats vanilla uses; in all 15 vanilla bundles, `_MainTex` is DXT5, `_SpecMap` DXT1 and `_BumpMap` DXT5.
+  - On: a Windows BC7 override on `_d` and `_g`, for smoother gradients (skin, gloss). `_g` doubles in size. Normal maps are left alone.
+  - Turning it off again removes only overrides this tool set (marked in the importer), never your own.
+  - Whether BC7 looks better in game is a hunch to check.
+- Not compiled here; checked by reading.
+
 ## 1.7.2 — 2026-09-29
 - Mod Builder: a mod folder that already has files but no `modbuilder.json` (so this builder didn't make it) is refused. Before, only a foreign DLL was caught, so an asset-only mod's `bundles.json`, `modinfo.json` and `db` files would have been overwritten. (Audit item.) Your own mod folders have `modbuilder.json` and are not affected.
 - Not compiled here; checked by reading.
