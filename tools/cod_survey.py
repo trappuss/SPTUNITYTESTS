@@ -51,15 +51,29 @@ for mp in models:
                    "alpha_kind": roles.get("alpha_kind"), "cutout": bool(roles.get("opacity_cands")),
                    "spec_q": wq(spec), "gloss_q": wq(gl), "rgb_mean": [round(float(x), 3) for x in np.average(rgb, 0, wts)],
                    "how": how}
+            # 2.6.0: the enc=3 class (as convert_part sees it, but without the cut-out pick) and
+            # the gloss distribution of its non-metal / metal samples (tools/fit_gloss_curves.py)
+            mm = info.get("m")
+            px = np.stack([c, r], 1)
+            st = TX.material_stats(d, g, mm, px, wts)
+            cls, why = TX.classify_material([key], st)
+            mv = mm[r, c] if mm is not None else np.zeros(len(r))
+            Q = np.linspace(0, 1, 21)
+            for tag_, sel in (("", mv <= 0.5), ("metal_", mv > 0.5)):
+                if sel.sum():
+                    o_ = np.argsort(gl[sel]); cw = np.cumsum(wts[sel][o_]) / wts[sel].sum()
+                    rec[tag_ + "gloss_q21"] = [round(float(gl[sel][o_][min(np.searchsorted(cw, q), sel.sum() - 1)]), 4) for q in Q]
+                    rec[tag_ + "w"] = round(float(wts[sel].sum()), 4)
+            rec.update({"cls": cls, "cls_why": why, "metal": round(st["metal"], 3)})
             seen[key] = rec; out.append(rec)
             im = Image.fromarray((np.clip(d[::-1, :, :3], 0, 1) ** (1 / 1.0) * 255).astype(np.uint8)).resize((128, 128))
             thumbs.append((rec["i"], im))
-            print(f'{rec["i"]:3d} {model[:28]:28s} {key[:30]:30s} {str(rec["alpha_kind"]):12s} cut={int(rec["cutout"])} spec{rec["spec_q"]} gloss{rec["gloss_q"]}')
+            print(f'{rec["i"]:3d} {model[:28]:28s} {key[:30]:30s} {str(rec["alpha_kind"]):12s} cut={int(rec["cutout"])} spec{rec["spec_q"]} gloss{rec["gloss_q"]} {cls} ({why})')
 json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "cod_material_survey.json"), "w"), indent=1)
 cols = 8; rows = (len(thumbs) + cols - 1) // cols
 sheet = Image.new("RGB", (cols * 132, rows * 146), (30, 30, 30)); dr = ImageDraw.Draw(sheet)
 for k, (i, im) in enumerate(thumbs):
     x, y = (k % cols) * 132 + 2, (k // cols) * 146 + 2
     sheet.paste(im, (x, y + 14)); dr.text((x, y), str(i), fill=(255, 255, 0))
-sheet.save("cod_sheet.png")
+sheet.save(os.environ.get("COD_SHEET", "cod_sheet.png"))
 print("models:", len(models), "materials:", len(out))

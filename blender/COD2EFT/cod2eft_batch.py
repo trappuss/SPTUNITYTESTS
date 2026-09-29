@@ -27,6 +27,11 @@ Options:
   --ao-strength F   0..1 how much COD ambient occlusion goes into the colour (default 1)
   --no-ao-spec      don't multiply the occlusion into the specular as well
   --texture-layout L islands (default: only the used parts of each texture, sharper) or whole
+  --material-mode M enc2 (default: COD's values, Unity calibrates per part) or enc3 (each COD
+                    material classified, its look baked into the textures for EFT's neutral
+                    values; the report lists every material's class)
+  --class-overrides FILE  JSON {"COD material name": "cloth|skin|leather|metal|glass"} that wins
+                    over the enc3 classifier (the panel writes one from its class list)
   --no-lengths      aim only (don't stretch limb segments onto their targets)
   --no-tweaks       don't apply the saved pose tweaks (cod2eft_pose_tweaks.json)
   --fit-scale       best-fit scale to the EFT torso instead of keeping real-world size
@@ -64,7 +69,8 @@ def parse(argv):
              head_forward=0.5, head_height="limited", face="eyes", tips=True, tweaks=True,
              split=False, fp_hands=False, fp_source="AUTO", textures=True, tex_size=2048, inputs=[],
              tex=dict(normal_style="OPENGL", spec_scale=1.0, ao_strength=1.0, ao_in_spec=True,
-                      uv_layout="ISLANDS", metal_keep=0.7))
+                      uv_layout="ISLANDS", metal_keep=0.7, material_mode="ENC2",
+                      class_overrides={}))
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -90,6 +96,11 @@ def parse(argv):
             o["tex"]["metal_keep"] = min(1.0, max(0.0, float(argv[i + 1]))); i += 1
         elif a == "--no-ao-spec":
             o["tex"]["ao_in_spec"] = False
+        elif a == "--material-mode":
+            o["tex"]["material_mode"] = "ENC3" if argv[i + 1].lower() == "enc3" else "ENC2"
+            i += 1
+        elif a == "--class-overrides":
+            o["tex"]["class_overrides"] = TX.load_class_overrides(argv[i + 1]); i += 1
         elif a == "--texture-layout":
             o["tex"]["uv_layout"] = argv[i + 1].upper(); i += 1
         elif a == "--match-height":

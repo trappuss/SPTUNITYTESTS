@@ -202,10 +202,11 @@ namespace EFTAutoPrefab
                             notes.Add("albedo " + albName);
                         }
                         // COD2EFT 2.4+ texture sets (tagged PNGs): data used as stored, cut-out = the "_alpha" material slot
-                        bool cod = Cod2EftEnc(albPath) >= 2;
+                        int codEnc = Cod2EftEnc(albPath);
+                        bool cod = codEnc >= 2;
                         bool cutout = EFTMaterialCore.IsCod2EftCutoutSlot(mat.name) ||
                                       (!cod && EFTMaterialCore.WantsCutout(mat.name, albName, cutoutKeys));
-                        if (cod) notes.Add("COD2EFT enc=" + Cod2EftEnc(albPath) + " textures");
+                        if (cod) notes.Add("COD2EFT enc=" + codEnc + " textures");
                         else if (albPath != null && System.Text.RegularExpressions.Regex.IsMatch(Path.GetFileName(albPath),
                                      @"_(Head|Upper|Lower|Hands)(_alpha)?_d\.png$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
                             notes.Add("looks like COD2EFT output but has no COD2EFT 2.4 tag (2.3 or older: _d alpha is wrong on skin) - convert again with COD2EFT 2.4+");
@@ -215,7 +216,10 @@ namespace EFTAutoPrefab
                         Texture2D nrmTex = null;
                         if (nrmName != null && texPaths.TryGetValue(nrmName, out var nrmPath))
                         {
-                            notes.Add("normal " + nrmName + " " + PrepareNormalMap(nrmPath, Cod2EftEnc(nrmPath) >= 2 ? NormalMode.OpenGL : o.Normals));
+                            // tagged maps say their style: OpenGL, or DirectX when the tag has "n=dx" (COD2EFT 2.6+; before, a
+                            // DirectX map was tagged like an OpenGL one and came out inverted)
+                            notes.Add("normal " + nrmName + " " + PrepareNormalMap(nrmPath, Cod2EftEnc(nrmPath) >= 2
+                                ? (Cod2EftNormalDirectX(nrmPath) ? NormalMode.DirectX : NormalMode.OpenGL) : o.Normals));
                             EnsureMaxSize(nrmPath);
                             nrmTex = AssetDatabase.LoadAssetAtPath<Texture2D>(nrmPath);
                         }
@@ -229,7 +233,7 @@ namespace EFTAutoPrefab
 
                         if (o.Mode == ShaderMode.EFT)
                         {
-                            if (!SetupEft(mat, mainTex, albPath, cutout, cod, nrmTex, glsName != null ? texPaths[glsName] : null,
+                            if (!SetupEft(mat, mainTex, albPath, cutout, codEnc, nrmTex, glsName != null ? texPaths[glsName] : null,
                                           rghName != null ? texPaths[rghName] : null,
                                           EFTMaterialCore.InferPart(partsOf.TryGetValue(mat, out var pl) ? pl : null), o, notes))
                             { log.Add($"Materials: {label}: " + string.Join(", ", notes)); continue; }
@@ -430,10 +434,16 @@ namespace EFTAutoPrefab
             m.renderQueue = -1;                 // = the shader's queue, as in vanilla
         }
 
-        static bool SetupEft(Material mat, Texture mainTex, string albPath, bool cutout, bool cod, Texture2D nrmTex,
+        // material tag holding the COD2EFT encoding its values were set up for (only written for enc=3)
+        const string EncTag = "COD2EFT_enc";
+
+        static bool SetupEft(Material mat, Texture mainTex, string albPath, bool cutout, int codEnc, Texture2D nrmTex,
                              string glossPath, string roughPath, BodyPart part, MaterialFixOptions o, List<string> notes)
         {
-            var preset = cod && !cutout ? EFTMaterialCore.Cod2EftPreset(part) : EFTMaterialCore.PresetFor(part, cutout);
+            bool cod = codEnc >= 2;
+            // enc=3: the look is baked into the pixels, the values are EFT's neutral clothing values (no per-part calibration)
+            var preset = cod && !cutout ? (codEnc >= 3 ? EFTMaterialCore.Cod2EftNeutralPreset(part) : EFTMaterialCore.Cod2EftPreset(part))
+                                        : EFTMaterialCore.PresetFor(part, cutout);
             var shader = cutout ? EnsureCutoutStub(notes) : FindImposterShader(preset.ShaderPathId);
             if (shader == null)
             {
@@ -453,11 +463,17 @@ namespace EFTAutoPrefab
                 notes.Add($"{preset.ShaderName} ({preset.Label} values)");
             }
             else notes.Add(preset.ShaderName + (o.ReapplyValues ? $" (re-applied {preset.Label} values)" : " (values kept)"));
-            // switching a material from the gloss-packed albedo (older runs) to COD2EFT data changes what its values mean
-            bool regimeChanged = cod && !cutout && hadPacked;
+            // switching a material from the gloss-packed albedo (older runs) to COD2EFT data changes what its values mean;
+            // so does switching between enc=2 and enc=3 textures (the tag says which values the material was set up for;
+            // a material without it was set up for enc=2 or older)
+            string oldEnc = mat.GetTag(EncTag, false, "");
+            string newEnc = cod && !cutout && codEnc >= 3 ? codEnc.ToString() : "";
+            bool regimeChanged = cod && !cutout && (hadPacked || oldEnc != newEnc);
             bool applyValues = converting || o.ReapplyValues || regimeChanged;
             if (applyValues) ApplyPreset(mat, preset, o.Cutoff);
-            if (regimeChanged && !converting) notes.Add($"re-applied {preset.Label} values (texture data changed to COD2EFT)");
+            if (regimeChanged && !converting) notes.Add($"re-applied {preset.Label} values (texture data changed to COD2EFT" +
+                                                        (codEnc >= 3 ? " enc=3)" : ")"));
+            if (oldEnc != newEnc) mat.SetOverrideTag(EncTag, newEnc);   // "" clears it (enc=2 materials stay as before)
             EnsureMaxSize(albPath);
             EnsureMaxSize(glossPath);
 
@@ -502,7 +518,8 @@ namespace EFTAutoPrefab
                 // COD2EFT's _d alpha already is the per-pixel specular reflectance: use it as is, scaled by _Glossness
                 mat.SetTexture("_MainTex", mainTex);
                 SetAlphaIsTransparency(albPath, false);
-                notes.Add($"_d alpha = COD specular, _Glossness {mat.GetFloat("_Glossness"):0.##}, _Specularness {mat.GetFloat("_Specularness"):0.##}");
+                notes.Add((codEnc >= 3 ? "_d alpha / _g = baked enc=3 targets" : "_d alpha = COD specular") +
+                          $", _Glossness {mat.GetFloat("_Glossness"):0.##}, _Specularness {mat.GetFloat("_Specularness"):0.##}");
                 return true;
             }
             var packed = BuildEftAlbedo(albPath, glossPath ?? roughPath, glossPath == null && roughPath != null, o, notes);
@@ -731,21 +748,26 @@ namespace EFTAutoPrefab
 
         // ================================================================== shared helpers
 
-        static readonly Dictionary<string, (long len, long ticks, int enc)> _encCache = new Dictionary<string, (long, long, int)>();
+        static readonly Dictionary<string, (long len, long ticks, int enc, bool dx)> _encCache = new Dictionary<string, (long, long, int, bool)>();
 
         /// <summary>COD2EFT encoding of a PNG asset (tEXt Software "COD2EFT enc=N" in its first 4 KB), 0 when untagged.</summary>
-        public static int Cod2EftEnc(string assetPath)
+        public static int Cod2EftEnc(string assetPath) => Cod2EftTag(assetPath).enc;
+
+        /// <summary>True when a COD2EFT PNG's tag says its normal map is DirectX style ("n=dx", COD2EFT 2.6+).</summary>
+        public static bool Cod2EftNormalDirectX(string assetPath) => Cod2EftTag(assetPath).dx;
+
+        static (int enc, bool dx) Cod2EftTag(string assetPath)
         {
-            if (string.IsNullOrEmpty(assetPath) || !assetPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || !File.Exists(assetPath)) return 0;
+            if (string.IsNullOrEmpty(assetPath) || !assetPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || !File.Exists(assetPath)) return (0, false);
             var fi = new FileInfo(assetPath);
-            if (_encCache.TryGetValue(assetPath, out var c) && c.len == fi.Length && c.ticks == fi.LastWriteTimeUtc.Ticks) return c.enc;
+            if (_encCache.TryGetValue(assetPath, out var c) && c.len == fi.Length && c.ticks == fi.LastWriteTimeUtc.Ticks) return (c.enc, c.dx);
             var head = new byte[4096];
             int n;
             using (var fs = new FileStream(assetPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) n = fs.Read(head, 0, head.Length);
             if (n < head.Length) Array.Resize(ref head, n);
-            int enc = EFTMaterialCore.Cod2EftEncoding(head);
-            _encCache[assetPath] = (fi.Length, fi.LastWriteTimeUtc.Ticks, enc);
-            return enc;
+            int enc = EFTMaterialCore.Cod2EftEncoding(head, out bool dx);
+            _encCache[assetPath] = (fi.Length, fi.LastWriteTimeUtc.Ticks, enc, dx);
+            return (enc, dx);
         }
 
         /// <summary>Raises the importer's Max Size to at least the file's own size (Unity's 2048 default halves a 4096 atlas).</summary>

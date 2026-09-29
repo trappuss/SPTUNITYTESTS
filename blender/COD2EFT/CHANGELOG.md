@@ -2,6 +2,16 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.0 — 2026-09-29
+- **New setting, Materials: enc=3** (panel: Textures; batch: `--material-mode enc3`). The default stays **enc=2** (unchanged output) until the in-game A/B.
+  - Each COD material is classified: cloth / skin / leather-rubber-plastic / metal / glass / hair (cut-out). The class comes from name words, the metal share, a skin-tone colour, the gloss level and the cut-out test.
+  - Its gloss is remapped per pixel with a quantile curve for its class, fitted from the 174 test materials onto vanilla EFT smoothness (`tools/fit_gloss_curves.py`). Medians: cloth 0.34 → 0.17, skin 0.47 → 0.32, leather 0.65 → 0.27 (a hunch), metal 0.69 → 0.67.
+  - `_d` alpha becomes COD's F0 ÷ (`_SpecVals.x`/2), so EFT's neutral clothing values (`_Glossness` 1, `_Specularness` 1) reproduce COD's specular.
+  - The PNGs are tagged `COD2EFT enc=3` and need EFT Tools 1.7.0. The Blender preview uses the same neutral values.
+  - The report prints one `class …` line per COD material. The **Material classes** list in the panel overrides a class; it's saved in the .blend and passed to Batch as a JSON file (`--class-overrides`).
+- **DirectX normal maps are tagged `n=dx`** (`COD2EFT enc=2 n=dx`), so Unity 1.7.0 no longer flips them a second time (audit item). OpenGL output (the default) is unchanged.
+- Regression: enc=2 output of Kleo, sunflower_base, MW4 male and MW4 female is byte-identical to 2.5.2 (all 66 PNGs; meshes, UVs and material values in the .blend identical). The survey's existing fields are identical too. Tested headless in Blender 4.4 with a template rebuilt from `EFT BASIC [Template].fbx`; not yet run on the PC or checked in game.
+
 ## 2.5.2 — 2026-09-29
 - **Swayback / twisted waist on curvy characters fixed** (MW4 Beta Female valeria).
   - Cause: the fit lines up the middle of the hip cross-section with EFT's. On a character with wide hips or glutes, that middle sits far back (valeria: 12.3 cm behind her waist section; EFT's own body: 4.3 cm; other test characters: 0.6–3.2 cm). The whole body got pushed 4.8 cm forward, and the waist ended up 4 cm behind EFT's, so the spine bent.

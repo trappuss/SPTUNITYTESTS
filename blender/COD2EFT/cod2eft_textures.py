@@ -215,8 +215,9 @@ def resize(a, W, H):
     return (top * (1 - wy) + bot * wy).astype(np.float32)
 
 
-def save_png(path, arr, srgb=True):
-    """arr: (H, W, 1|3|4) float 0..1, row 0 = bottom."""
+def save_png(path, arr, srgb=True, mark=None):
+    """arr: (H, W, 1|3|4) float 0..1, row 0 = bottom.  mark: the COD2EFT tag text (PNG_MARK)."""
+    mark = mark or PNG_MARK
     h, w = arr.shape[:2]
     c = arr.shape[2] if arr.ndim == 3 else 1
     rgba = np.ones((h, w, 4), np.float32)
@@ -237,11 +238,20 @@ def save_png(path, arr, srgb=True):
     im.file_format = "PNG"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     im.save()
-    png_mark(path)
+    png_mark(path, mark)
     return im
 
 
 PNG_MARK = f"COD2EFT enc={ENCODING}"
+
+
+def mark_text(material_mode="ENC2", normal_style="OPENGL"):
+    """The PNG tag for these settings: "COD2EFT enc=2" / "COD2EFT enc=3", plus " n=dx" when the
+    normal map is written DirectX style (green down).  No "n=" means OpenGL (all files before
+    2.6.0 are OpenGL unless the DirectX option was on - they said nothing, which is the bug the
+    audit found: Unity flipped those maps a second time)."""
+    enc = 3 if material_mode == "ENC3" else 2
+    return f"COD2EFT enc={enc}" + (" n=dx" if normal_style == "DIRECTX" else "")
 
 
 def png_mark(path, text=PNG_MARK):
@@ -844,6 +854,9 @@ def material_maps(roles, W, H, spec_scale=SPEC_SCALE, ao_strength=1.0, crop=FULL
     if "spec" in roles:
         f0 = _load_region(roles["spec"], crop, W, H)[..., :3].mean(-1)
         diffuse = rgb
+        # metal share for the enc=3 gloss curves only: a specular colour map's metals have F0
+        # 0.5 - 1, its non-metals 0.02 - 0.08
+        info["m"] = np.clip((f0 - 0.1) / 0.4, 0, 1).astype(np.float32)
     elif roles.get("fused") and kind == "metal_mask":
         # IW fused colour/spec (GameImageUtil "CoD Specular/Albedo"): alpha <= 0.1 = the
         # reflectance of a non-metal, above that it blends to metal (colour = specular colour)
@@ -851,6 +864,7 @@ def material_maps(roles, W, H, spec_scale=SPEC_SCALE, ao_strength=1.0, crop=FULL
         diffuse = rgb * (1 - (1 - metal_keep) * m)[..., None]
         f0 = np.minimum(a_c, 0.1) + m * lum
         info["metal_share"] = round(float((m > 0.5).mean()), 3)
+        info["m"] = m
     elif roles.get("fused") and kind == "continuous":
         # the alpha is not a metal mask (skin and a few others - see classify_alpha): a non-
         # metal, except where the alpha stands far above the material's own level (rivets on
@@ -861,6 +875,7 @@ def material_maps(roles, W, H, spec_scale=SPEC_SCALE, ao_strength=1.0, crop=FULL
         diffuse = rgb * (1 - (1 - metal_keep) * m)[..., None]
         f0 = F0_DIELECTRIC * (1 - m) + m * lum
         info["metal_share"] = round(float((m > 0.5).mean()), 3)
+        info["m"] = m
     else:
         # no specular information ("no_alpha": a colour map without alpha, "tint": see
         # find_textures): a non-metal
@@ -1298,13 +1313,180 @@ def _texture_res(roles):
     return best
 
 
+# ---------------------------------------------------------------------------------------------
+# enc=3: the material look baked into the pixels (docs/MATERIALS_PLAN.md, "enc=3 contract")
+# ---------------------------------------------------------------------------------------------
+# Unity gives enc=3 textures EFT's NEUTRAL clothing values (as all 12 vanilla clothing materials
+# measured: _Glossness 1, _Specularness 1) with the vanilla median _SpecVals / _DefVals /
+# _ReflectColor of the part (the presets EFTMaterialCore.Upper / Lower / Head / Hands).  So the
+# G-buffer gets  specular = _d.a x SpecVals.x / 2  (at F = 0)  and  smoothness = _g, and the
+# textures carry the target values directly:
+#   _d.a = COD F0 / (SpecVals.x / 2)          (COD's specular was already close to vanilla)
+#   _g   = gloss curve of the material's class (quantile map, COD -> vanilla EFT smoothness)
+MATERIAL_MODES = ("ENC2", "ENC3")
+#          _Glossness  _Specularness  _SpecVals   _DefVals   - Unity 1.7.0's enc=3 values
+EFT_NEUTRAL = {"Upper": (1.0, 1.0, (1.1, 2.0), (0.85, 0.7)),
+               "Lower": (1.0, 1.0, (1.1, 2.0), (0.85, 0.7)),
+               "Head": (1.0, 1.0, (1.0, 3.0), (0.8, 1.0)),
+               "Hands": (1.0, 1.0, (1.1, 2.0), (0.8, 0.7))}
+CLASSES = ("cloth", "skin", "leather", "metal", "glass", "cutout")
+CLASS_LABEL = {"cloth": "cloth", "skin": "skin", "leather": "leather / rubber / plastic",
+               "metal": "metal", "glass": "glass / lens", "cutout": "hair / cut-out"}
+# name words (whole words of the COD material name; most IW names are hashed, so these only
+# catch the readable ones - "handcuffs" is not "hand", "armor" is not "arm")
+GLASS_WORDS = {"glass", "lens", "lenses", "visor", "goggle", "goggles"}
+LEATHER_WORDS = {"leather", "glove", "gloves", "boot", "boots", "shoe", "shoes", "holster",
+                 "plastic", "rubber", "rubberband", "strap", "straps", "ziptie", "handcuff",
+                 "handcuffs", "sole", "soles"}
+SKIN_WORDS = {"skin", "arm", "arms", "hand", "hands", "viewarm", "viewarms", "teeth",
+              "mouth", "lips", "tongue"}
+# hunch (to validate on labelled materials): a non-metal whose median COD gloss is this high is a
+# hard surface - in the test set these are dark grey gear pieces, patches, handcuffs, a holster
+LEATHER_GLOSS = 0.6
+# glass has no transparency in EFT's character shaders: opaque, tinted and smooth (hunches)
+GLASS_SMOOTH = 0.85
+GLASS_TINT = 0.3
+# Gloss transfer curves: COD gloss -> EFT smoothness, fitted by tools/fit_gloss_curves.py
+# (docs/gloss_curves.json): (COD knots, EFT knots), both rising; np.interp between them.
+# Quantile maps at 5 % steps from the COD distribution of the class (174 test materials, classes
+# from classify_material) onto vanilla EFT smoothness (15 bundles, UV-covered texels):
+#   cloth    COD median 0.34 -> 0.17   (vanilla: 12 clothing materials)
+#   skin     COD median 0.47 -> 0.32   (vanilla: the 2 heads, all covered texels)
+#   leather  COD median 0.65 -> 0.27   (HUNCH: the glossier half of vanilla clothing - no vanilla
+#                                       gloves / holsters measured yet)
+#   metal    COD median 0.69 -> 0.67   (vanilla: texels with _MainTex.a > 0.5 in 2 pants)
+# Line lengths: generated table.
+GLOSS_CURVES = {
+    "cloth": ([0.0, 0.0865, 0.1333, 0.1787, 0.1975, 0.2396, 0.2463, 0.2784, 0.318, 0.3255, 0.336, 0.3529, 0.3801, 0.4011, 0.4278, 0.4495, 0.4781, 0.507, 0.5612, 0.632, 1.0],
+              [0.0, 0.051, 0.0706, 0.0863, 0.098, 0.1098, 0.1216, 0.1333, 0.1451, 0.1569, 0.1686, 0.1843, 0.2, 0.2196, 0.2416, 0.2667, 0.302, 0.3647, 0.451, 0.5569, 0.9249]),
+    "skin": ([0.0, 0.0004, 0.1256, 0.232, 0.3979, 0.417, 0.4272, 0.4382, 0.4515, 0.4672, 0.4739, 0.4817, 0.4909, 0.5007, 0.5101, 0.521, 0.5513, 0.5907, 0.6471, 0.681, 1.0],
+              [0.0, 0.1542, 0.1885, 0.2059, 0.2399, 0.2529, 0.2571, 0.2742, 0.2913, 0.3059, 0.3235, 0.3412, 0.3647, 0.3882, 0.4118, 0.4353, 0.4529, 0.4706, 0.5313, 0.7026, 1.0]),
+    "leather": ([0.0, 0.4039, 0.4902, 0.5466, 0.5711, 0.5892, 0.602, 0.6118, 0.6225, 0.6353, 0.6466, 0.6618, 0.6757, 0.6863, 0.699, 0.71, 0.7306, 0.7603, 0.8098, 0.8497, 1.0],
+              [0.0, 0.1765, 0.1843, 0.1922, 0.2, 0.2098, 0.2196, 0.2306, 0.2416, 0.2541, 0.2667, 0.2843, 0.302, 0.3333, 0.3647, 0.4078, 0.451, 0.5039, 0.5569, 0.761, 0.9113]),
+    "metal": ([0.0, 0.2713, 0.4216, 0.4625, 0.4931, 0.5196, 0.5493, 0.5725, 0.6225, 0.6532, 0.6902, 0.7203, 0.7382, 0.7588, 0.7686, 0.7801, 0.8206, 0.8613, 0.8814, 0.9127, 1.0],
+              [0.0, 0.4196, 0.4392, 0.4549, 0.4706, 0.4863, 0.5216, 0.5765, 0.6235, 0.6549, 0.6667, 0.6745, 0.6824, 0.6902, 0.702, 0.7098, 0.7137, 0.7216, 0.7333, 0.7608, 0.8481]),
+}
+
+
+def _name_words(names):
+    out = set()
+    for n in names:
+        out.update(w for w in re.split(r"[^a-z]+", base_name(n).lower()) if w)
+    return out
+
+
+def skin_tone(rgb):
+    """A skin colour (mean colour of a material, sRGB 0..1): hue 5 - 28 degrees (red-orange),
+    saturation 0.15 - 0.6, max channel >= 0.3.  Checked by eye on the 174 test materials (2.6.0):
+    skin (faces, torsos, arms) sits at hue 7 - 24, saturation 0.2 - 0.52, max 0.39 - 0.73; khaki /
+    tan gear at 34 - 45 degrees; the misses left: a dark brown pouch (hue 15, max 0.35) - and
+    eyes, hair and a bald scalp colour, which are fine as skin or become cut-outs."""
+    r, g, b = (float(x) for x in rgb[:3])
+    mx, mn = max(r, g, b), min(r, g, b)
+    if mx < 0.3 or r < mx or mx - mn < 1e-3:
+        return False
+    sat = (mx - mn) / mx
+    hue = 60.0 * (g - b) / (mx - mn)
+    return 5.0 <= hue <= 28.0 and 0.15 <= sat <= 0.6
+
+
+def classify_material(names, st, cutout=False):
+    """Material class of a COD material (or of the materials sharing one texture set).
+    st: stats on its faces - gloss_med, metal (share of the surface with metal share > 0.5),
+    rgb (mean colour).  Returns (class, why)."""
+    if cutout:
+        return "cutout", "cut-out cards"
+    words = _name_words(names)
+    hit = sorted(words & GLASS_WORDS)
+    if hit:
+        return "glass", f"name '{hit[0]}'"
+    if st["metal"] > 0.5:
+        return "metal", f"{st['metal']:.0%} metal"
+    hit = sorted(words & LEATHER_WORDS)
+    if hit:
+        return "leather", f"name '{hit[0]}'"
+    hit = sorted(words & SKIN_WORDS)
+    if hit:
+        return "skin", f"name '{hit[0]}'"
+    if st["metal"] < 0.2 and skin_tone(st["rgb"]):
+        return "skin", "skin colour"
+    if st["metal"] < 0.05 and st["gloss_med"] >= LEATHER_GLOSS:
+        return "leather", "high COD gloss"
+    return "cloth", "default"
+
+
+def _wquant(a, w, q):
+    o = np.argsort(a)
+    cw = np.cumsum(w[o])
+    cw = cw / max(cw[-1], 1e-12)
+    return float(a[o][min(np.searchsorted(cw, q), len(a) - 1)])
+
+
+def material_stats(d, g, m, px, w):
+    """Stats of one material's maps at its face sample points px ((n, 2) int col, row)."""
+    c, r = px[:, 0], px[:, 1]
+    w = np.asarray(w, np.float64)
+    w = w / max(w.sum(), 1e-12)
+    gl = g[r, c, 0].astype(np.float64)
+    mm = m[r, c] if m is not None else np.zeros(len(c))
+    return {"gloss_med": _wquant(gl, w, 0.5), "metal": float(w[mm > 0.5].sum()),
+            "rgb": [float(x) for x in (d[r, c, :3] * w[:, None]).sum(0)]}
+
+
+def gloss_curve(cls, g):
+    xs, ys = GLOSS_CURVES[cls]
+    return np.interp(g, xs, ys).astype(np.float32)
+
+
+def bake_enc3(d, g, m, cls, part):
+    """d (H,W,4: colour, F0), g (H,W,1: COD gloss), m (H,W) metal share or None -> the enc=3
+    d, g in place: _d.a = F0 / (SpecVals.x / 2), _g = the class's gloss curve, blended per pixel
+    towards the metal curve by the metal share.  Returns the share of pixels whose F0 was cut
+    at _d.a = 1 (F0 above SpecVals.x / 2 = 0.5 - 0.55: bright metal)."""
+    k0 = EFT_NEUTRAL.get(part, EFT_NEUTRAL["Upper"])[2][0] / 2.0
+    f0 = d[..., 3]
+    if cls == "glass":
+        d[..., :3] *= GLASS_TINT
+        g[...] = GLASS_SMOOTH
+        f0 = np.maximum(f0, F0_DIELECTRIC)
+    elif cls != "cutout":
+        base = "leather" if cls == "metal" else cls
+        g0 = g[..., 0]
+        gb = gloss_curve(base, g0)
+        if m is not None and m.shape == g0.shape and float(m.max()) > 0:
+            gb = gb * (1 - m) + gloss_curve("metal", g0) * m
+        g[..., 0] = gb
+    else:
+        return 0.0
+    a = f0 / k0
+    clipped = float((a > 1.0).mean())
+    d[..., 3] = np.clip(a, 0, 1)
+    return clipped
+
+
+def load_class_overrides(path):
+    """{material name: class} from a JSON file ({"name": "skin", ...}); unknown classes dropped."""
+    try:
+        with open(io_path(path), "r", encoding="utf-8") as fh:
+            raw = json.load(fh)
+    except (OSError, ValueError):
+        return {}
+    return {base_name(str(k)): str(v).lower() for k, v in raw.items()
+            if str(v).lower() in CLASSES and str(v).lower() != "cutout"}
+
+
 def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_strength=1.0,
                  log=print, ao_in_spec=True, normal_style="OPENGL", uv_layout="ISLANDS",
-                 metal_keep=METAL_KEEP):
+                 metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None):
     """Replace the materials of converted part `o` by one EFT material (+ one cut-out material
     for hair/lash cards if any) with atlas textures written to out_dir.  Returns dict.
     uv_layout "ISLANDS": only the parts of each COD texture the mesh uses go into the atlas,
-    sized for an even texel density on the model; "WHOLE": every COD texture goes in whole."""
+    sized for an even texel density on the model; "WHOLE": every COD texture goes in whole.
+    material_mode "ENC2": COD's values as they are (Unity calibrates per part); "ENC3": each COD
+    material is classified and its look baked into the pixels for EFT's neutral values
+    (bake_enc3).  class_overrides: {COD material name: class} that win over the classifier."""
+    enc3 = material_mode == "ENC3"
+    class_overrides = class_overrides or {}
     part = o.get("cod2eft_part") or o.name.rsplit("_", 1)[-1]
     me = o.data
     if not me.uv_layers:
@@ -1358,7 +1540,8 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
     sc = o.matrix_world.to_3x3().determinant()
     far = far * abs(sc) ** (2.0 / 3.0)
     new_uv = uv.copy()
-    result = {"part": part, "materials": len(mats), "files": [], "notes": [], "density": {}}
+    result = {"part": part, "materials": len(mats), "files": [], "notes": [], "density": {},
+              "classes": []}
     new_mats = []
     # textures of every material, and whether it is cut out (hair / lash / fringe cards):
     # sample points inside each face = its corners, its centre, and corner-centre midpoints
@@ -1480,6 +1663,28 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
                                        ("left out (cut away)" if gname == "alpha" else "grey"))
             if info.get("no_color"):
                 result["notes"].append(f"{base_name(mats[idx].name)}: no colour map found - grey")
+            if enc3:
+                # class from the maps at the faces' centres (as tools/cod_survey.py samples them)
+                names = [base_name(mats[i].name) for i in members]
+                pc = cen_l[faces]
+                px = np.stack([np.clip(((pc[:, 0] - U[0]) * ku).astype(int), 0, Wu - 1),
+                               np.clip(((pc[:, 1] - U[1]) * kv).astype(int), 0, Hu - 1)], 1)
+                mm = info.get("m")
+                st = material_stats(d, g, mm, px, far[faces])
+                cls, why = classify_material(names, st, gname == "alpha")
+                auto = cls
+                ov = next((class_overrides[nm] for nm in names if nm in class_overrides), None)
+                if ov and gname == "main" and ov != cls:
+                    cls, why = ov, f"override (auto: {auto}, {why})"
+                g_before = st["gloss_med"]
+                clipped = bake_enc3(d, g, mm, cls, part)
+                g_after = material_stats(d, g, mm, px, far[faces])["gloss_med"]
+                for nm in names:
+                    result["classes"].append({"material": nm, "class": cls, "auto": auto,
+                                              "why": why, "gloss": round(g_before, 3),
+                                              "smooth": round(g_after, 3),
+                                              "metal": round(st["metal"], 3),
+                                              "clipped": round(clipped, 3)})
             tiles = [(D, d), (N, n), (G, g)]
             if gname == "alpha":
                 tiles.append((A, am))
@@ -1513,12 +1718,13 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
         fd = os.path.join(out_dir, tag + "_d.png")
         fn = os.path.join(out_dir, tag + "_n.png")
         fg = os.path.join(out_dir, tag + "_g.png")
-        imd = save_png(fd, D, srgb=True)
-        imn = save_png(fn, N, srgb=False)
-        img = save_png(fg, G, srgb=False)
+        mk = mark_text(material_mode, normal_style)
+        imd = save_png(fd, D, srgb=True, mark=mk)
+        imn = save_png(fn, N, srgb=False, mark=mk)
+        img = save_png(fg, G, srgb=False, mark=mk)
         result["files"] += [fd, fn, fg]
         new_mats.append((gname, idxs, _make_material(tag, imd, imn, img, gname == "alpha",
-                                                     normal_style, part)))
+                                                     normal_style, part, material_mode)))
     # swap in the new UVs and materials
     if not new_mats:
         return result
@@ -1605,7 +1811,8 @@ def _math(nt, op, a=None, b=None, loc=(0, 0), label="", clamp=False):
     return n
 
 
-def _make_material(name, imd, imn, img, cutout, normal_style="OPENGL", part=None):
+def _make_material(name, imd, imn, img, cutout, normal_style="OPENGL", part=None,
+                   material_mode="ENC2"):
     """Preview of the part as EFT draws it.  Main sets: EFT's deferred maths (character shader +
     its GGX lighting, as the Unity side found it):
       F          = (1 - N.V)^2 / 2
@@ -1614,13 +1821,16 @@ def _make_material(name, imd, imn, img, cutout, normal_style="OPENGL", part=None
       smoothness = _SpecMap x _Specularness                                     (-> roughness)
     EFT lights in gamma space and Blender in linear space: the colour factor is converted
     (^2.2); the specular value is used as it is, so highlights are close, not exact.
-    Cut-out sets: p0/Cutout/Bumped Diffuse - no specular at all."""
+    Cut-out sets: p0/Cutout/Bumped Diffuse - no specular at all.
+    material_mode "ENC3": the neutral values Unity uses for enc=3 (EFT_NEUTRAL) instead of the
+    per-part calibration (EFT_PART), so the preview shows what the textures ask for."""
     mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
     mat.use_nodes = True
     nt = mat.node_tree
     for n in list(nt.nodes):
         nt.nodes.remove(n)
-    gl, sp, sv, dv = EFT_PART.get(part, EFT_PART["Upper"])
+    table = EFT_NEUTRAL if material_mode == "ENC3" else EFT_PART
+    gl, sp, sv, dv = table.get(part, table["Upper"])
     out = nt.nodes.new("ShaderNodeOutputMaterial")
     out.location = (700, 0)
     bs = nt.nodes.new("ShaderNodeBsdfPrincipled")
@@ -1717,6 +1927,10 @@ def _make_material(name, imd, imn, img, cutout, normal_style="OPENGL", part=None
         if spec_level == "Specular IOR Level":
             bs.inputs[spec_level].default_value = 0.5
     mat["cod2eft_eft_part"] = part or ""
+    if material_mode == "ENC3":
+        mat["cod2eft_enc"] = 3
+    elif "cod2eft_enc" in mat:
+        del mat["cod2eft_enc"]
     return mat
 
 
@@ -1753,20 +1967,31 @@ def fbx_colour_links(objs):
 
 def convert_textures(objs, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_strength=1.0,
                      log=print, ao_in_spec=True, normal_style="OPENGL", uv_layout="ISLANDS",
-                     metal_keep=METAL_KEEP):
+                     metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None):
     log(f"Texture options: {size} px, normals {normal_style}, specular x{spec_scale:g}, "
         f"metal colour kept {metal_keep:g}, "
         f"AO {ao_strength:g} into colour" + (" and specular" if ao_in_spec and ao_strength > 0
                                               else "") +
         (", only the used parts of each texture" if uv_layout == "ISLANDS"
          else ", whole textures"))
+    if material_mode == "ENC3":
+        log("Materials: enc=3 - each COD material's class sets its gloss curve, baked into the "
+            "textures for EFT's neutral values" +
+            (f" ({len(class_overrides)} class override(s))" if class_overrides else ""))
     res = []
     for o in objs:
         log(f"Textures for {o.name}:")
         r = convert_part(o, out_dir, basename, size, spec_scale, ao_strength, log,
-                         ao_in_spec, normal_style, uv_layout, metal_keep)
+                         ao_in_spec, normal_style, uv_layout, metal_keep, material_mode,
+                         class_overrides)
         if r:
             res.append(r)
+            for c in r.get("classes", []):
+                log(f"  class {c['material']}: {c['class']} ({c['why']})" +
+                    ("" if c["class"] == "cutout" else
+                     f", gloss median {c['gloss']:.2f} -> smoothness {c['smooth']:.2f}") +
+                    (f", {c['clipped']:.0%} of its specular cut at _d.a = 1"
+                     if c["clipped"] >= 0.01 else ""))
             if r["files"]:
                 log(f"  -> {r['materials']} material(s) combined into "
                     f"{', '.join(os.path.basename(f) for f in r['files'][::3])}")

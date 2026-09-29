@@ -117,12 +117,51 @@ namespace EFTAutoPrefab
             return p;
         }
 
+        // ------------------------------------------------------------ COD2EFT 2.6+ "enc=3" textures (tag "COD2EFT enc=3")
+        // COD2EFT classifies every COD material (cloth, skin, leather/rubber/plastic, metal, glass, hair) and bakes the
+        // look into the pixels: _d alpha = target specular / (SpecVals.x / 2), _g = target smoothness (per-class quantile
+        // map from COD gloss onto vanilla EFT smoothness). The material values are then EFT's own NEUTRAL clothing values:
+        // all 12 vanilla clothing materials measured (docs/vanilla_material_stats.json) use _Glossness 1.0 and
+        // _Specularness 1.0 - 1.27; _SpecVals / _DefVals / _ReflectColor are the vanilla medians of the part (the presets
+        // above). No per-part calibration. COD2EFT's Blender preview (EFT_NEUTRAL in cod2eft_textures.py) uses the same
+        // numbers; keep them in step.
+        // Heads: vanilla heads are hand-tuned and follow no pattern (USEC head G 3.0 / S 4.37, Wild head G 2.39 / S 1.5,
+        // Wild body G 3.94 / S 0.17), so there is no neutral head to copy. The head keeps the vanilla head preset's
+        // SpecVals (1.0, 3) / DefVals (0.8, 1.0) / ReflectColor with G = S = 1; COD2EFT bakes the head's skin to the
+        // measured vanilla head smoothness (median ~0.3) for exactly these values.
+        public static EftPreset Cod2EftNeutralPreset(BodyPart part)
+        {
+            var p = PresetFor(part, false).Clone();
+            p.Glossness = 1f;
+            p.Specularness = 1f;
+            p.Label += " (COD2EFT enc=3, neutral)";
+            return p;
+        }
+
+        /// <summary>
+        /// The value of a COD2EFT tag after "COD2EFT enc=": "2", "3", "3 n=dx" (COD2EFT 2.6+: the normal map is DirectX
+        /// style, green down; no "n=" = OpenGL). Returns false when it does not start with a number.
+        /// </summary>
+        public static bool ParseCod2EftTag(string value, out int enc, out bool normalDirectX)
+        {
+            enc = 0; normalDirectX = false;
+            var parts = (value ?? "").Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0 || !int.TryParse(parts[0], out enc)) { enc = 0; return false; }
+            foreach (var t in parts.Skip(1))
+                if (t.Equals("n=dx", StringComparison.OrdinalIgnoreCase)) normalDirectX = true;
+            return true;
+        }
+
         /// <summary>
         /// The COD2EFT encoding number from a PNG's first bytes (tEXt "Software" = "COD2EFT enc=N" before the image data),
         /// 0 when the file is not a tagged COD2EFT PNG.
         /// </summary>
-        public static int Cod2EftEncoding(byte[] head)
+        public static int Cod2EftEncoding(byte[] head) => Cod2EftEncoding(head, out _);
+
+        /// <summary>As Cod2EftEncoding; normalDirectX = the tag says the normal map is DirectX style ("n=dx").</summary>
+        public static int Cod2EftEncoding(byte[] head, out bool normalDirectX)
         {
+            normalDirectX = false;
             if (head == null || head.Length < 16) return 0;
             byte[] sig = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
             for (int i = 0; i < 8; i++) if (head[i] != sig[i]) return 0;
@@ -130,6 +169,7 @@ namespace EFTAutoPrefab
             while (p + 8 <= head.Length)
             {
                 long len = ((long)head[p] << 24) | ((long)head[p + 1] << 16) | ((long)head[p + 2] << 8) | head[p + 3];
+                if (len > head.Length) return 0;           // corrupt (a length >= 2^31 used to loop forever) or past what was read
                 string type = System.Text.Encoding.ASCII.GetString(head, p + 4, 4);
                 if (type == "IDAT" || type == "IEND") return 0;
                 if (type == "tEXt" && p + 8 + len <= head.Length)
@@ -141,7 +181,7 @@ namespace EFTAutoPrefab
                         string key = Latin1(head, start, zero - start);
                         string val = Latin1(head, zero + 1, end - zero - 1);
                         if (key == "Software" && val.StartsWith(Cod2EftTagPrefix) &&
-                            int.TryParse(val.Substring(Cod2EftTagPrefix.Length).Trim(), out int enc)) return enc;
+                            ParseCod2EftTag(val.Substring(Cod2EftTagPrefix.Length), out int enc, out normalDirectX)) return enc;
                     }
                 }
                 p += 12 + (int)len;

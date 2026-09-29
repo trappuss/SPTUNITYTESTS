@@ -53,7 +53,7 @@ Bugs found by this survey and fixed in 2.5.1: `m_…` materials losing their nor
 ## The fix: bake the look into the pixels, keep Unity's numbers fixed
 The per-part numbers are only gains, so the same result can be written straight into the textures, per pixel and per COD material:
 
-- **Unity:** for textures tagged **`COD2EFT enc=3`**, it uses one fixed, neutral set of numbers for every part: `_Glossness` G₀ = 2.0, `_Specularness` 1.0, fixed `_ReflectColor`, `_DefVals`, `_SpecVals`. Unity no longer needs per-part or per-class presets, and the atlas can stay single.
+- **Unity:** (superseded by the measurements above and the "enc=3 contract" below: G₀ = 1) for textures tagged **`COD2EFT enc=3`**, it uses one fixed, neutral set of numbers for every part: `_Glossness` G₀ = 2.0, `_Specularness` 1.0, fixed `_ReflectColor`, `_DefVals`, `_SpecVals`. Unity no longer needs per-part or per-class presets, and the atlas can stay single.
 - **Blender** writes, for every texel:
   - `_d.a = spec_eft / (G₀ · k₀)`, where k₀ = (SpecVals.x)/2 at F=0 and `spec_eft` is the target EFT specular;
   - `_g = smooth_eft`, the target EFT smoothness.
@@ -94,6 +94,63 @@ This is still useful for another reason: texture resolution on big characters. W
    - Vanilla per-class statistics. Needed: 10–20 vanilla bundles (gloves, holsters, a helmet visor, heads) from `SPT4.1 Game\EscapeFromTarkov_Data\StreamingAssets\Windows\assets\content\characters\…`.
    - COD statistics on the test set: the characters whose materials look wrong in game, with screenshots that name which part looks wrong.
 2. **Classifier:** label every material of the test characters by hand, then measure precision and recall per game. That's the step the old handoff planned for skin, now covering all classes.
-3. **Blender 2.6.0:** classes, the `enc=3` bake, report lines and per-material overrides.
-4. **Unity 1.7.0:** the `enc=3` branch with neutral values.
+3. ✅ **Blender 2.6.0:** classes, the `enc=3` bake, report lines and per-material overrides (see "enc=3 contract" below; tested headless, not on the PC).
+4. ✅ **Unity 1.7.0:** the `enc=3` branch with neutral values (not compiled here).
 5. **In-game A/B:** the same character with `enc=2` and with `enc=3`, next to vanilla.
+
+## enc=3 contract (COD2EFT 2.6.0 ↔ EFT Tools 1.7.0, 2026-09-29)
+Built from the measurements above. **Default stays `enc=2`** until the in-game A/B decides.
+
+**PNG tag** (tEXt `Software`, right after IHDR): `COD2EFT enc=<N>[ n=dx]`.
+- `enc=2`: as before. `enc=3`: this section.
+- ` n=dx`: the `_n` map is DirectX style (green down). No `n=` means OpenGL. This fixes the audit's double flip: Unity 1.7.0 sets Flip Green Channel on tagged `n=dx` maps. Default OpenGL output is byte-identical to 2.5.2.
+- Unity < 1.7.0 can't parse `enc=2 n=dx` and treats it as untagged (auto-detects the normal style). It reads plain `enc=3` as enc=2 values, so update both sides together.
+
+**Unity values for `enc=3`** (every part, no calibration): `_Glossness` 1, `_Specularness` 1, plus the vanilla preset of the part for `_SpecVals`, `_DefVals`, `_ReflectColor`, `_Temperature` (`EFTMaterialCore.Cod2EftNeutralPreset`):
+
+| Part | `_SpecVals` | `_DefVals` | `_ReflectColor` |
+|---|---|---|---|
+| Upper | 1.1, 2 | 0.85, 0.7 | 0.358 |
+| Lower | 1.1, 2 | 0.85, 0.7 | 0.255 |
+| Head | 1.0, 3 | 0.8, 1.0 | 0.302 |
+| Hands | 1.1, 2 | 0.8, 0.7 | 0.198 |
+
+- **Heads** keep the vanilla head preset with G = S = 1. Vanilla heads are hand-tuned and follow no pattern (USEC G 3.0 / S 4.37, Wild G 2.39 / S 1.5). So COD2EFT bakes head skin to the measured vanilla head smoothness for these exact values.
+- The Unity material remembers the encoding in a material tag, `COD2EFT_enc` = "3" (enc=2 materials get no tag). Switching the textures between enc=2 and enc=3 therefore re-applies the values. Otherwise user edits are kept, as before.
+- Blender's preview uses the same numbers (`EFT_NEUTRAL` in `cod2eft_textures.py`). Keep the two in step.
+
+**What Blender writes for `enc=3`** (per COD material, before packing the atlas):
+- `_d.a` = COD F0 / (`_SpecVals.x`/2): ÷0.55, or ÷0.5 on the head. COD F0 already includes AO and the metal share, exactly as in enc=2. So the G-buffer specular at F=0 equals COD's F0, e.g. 0.04 for a dielectric. Above F0 = 0.55 (bright metal) it's cut at 1, and the report gives the share.
+- `_g` = gloss curve of the material's class, applied per pixel and blended towards the metal curve by the per-pixel metal share. The curves are quantile maps fitted by `tools/fit_gloss_curves.py` → `docs/gloss_curves.json`. They use the 5–95 % quantiles, (0,0) at the bottom, and slope 1 above the 95th.
+
+| Class | Detected by (first match wins) | COD gloss median → EFT smoothness median | Vanilla target |
+|---|---|---|---|
+| hair / cut-out | the existing cut-out test (the `_alpha` set) | unchanged (the shader is diffuse only) | – |
+| glass / lens | name words `glass lens lenses visor goggle(s)` | smoothness 0.85, colour ×0.3 (**hunches**) | none measured |
+| metal | > 50 % of the faces' samples have metal share > 0.5 | 0.69 → 0.67 | texels `a` > 0.5 in 2 pants |
+| leather / rubber / plastic | name words `leather glove(s) boot(s) shoe(s) holster plastic rubber(band) strap(s) ziptie handcuff(s) sole(s)`, or metal < 5 % and median gloss ≥ 0.6 (**hunch**) | 0.65 → 0.27 | **hunch:** the glossier half of vanilla clothing (no vanilla gloves or holsters measured) |
+| skin | name words `skin arm(s) hand(s) viewarm(s) teeth mouth lips tongue`, or metal < 20 % and a skin-tone mean colour (hue 5–28°, saturation 0.15–0.6, max ≥ 0.3) | 0.47 → 0.32 | the 2 vanilla heads, all covered texels |
+| cloth | everything else | 0.34 → 0.17 | 12 vanilla clothing materials |
+
+- **Report:** one line per COD material, e.g. `class xmaterial_57b9…: skin (skin colour), gloss median 0.56 -> smoothness 0.46`.
+- **Overrides:** the panel's *Material classes* list is filled by each enc=3 run and saved in the .blend. Change a class there, then press Convert Textures. Batch takes `--class-overrides FILE.json` (`{"COD material name": "skin"}`), and the panel's Batch writes that file from the list. A cut-out can't be overridden.
+- **Batch flag:** `--material-mode enc3|enc2`.
+
+**Classifier check** (2.6.0, 174 test materials, labelled by eye on a contact sheet; the plan's full precision/recall step is still open):
+- Skin: 22 unique materials classed as skin (28 survey rows, counting LOD and shared copies). Correct: faces, torsos, arms, mouth, teeth, eyes. One miss: a dark-brown pouch (#26). Removed while tuning: an orange logo decal, a dark olive hood, and a watch "face" (the word `face` was dropped).
+- Leather: catches the grey buckles (COD F0 0.008, so plastic), a holster, handcuffs, rubber bands, patches and dark glossy gear. One tan fabric (#76) is caught by the gloss rule. Because leather's target is the glossier half of cloth, a wrong leather call on cloth comes out glossier than cloth, not wildly off.
+- Metal: 4 materials (carabiner, watch, …). Metal pixels inside other materials go through the per-pixel blend.
+
+**Result on the 4 test characters** (median over each atlas, G-buffer at F=0, specular / smoothness):
+
+| Atlas | enc=2 + per-part values | enc=3 + neutral values | Vanilla (393 materials) |
+|---|---|---|---|
+| Upper | 0.047–0.052 / 0.23–0.45 | 0.037–0.039 / 0.11–0.25 | 0.052 / 0.24 |
+| Lower | 0.035–0.043 / 0.17–0.37 | 0.030–0.039 / 0.11–0.33 | 0.045 / 0.18 |
+| Head | 0.030–0.043 / 0.22–0.29 | 0.027–0.039 / 0.19–0.30 | 0.044 / 0.29 |
+| Hands (FP) | 0.022–0.056 / 0.13–0.40 | 0.015–0.039 / 0.08–0.40 | 0.057 / 0.27 |
+
+**Known limits and what to look at in the A/B:**
+- Specular now equals COD's F0 (0.04 at F=0 for a dielectric). That's inside the 12 vanilla clothing materials (0.02–0.11, median 0.03–0.045) but below the 393-material medians (0.045–0.057). If enc=3 cloth looks too dull, that's the first knob.
+- MW2 Kleo's skin is glossier in COD (median 0.56–0.70) than the MW4 and BO7 skins (0.42–0.48). The pooled quantile map keeps that ranking, so Kleo's skin lands at 0.46–0.72, the top of vanilla head skin. First-person hands, which are mostly skin, come out at 0.38–0.40 against vanilla hands 0.27. Look at skin first in game.
+- `_d.a` of a dielectric is 0.04/0.55 ≈ 0.073, about 19 steps of 8 bits. Banding is unlikely, but check smooth skin.

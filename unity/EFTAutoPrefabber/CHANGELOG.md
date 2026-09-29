@@ -2,6 +2,15 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.0 — 2026-09-29
+- **COD2EFT `enc=3` textures** (COD2EFT 2.6.0, *Materials: enc=3*) get EFT's neutral clothing values on every part: `_Glossness` 1, `_Specularness` 1, and the vanilla preset's `_SpecVals`, `_DefVals`, `_ReflectColor` for the part. There's no per-part calibration, because the look is baked into the textures per COD material.
+  - Heads use the vanilla head preset with G = S = 1. Vanilla heads are hand-tuned (see `EFTMaterialCore.Cod2EftNeutralPreset`).
+  - `enc=2` textures behave exactly as before.
+- When a material's textures switch between enc=2 and enc=3, its values are re-applied. The material remembers enc=3 in a tag, `COD2EFT_enc`.
+- Normal maps tagged `n=dx` (COD2EFT's DirectX option) get Flip Green Channel. Before, every tagged map was treated as OpenGL, so DirectX ones came out inverted.
+- Tag reader: a corrupt chunk length (≥ 2³¹) no longer hangs the reader in an endless loop.
+- Not compiled here (no Unity in the cloud session). The tag parser was checked in a Python mirror.
+
 ## 1.6.2 — 2026-09-29
 - Name parser: COD2EFT sub-meshes `<name>_<Part>_<label>` now join their part's prefab. These come from *Separate by COD material* (`mp_milsim_us_sf_1_1_Lower_material_5c0b2a55701ee9c2`) and *Join parts* off (`kleo_Upper_00`). Before, they were ignored, or read as a variant (one prefab per piece) or a state (`…_Upper_mtl_vest`). A one-character variant (`Upper_1`), a state word or a LOD after the part keeps its old meaning.
 

@@ -32,8 +32,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.5.0** (2026-09-29) | Adds the hand-adjust layer (armature, non-destructive) and fixes the FBX export settings in code. Tested headless in Blender 4.4, not yet on the PC |
-| EFT Tools | **1.6.2** (2026-09-29) | The parser accepts COD2EFT sub-meshes `<name>_<Part>_<label>`. Parser logic checked in a Python mirror; not compiled |
+| COD2EFT | **2.6.0** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| EFT Tools | **1.7.0** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -43,7 +43,7 @@ The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
 See the root `README.md`. This replaces the Cowork `device_commit_files` route, which silently wrote stale files.
 
 ## The contract between the halves
-The source of truth is `COD2EFT_TEXTURE_SPEC.md`. **It is not in the repo yet** (`blender/COD2EFT/unity/`).
+The source of truth was `COD2EFT_TEXTURE_SPEC.md`. **It is not in the repo** (`blender/COD2EFT/unity/`); since 2.6.0 / 1.7.0 the repo's contract for the material encoding is `docs/MATERIALS_PLAN.md`, section "enc=3 contract".
 It was **not** found at `COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md` on the PC (first send, 2026-09-28), so its location is unknown. The audit (below) checked it against the code of both sides.
 
 | Item | Agreed | Code status |
@@ -53,11 +53,12 @@ It was **not** found at `COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md` on the PC (first
 | `_skin` class | same atlas as main; Blender produces it **from 2.5.0** | ❌ not started (either side) |
 | `_metal`, `_emissive` | reserved, never produced | n/a |
 | PNGs | `<slot>_d` (RGB colour, A = COD specular F0), `_n` (OpenGL), `_g` (gloss = smoothness) | ✅ |
-| PNG tag | tEXt `Software` = `COD2EFT enc=2`, right after IHDR | ✅ reader matches writer |
+| PNG tag | tEXt `Software` = `COD2EFT enc=2` or `enc=3`, plus ` n=dx` for a DirectX normal map, right after IHDR | ✅ 2.6.0 writer / 1.7.0 reader (older Unity reads `n=dx` files as untagged) |
+| `enc=3` | pixels carry the look per COD material; Unity uses neutral values (G 1, S 1, vanilla preset of the part) | ✅ both sides, default off (enc=2) until the in-game A/B |
 | UVs | UV0 = atlas; UV1 `COD_original_UV` = ignored | ✅ (backlog: drop UV1) |
 | FP hands | `<name>_Hands` mesh uses only `<name>_Hands…` slots | ✅ (checked on Kleo 2.4.3) |
 
-**Per-part material values (Unity, COD2EFT-tagged textures):**
+**Per-part material values (Unity, `enc=2` textures; `enc=3` uses the neutral values in `docs/MATERIALS_PLAN.md`):**
 
 | Part | `_Glossness` | `_Specularness` | `_ReflectColor` |
 |---|---|---|---|
@@ -70,7 +71,7 @@ Measured COD hand-skin gloss (Kleo FP 0.56, BO5 esports 0.49, Park 24_1 FP 0.35)
 Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters and isn't applied yet.
 
 ## Open work, in order
-**Current focus (user, 2026-09-29): material accuracy.** See `docs/MATERIALS_PLAN.md` (the `enc=3` bake-in-pixels plan).
+**Current focus (user, 2026-09-29): material accuracy.** See `docs/MATERIALS_PLAN.md`. `enc=3` is built (COD2EFT 2.6.0, EFT Tools 1.7.0). **Next: the user's in-game A/B** (one character converted with enc=2 and with enc=3, next to vanilla), which decides the default. Still open: vanilla gloves / holsters / visors to measure the leather and glass classes, and the labelled precision/recall of the classifier.
 
 **Hips/waist twist on curvy characters:** fixed in 2.5.2 (the pelvis section is limited against the waist section). Valeria's waist went from −4.0 to +0.4 cm. Still to check on the PC and in game.
 
@@ -86,7 +87,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
      - **To look at:** a dark ring around the neck where head meets top (possibly COD's texture edge, the normals or occlusion; not investigated). The white shirt also reads a bit flat next to vanilla.
    - Mod Builder gotcha: bundles appear in its list for as long as their prefabs are in `Assets`, even after the source character is deleted. Remove old prefabs, then Rescan + Clean.
 2. **User:** re-convert Kleo with *First-person hands* on. The current `EFT_Converted\kleo_empty_.fbx` is hand-edited: its arms are on the Upper slot/atlas and COD2EFT's Hands mesh is missing. The re-conversion unblocks calibration step 2 (tagged textures).
-3. **Blender 2.5.0: `_skin` slots.**
+3. **Blender: `_skin` slots.** Probably not needed if enc=3 wins the A/B (the class is baked per COD material, the atlas stays single). 2.6.0's skin-colour rule is a start for the detector.
    - The hard part is the skin detector. It must work on hashed IW names and Cold War names.
    - Hand-label every test material first, then report precision and recall per game and show the user a contact sheet of the misses.
    - Also split `_Hands` into `_Hands_skin`.
@@ -145,7 +146,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 - ✅ **Blender 2.4.4: leftover junction.** If re-pointing the images failed, the junction stayed in %TEMP%. Some temp cleaners follow junctions and would delete the real export (uncertain).
 
 **Open: contract mismatches**
-- ❗ **DirectX normals are flipped twice.**
+- ✅ **DirectX normals are flipped twice.** Fixed in 2.6.0 / 1.7.0: the tag says `n=dx` and Unity flips those. Original finding:
   - With COD2EFT's *Normal maps: DirectX* option, green is flipped, but the tag still says `enc=2`.
   - Unity treats every tagged `_n` as OpenGL (`EFTMaterialFixer.cs:218`), so those maps come out inverted.
   - The default (OpenGL) is fine.
@@ -158,7 +159,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 
 **Open: Unity**
 - ⚠ **The "don't overwrite another mod" guard only looks for DLLs** in the mod folder's top level. Pointing the builder at an existing asset-only mod would overwrite its `bundles.json`, `modinfo.json` and `db/*`. It never deletes anything.
-- ⚠ **Corrupt PNG hang.** A chunk length ≥ 2³¹ makes the tag reader loop forever (`EFTMaterialCore.cs:147`). Low risk.
+- ✅ **Corrupt PNG hang.** A chunk length ≥ 2³¹ made the tag reader loop forever. Fixed in 1.7.0 (a length past the bytes read ends the scan).
 - **Batch mode blockers:**
   - `Scan`/`BuildAll` are private window methods that read `Selection`.
   - The hand-off to the mod step uses `EditorApplication.delayCall`, which doesn't fire with `-quit`.

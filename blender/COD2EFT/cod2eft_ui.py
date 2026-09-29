@@ -74,6 +74,21 @@ def _poll_eft(self, obj):
     return obj.type == "ARMATURE" and C.E("Pelvis") in obj.data.bones
 
 
+CLASS_ITEMS = [("AUTO", "Auto", "Use the class the classifier found")] + \
+    [(c.upper(), TX.CLASS_LABEL[c].capitalize(), f"Treat this COD material as {TX.CLASS_LABEL[c]}")
+     for c in TX.CLASSES if c != "cutout"]
+
+
+class COD2EFT_MatClass(bpy.types.PropertyGroup):
+    """One COD material of the last enc=3 texture run: its class, and an override (saved in the
+    .blend; Batch passes the overrides as a JSON file)."""
+    auto: StringProperty(name="Found", default="")
+    why: StringProperty(name="Why", default="")
+    cls: EnumProperty(name="Class", items=CLASS_ITEMS, default="AUTO",
+                      description="Material class for enc=3 (sets its gloss curve). Auto = what "
+                                  "the classifier found; press Convert Textures to apply")
+
+
 class COD2EFT_Settings(bpy.types.PropertyGroup):
     eft_armature: PointerProperty(name="EFT Armature", type=bpy.types.Object, poll=_poll_eft)
     output_name: StringProperty(
@@ -204,6 +219,19 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
         name="AO into specular too", default=True,
         description="Also multiply the occlusion into the specular, so creases and gaps don't "
                     "shine")
+    tex_material_mode: EnumProperty(
+        name="Materials", default="ENC2",
+        items=[("ENC2", "enc=2 (per-part values in Unity)",
+                "COD's specular and gloss as they are; the Unity tools calibrate one set of "
+                "values per part (the behaviour before 2.6.0)"),
+               ("ENC3", "enc=3 (baked, per COD material)",
+                "Each COD material is classified (cloth, skin, leather/rubber/plastic, metal, "
+                "glass, hair) and its gloss remapped onto vanilla EFT's range for its class; "
+                "Unity uses EFT's neutral clothing values. Needs EFT Tools 1.7.0+")],
+        description="How the material look is written into the textures (the PNG tag tells "
+                    "Unity which)")
+    mat_classes: CollectionProperty(type=COD2EFT_MatClass)
+    show_classes: BoolProperty(name="Material classes", default=False)
     tex_layout: EnumProperty(
         name="Texture layout", default="ISLANDS",
         items=[("ISLANDS", "Used parts only (sharper)",
@@ -404,6 +432,17 @@ def _batch_cmd(st, tp, data_dir, paths):
                 "--texture-layout", st.tex_layout.lower()]
         if not st.tex_ao_spec:
             cmd.append("--no-ao-spec")
+        if st.tex_material_mode == "ENC3":
+            cmd += ["--material-mode", "enc3"]
+            ov = _class_overrides(st)
+            if ov:
+                fn = os.path.join(data_dir, "cod2eft_class_overrides.json")
+                try:
+                    with open(fn, "w", encoding="utf-8") as fh:
+                        json.dump(ov, fh, indent=1)
+                    cmd += ["--class-overrides", fn]
+                except OSError:
+                    pass
     else:
         cmd.append("--no-textures")
     if not st.match_lengths:
@@ -587,8 +626,7 @@ class COD2EFT_OT_convert(bpy.types.Operator):
         if st.convert_textures:
             try:
                 out = _texture_dir(context, results)
-                TX.convert_textures(results, out, _out_name(context, results), log=log,
-                                    **_tex_kwargs(st))
+                _convert_textures(st, results, out, _out_name(context, results), log)
                 msg += f" - textures in {out}"
             except Exception as ex:
                 log(f"WARNING: texture conversion failed: {ex}")
@@ -613,7 +651,7 @@ SETTINGS = (("prefer_cast", "Prefer .cast"), ("match_body", "Match body volume")
             ("convert_textures", "Convert textures"), ("texture_size", "Texture size"),
             ("tex_layout", "Texture layout"), ("tex_normals", "Normal maps"),
             ("tex_spec", "Specular strength"), ("tex_metal", "Metal colour kept"),
-            ("tex_ao", "AO strength"),
+            ("tex_ao", "AO strength"), ("tex_material_mode", "Materials"),
             ("tex_ao_spec", "AO into specular"))
 
 
@@ -774,8 +812,7 @@ class COD2EFT_OT_fp_hands(bpy.types.Operator):
         if st.convert_textures:
             try:
                 out = _texture_dir(context, [h])
-                TX.convert_textures([h], out, _out_name(context, objs), log=log,
-                                    **_tex_kwargs(st))
+                _convert_textures(st, [h], out, _out_name(context, objs), log)
                 msg += f" - textures in {out}"
             except Exception as ex:
                 log(f"WARNING: texture conversion failed: {ex}")
@@ -801,7 +838,47 @@ class COD2EFT_OT_reset_settings(bpy.types.Operator):
 def _tex_kwargs(st):
     return dict(size=int(st.texture_size), spec_scale=st.tex_spec, ao_strength=st.tex_ao,
                 ao_in_spec=st.tex_ao_spec, normal_style=st.tex_normals, uv_layout=st.tex_layout,
-                metal_keep=st.tex_metal)
+                metal_keep=st.tex_metal, material_mode=st.tex_material_mode,
+                class_overrides=_class_overrides(st))
+
+
+def _class_overrides(st):
+    """{COD material name: class} of the class list's overrides."""
+    return {it.name: it.cls.lower() for it in st.mat_classes if it.cls != "AUTO"}
+
+
+def _convert_textures(st, objs, out, name, log):
+    """TX.convert_textures with the panel's settings; refreshes the class list (overrides kept)."""
+    res = TX.convert_textures(objs, out, name, log=log, **_tex_kwargs(st))
+    rows = [c for r in res or [] for c in r.get("classes", []) if c["class"] != "cutout"]
+    if rows:
+        keep = {it.name: it.cls for it in st.mat_classes}
+        seen = set()
+        for c in rows:
+            if c["material"] in seen:
+                continue
+            seen.add(c["material"])
+            it = st.mat_classes.get(c["material"])
+            if it is None:
+                it = st.mat_classes.add()
+                it.name = c["material"]
+            it.auto, it.why = c["auto"], c["why"]
+            it.cls = keep.get(c["material"], "AUTO")
+    return res
+
+
+def _draw_classes(layout, st):
+    if st.tex_material_mode != "ENC3" or not len(st.mat_classes):
+        return
+    c = layout.column(align=True)
+    c.prop(st, "show_classes", icon="TRIA_DOWN" if st.show_classes else "TRIA_RIGHT",
+           emboss=False, text=f"Material classes ({len(st.mat_classes)})")
+    if st.show_classes:
+        for it in st.mat_classes:
+            r = c.row(align=True)
+            r.label(text=f"{it.name[:28]}: {it.auto}", icon="MATERIAL")
+            r.prop(it, "cls", text="")
+        c.label(text="Change a class, then Convert Textures", icon="INFO")
 
 
 def _draw_tex_options(layout, st):
@@ -810,6 +887,8 @@ def _draw_tex_options(layout, st):
     c = layout.column(align=True)
     c.prop(st, "show_tex_options", icon="TRIA_DOWN" if st.show_tex_options else "TRIA_RIGHT",
            emboss=False)
+    c.prop(st, "tex_material_mode", text="")
+    _draw_classes(c, st)
     if st.show_tex_options:
         c.prop(st, "tex_layout", text="")
         r = c.row(align=True)
@@ -860,8 +939,7 @@ class COD2EFT_OT_textures(bpy.types.Operator):
             return {"CANCELLED"}
         log = C.Log()
         out = _texture_dir(context, objs)
-        res = TX.convert_textures(objs, out, _out_name(context, objs), log=log,
-                                  **_tex_kwargs(st))
+        res = _convert_textures(st, objs, out, _out_name(context, objs), log)
         log.to_text()
         if not res:
             self.report({"WARNING"}, "No textures converted - see Text 'COD2EFT_Report'")
@@ -1301,7 +1379,7 @@ class COD2EFT_PT_panel(bpy.types.Panel):
                        icon="FILEBROWSER").what = "data"
 
 
-classes = (COD2EFT_Prefs, COD2EFT_Settings, COD2EFT_OT_reload, COD2EFT_OT_reset_settings,
+classes = (COD2EFT_Prefs, COD2EFT_MatClass, COD2EFT_Settings, COD2EFT_OT_reload, COD2EFT_OT_reset_settings,
            COD2EFT_OT_split_materials, COD2EFT_OT_fp_hands,
            COD2EFT_OT_append_template, COD2EFT_OT_import,
            COD2EFT_OT_batch, COD2EFT_OT_open_folder, COD2EFT_OT_fit, COD2EFT_OT_convert,
