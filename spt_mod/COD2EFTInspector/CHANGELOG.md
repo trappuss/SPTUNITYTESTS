@@ -3,6 +3,36 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.7.0 (2026-09-29)
+User feedback on 0.6.0 (compiled with mcs only; nothing below tested in game yet):
+- **Wear failed with "Value cannot be null"** (no log of it was sent; the only BepInEx log in `from_pc/` is from 0.2.0).
+  Likely cause, a hunch until the next log: the bundle loader's priority argument is a class in EFT 0.16
+  (`JobPriorityClass.Immediate`), not an enum, and 0.6.0 passed `null` for it. It now takes the class's own static
+  `Immediate` / `General`. Diagnostics: every loader argument is logged with its type (a null one by name). A catalog entry
+  without an id or bundle path is refused, naming it. If loading fails, each bundle is loaded alone and the message
+  names the failing ones (part, name, bundle path). The full exception goes to the log, and the panel shows the type,
+  the null parameter's name and the first stack frames.
+- **Hideout vs menu**: the hideout outfit most likely didn't change because Wear failed there (the hideout loads the
+  bundles itself; the menu preview lets the game load them, so it worked). Diagnostics: after every Wear, all
+  `PlayerBody` objects are logged (owner: your player / a menu view, active, what each shows, which one the try-on
+  targeted). A warning appears if the game rebuilds your body afterwards (try-on overwritten). There is also a *Log all
+  bodies* button. A Wear in the hideout now also updates the inventory screen's preview when it is open.
+- **Panel blocks game input**: while the panel is open in raid / hideout, the character takes no look, aim, fire or
+  walk input (`GamePlayerOwner` off; walking and the trigger are stopped once). The old state comes back on close.
+  Option *3. Panel / Block game input while open* (on).
+- **Photo mode background** (*Background* section): *Isolate character* hides every other renderer and terrain
+  (`forceRenderingOff`, restored exactly) and clears the camera to a solid colour (colour picker, default chroma
+  green, kept in config). Options: fog / sky / scattering camera effects off (on by default), all post effects off,
+  world lights off (studio lights only). *Transparent PNG*: the same frame on black and on white (time stopped for the
+  2 frames), alpha from the difference. It doesn't rely on EFT's post stack keeping alpha (unknown; not checked).
+  The first photo mode logs the camera's components.
+- **Character turn and aim**: left-drag turns the character (yaw) and its aim (pitch, ±60°); right-drag still orbits.
+  *Turn* / *Aim up/down* sliders; aim is levelled when photo mode starts; the camera no longer turns with the
+  character; angle presets and turntables stay relative to the character's front. Uses `Player.Rotate(Vector2)` (the path
+  mouse input takes), else a writable `Rotation`; which one is logged. Up/down sign is a hunch: *Invert aim drag* in F12.
+- **Resets**: *R* on each slider, *Reset camera / character / lights / background* per section, *Reset all* (photo
+  mode off with everything restored, meshes shown, pose stand, defaults, outfit restored / menu preview re-shown).
+
 ## 0.6.0 (2026-09-29)
 - **Try-on in the main menu**: *Wear* also works on the Character / Inventory screen preview. A Harmony prefix records the
   game's own `PlayerModelView.Show(...)` call; try-on puts the ids into that profile, calls the same Show again (the game

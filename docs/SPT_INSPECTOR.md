@@ -14,7 +14,7 @@ Source: `spt_mod/COD2EFTInspector/`. Changelog there. Queue item 10 in `docs/PRO
 ## Use
 | Key (default; change in F12 ConfigurationManager → *COD2EFT Inspector*) | |
 |---|---|
-| F9 | panel (frees the mouse in raid / hideout; clicks still reach the game, so lower your weapon) |
+| F9 | panel (frees the mouse in raid / hideout; since 0.7.0 the character takes no look / aim / fire / walk input while it is open: *3. Panel / Block game input while open*) |
 | F10 | screenshot |
 
 Panel: `<` `>` switch between characters found (you, menu previews; bots only with *Include other players*).
@@ -41,6 +41,23 @@ Tops / pants are not saved: SPT only lets a profile wear suits it owns (the trad
 **Menu try-on and poses (0.6.0):** *Wear* also works on the main menu's Character / Inventory preview (re-shows the
 game's own preview call with the try-on ids). The Photo tab has pose buttons (stand, crouch, low crouch, prone, aim; the
 game's animations) and *Pose turntables* (5 poses x 4 angles) for clipping checks.
+
+**Photo tab (0.7.0):** sections *Camera*, *Character*, *Lights*, *Background*, *Captures*, each with a reset button, *R* on each
+slider, *Reset all* at the top (photo mode off with everything restored, meshes shown, pose stand, outfit restored).
+Mouse outside the panel: right drag orbits the camera, left drag turns the character (yaw) and its aim (pitch ±60°), wheel zooms.
+The camera stays fixed in the world while the character turns; angle presets / turntables are relative to the character's front.
+*Background → Isolate character*: every renderer not under your player (and terrain) gets `forceRenderingOff`, the camera clears
+to a solid colour (picker; default chroma green #00B140). Camera effects whose names suggest fog / sky / scattering are switched
+off (option), optionally all post effects and all world lights (studio lights only). Everything touched is recorded and restored.
+*Transparent PNG*: difference matting (black pass + white pass with `Time.timeScale = 0` between them, alpha from the difference,
+background levels read from the image corners), so it doesn't depend on EFT's post-processing keeping alpha, which is unknown.
+Supersize is capped at 2x for it.
+Hunches to check in the log: the camera component list (which effects exist), `Player.Rotate(Vector2)` for the character turn,
+the up/down sign of the aim (F12 *Invert aim drag*).
+
+**Try-on diagnostics (0.7.0):** a Wear logs its target body, the loader arguments with types, per-bundle results on failure, and
+every `PlayerBody` in the scene (owner, active, what it shows). If the game rebuilds your body afterwards, a warning says so.
+*Log all bodies* button in the try-on section.
 
 **A/B (0.5.0, Photo tab):** one click wears every outfit of the newest mod in turn and takes a turntable of each, then
 one of your own outfit as the reference: same camera, same lights. The material report's *Checks* section flags

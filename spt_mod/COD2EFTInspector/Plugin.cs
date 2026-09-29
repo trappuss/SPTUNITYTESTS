@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.6.0";
+        public const string Version = "0.7.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -51,6 +51,10 @@ namespace COD2EFTInspector
         readonly Dictionary<Renderer, bool> _hidden = new Dictionary<Renderer, bool>();
         readonly PhotoMode _photo = new PhotoMode();
         ConfigEntry<float> _lightStrength;
+        ConfigEntry<bool> _blockInput, _invertAim;
+        ConfigEntry<string> _bgColor;
+        bool _transparent;
+        Vector2 _scroll3;
         readonly List<Canvas> _photoHud = new List<Canvas>();
         readonly HashSet<string> _loggedScans = new HashSet<string>();
 
@@ -78,6 +82,10 @@ namespace COD2EFTInspector
                 "When the hideout loads, put the newest mod's outfit on your character (try-on, not saved).");
             _lightStrength = Config.Bind("5. Photo mode", "Studio light strength", 1f,
                 new ConfigDescription("Multiplier for the key / fill / rim lights.", new AcceptableValueRange<float>(0f, 4f)));
+            _blockInput = Config.Bind("3. Panel", "Block game input while open", true,
+                "While the panel is open (raid / hideout) the character takes no input: no look, aim, fire or walk. Given back on close.");
+            _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
+            _bgColor = Config.Bind("5. Photo mode", "Background colour", "#00B140", "Solid background colour for Isolate character (HTML colour; default chroma green).");
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
             try { Game.LogStartup(); } catch (Exception e) { Log.LogError("Startup check failed: " + e); }
@@ -144,10 +152,19 @@ namespace COD2EFTInspector
                     _nextTick = Time.unscaledTime + 1f;
                     Reassert();
                     AutoWearTick();
+                    var ow = Wearer.CheckOverwritten();
+                    if (ow != null) { Log.LogWarning("Wear: " + ow); _status = "Note: " + ow; try { BodyScan.LogBodies(null); } catch { } }
                     if (_open) Refresh(false);
                 }
                 if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
-                if (_photo.Active) _photo.HandleMouse(MouseOverPanel());
+                // panel open or photo mode: the character takes no input (look / aim / fire / walk); given back as it was
+                InputBlock.Set(Game.MainPlayer(), _photo.Active || (_open && _blockInput.Value));
+                if (_photo.Active)
+                {
+                    _photo.InvertAimDrag = _invertAim.Value;
+                    _photo.HandleMouse(MouseOverPanel());
+                    _photo.Update();
+                }
                 // photo mode can end by itself (player gone: hideout / raid left); its hidden UI must come back, some of it is the menu's
                 if (!_photo.Active && _photoHud.Count > 0)
                 {
@@ -430,8 +447,41 @@ namespace COD2EFTInspector
             var all = WithHands(items);
             _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
             Action<string> done = msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } };
-            if (Game.MainPlayer() != null) StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, done));
+            if (Game.MainPlayer() != null) StartCoroutine(WearPlayerAndPreview(all, done));
             else StartCoroutine(MenuTryOn.Wear(_scan?.Target?.Player == null ? _scan?.Target?.Body : null, all, done));
+        }
+
+        /// <summary>Hideout / raid: your character, then the inventory screen's preview too if it is open, so both show the same.</summary>
+        IEnumerator WearPlayerAndPreview(List<Outfit> all, Action<string> done)
+        {
+            string m1 = null, m2 = null;
+            yield return StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, m => m1 = m));
+            if (m1 != null && !m1.StartsWith("Try-on failed") && MenuTryOn.Available)
+            {
+                yield return StartCoroutine(MenuTryOn.Wear(null, all, m => m2 = m));
+                m1 += " | " + m2;
+            }
+            done(m1 ?? "?");
+        }
+
+        /// <summary>Back to how it was before photo mode / try-on: meshes, pose, character, camera, lights, background, outfit.</summary>
+        void ResetAll()
+        {
+            ShowAll();
+            if (_photo.Active)
+            {
+                if (_pose != "Stand") SetPose("Stand");
+                TogglePhoto();   // exit restores camera, culling, background, lights, character rotation, view
+            }
+            _pose = "Stand";
+            _photo.ResetCamera(); _photo.ResetCharacter(); _photo.ResetLights(); _photo.ResetBackground();
+            _lightStrength.Value = 1f;
+            _transparent = false;
+            string outfit = "";
+            if (Game.MainPlayer() != null && Wearer.HasTryOn && CanWear()) { WearItems(Wearer.OriginalOutfit(GetCatalog())); outfit = ", outfit being restored"; }
+            else if (Game.MainPlayer() == null && MenuTryOn.Available && !MenuTryOn.Busy) { StartCoroutine(MenuTryOn.Reshow(m => _status = m)); outfit = ", menu preview re-shown"; }
+            _status = "Reset all: photo mode off, meshes shown, settings back to default" + outfit;
+            Log.LogInfo(_status);
         }
 
         void AutoWearTick()
@@ -485,6 +535,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                 else WearItems(Wearer.OriginalOutfit(cat));
             }
             GUI.enabled = true;
+            if (GUILayout.Button("Log all bodies", GUILayout.Width(110))) { BodyScan.LogBodies(null); _status = "Every PlayerBody written to the BepInEx log (hideout vs menu check)"; }
             GUILayout.EndHorizontal();
             if (!can && !Wearer.Busy && !MenuTryOn.Busy) GUILayout.Label("(Wear needs your character (hideout / raid) or, in the menu, the Character or Inventory screen opened once.)");
         }
@@ -588,6 +639,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(ph.Active ? "Photo mode OFF (back to first person)" : "Photo mode ON")) TogglePhoto();
             if (GUILayout.Button($"Screenshot ({_shotKey.Value})", GUILayout.Width(150))) TakeScreenshot();
+            if (GUILayout.Button("Reset all", GUILayout.Width(80))) ResetAll();
             GUILayout.EndHorizontal();
             if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
             if (!ph.Active)
@@ -596,27 +648,27 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                                 "For the same light every time, use the hideout and the studio lights. In the main menu, use the game's own character preview.");
                 return;
             }
-            GUILayout.Label("Right mouse drag = orbit, wheel = zoom (outside this panel).");
+            GUILayout.Label("Outside this panel: right drag = orbit the camera, left drag = turn the character / aim, wheel = zoom.");
+            _scroll3 = GUILayout.BeginScrollView(_scroll3);
+
+            Section("Camera", ph.ResetCamera);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle:", GUILayout.Width(50));
-            foreach (var a in PhotoMode.Angles) if (GUILayout.Button(a.Name)) ph.Yaw = a.Yaw;
+            foreach (var a in PhotoMode.Angles) if (GUILayout.Button(a.Name)) ph.Yaw = ph.YawFor(a.Yaw);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Framing:", GUILayout.Width(60));
             foreach (var f in PhotoMode.Framings) if (GUILayout.Button(f.Name)) { ph.Height = f.Height; ph.Distance = f.Distance; }
             GUILayout.EndHorizontal();
-            ph.Yaw = Slider("Yaw", ph.Yaw, 0f, 360f);
-            ph.Pitch = Slider("Pitch", ph.Pitch, -60f, 80f);
-            ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f);
-            ph.Height = Slider("Height", ph.Height, 0f, 2.2f);
-            ph.Fov = Slider("FOV", ph.Fov, 10f, 90f);
-            GUILayout.BeginHorizontal();
-            bool li = GUILayout.Toggle(ph.Lights, " Studio lights (key / fill / rim)");
-            if (li != ph.Lights) ph.SetLights(li);
-            ph.LightsFollowCamera = GUILayout.Toggle(ph.LightsFollowCamera, " follow the camera");
-            GUILayout.EndHorizontal();
-            _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f);
-            if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
+            ph.Yaw = Slider("Yaw", ph.Yaw, 0f, 360f, ph.YawFor(0f));
+            ph.Pitch = Slider("Pitch", ph.Pitch, -60f, 80f, PhotoMode.DefPitch);
+            ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f, PhotoMode.DefDistance);
+            ph.Height = Slider("Height", ph.Height, 0f, 2.2f, PhotoMode.DefHeight);
+            ph.Fov = Slider("FOV", ph.Fov, 10f, 90f, PhotoMode.DefFov);
+
+            Section("Character", () => { ph.ResetCharacter(); if (_pose != "Stand") SetPose("Stand"); });
+            ph.CharYaw = Slider("Turn", ph.CharYaw, -180f, 180f, 0f);
+            ph.CharPitch = Slider("Aim up/down", ph.CharPitch, -60f, 60f, 0f);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Pose:", GUILayout.Width(40));
             foreach (var pn in Poses.Names)
@@ -626,17 +678,66 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                 GUI.enabled = true;
             }
             GUILayout.EndHorizontal();
+
+            Section("Lights", () => { ph.ResetLights(); _lightStrength.Value = 1f; });
+            GUILayout.BeginHorizontal();
+            bool li = GUILayout.Toggle(ph.Lights, " Studio lights (key / fill / rim)");
+            if (li != ph.Lights) ph.SetLights(li);
+            ph.LightsFollowCamera = GUILayout.Toggle(ph.LightsFollowCamera, " follow the camera");
+            GUILayout.EndHorizontal();
+            _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f, 1f);
+
+            Section("Background", () => { ph.ResetBackground(); _transparent = false; _bgColor.Value = "#00B140"; });
+            ph.Isolate = GUILayout.Toggle(ph.Isolate, " Isolate character (hide the world; only you and what you wear / hold)");
+            if (ph.Isolate)
+            {
+                Color bc;
+                if (ColorUtility.TryParseHtmlString(_bgColor.Value, out bc) && !_colourLoaded) { ph.BgColor = bc; _colourLoaded = true; }
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Colour", GUILayout.Width(50));
+                var r = GUILayoutUtility.GetRect(36, 18, GUILayout.Width(36));
+                var old = GUI.color; GUI.color = ph.BgColor; GUI.DrawTexture(r, Texture2D.whiteTexture); GUI.color = old;
+                foreach (var c in new[] { ("Green", PhotoMode.DefaultBg), ("Blue", new Color(0f, 0.28f, 0.73f)), ("White", Color.white), ("Grey", new Color(0.5f, 0.5f, 0.5f)), ("Black", Color.black) })
+                    if (GUILayout.Button(c.Item1)) ph.BgColor = c.Item2;
+                GUILayout.EndHorizontal();
+                float cr = Slider("  Red", ph.BgColor.r, 0f, 1f, PhotoMode.DefaultBg.r), cg = Slider("  Green", ph.BgColor.g, 0f, 1f, PhotoMode.DefaultBg.g),
+                      cb = Slider("  Blue", ph.BgColor.b, 0f, 1f, PhotoMode.DefaultBg.b);
+                ph.BgColor = new Color(cr, cg, cb);
+                string hex = "#" + ColorUtility.ToHtmlStringRGB(ph.BgColor);
+                if (hex != _bgColor.Value) _bgColor.Value = hex;
+                ph.NoFog = GUILayout.Toggle(ph.NoFog, " Fog / sky / scattering off (they tint the background)");
+                ph.NoPost = GUILayout.Toggle(ph.NoPost, " All post effects off (exact colour; the character looks less 'in game')");
+                ph.WorldLightsOff = GUILayout.Toggle(ph.WorldLightsOff, " World lights off (studio lights only)");
+                _transparent = GUILayout.Toggle(_transparent, " Transparent PNG (2 captures: black + white background; max supersize 2x)");
+            }
+
+            Section("Captures", null);
+            if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
             if (GUILayout.Button("Pose turntables: 4 angles in each pose (clipping check)")) { if (!_capturing && !Wearer.Busy) StartCoroutine(PoseTurntables()); }
             var newest = GetCatalog().ModSets().FirstOrDefault();
             if (newest != null && GUILayout.Button($"A/B: turntable every outfit of [{newest.Source}] + your own outfit"))
                 { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
+            GUILayout.EndScrollView();
         }
 
-        static float Slider(string label, float v, float min, float max)
+        bool _colourLoaded;
+
+        static void Section(string title, Action reset)
+        {
+            GUILayout.Space(4);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("<b>" + title + "</b>");
+            if (reset != null && GUILayout.Button("Reset " + title.ToLowerInvariant(), GUILayout.Width(140))) reset();
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>A labelled slider; with a default it gets a small "R" button that puts the default back.</summary>
+        static float Slider(string label, float v, float min, float max, float? def = null)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"{label} {v:0.##}", GUILayout.Width(120));
             v = GUILayout.HorizontalSlider(v, min, max);
+            if (def.HasValue && GUILayout.Button("R", GUILayout.Width(22))) v = def.Value;
             GUILayout.EndHorizontal();
             return v;
         }
@@ -648,7 +749,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             float yaw = _photo.Yaw;
             foreach (var a in new[] { ("front", 0f), ("left", 90f), ("back", 180f), ("right", 270f) })
             {
-                _photo.Yaw = a.Item2;
+                _photo.Yaw = _photo.YawFor(a.Item2);
                 for (int i = 0; i < 3; i++) yield return null;
                 yield return StartCoroutine(Capture(tag + "_" + a.Item1));
             }
@@ -691,11 +792,13 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             var canvases = new List<Canvas>();
             string png = null, err = null;
             int ss = Mathf.Clamp(_supersize.Value, 1, 4), w = 0, h = 0;
+            bool alpha = _transparent && _photo.Isolated;
+            if (alpha) ss = Mathf.Min(ss, 2);   // two captures + a matte in memory
             try
             {
                 Refresh(false);
                 Directory.CreateDirectory(_outDir);
-                png = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}{suffix}.png");
+                png = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}{suffix}{(alpha ? "_alpha" : "")}.png");
                 if (_hideHud.Value && Game.GameWorld() != null)
                     foreach (var c in FindObjectsOfType<Canvas>())
                         if (c != null && c.enabled && c.isRootCanvas) { c.enabled = false; canvases.Add(c); }
@@ -706,11 +809,38 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             yield return new WaitForEndOfFrame();
 
             Texture2D tex = null;
+            if (alpha && err == null)
+            {
+                // Transparent PNG without relying on the post-processing stack keeping alpha: the same frame on a black and
+                // on a white background (time stopped in between), alpha from the difference (difference matting).
+                Texture2D black = null, white = null;
+                float oldScale = Time.timeScale;
+                Time.timeScale = 0f;
+                try
+                {
+                    _photo.BgOverride = Color.black;
+                    yield return null;
+                    yield return new WaitForEndOfFrame();
+                    try { black = ScreenCapture.CaptureScreenshotAsTexture(ss); } catch (Exception e) { err = "capture (black): " + e.Message; }
+                    _photo.BgOverride = Color.white;
+                    yield return null;
+                    yield return new WaitForEndOfFrame();
+                    try { if (err == null) { white = ScreenCapture.CaptureScreenshotAsTexture(ss); tex = Matte.Make(black, white); } }
+                    catch (Exception e) { err = "matte: " + e.Message; Log.LogError("Transparent capture failed: " + e); }
+                }
+                finally
+                {
+                    _photo.BgOverride = null;
+                    Time.timeScale = oldScale;
+                    if (black != null) Destroy(black);
+                    if (white != null) Destroy(white);
+                }
+            }
             try
             {
                 if (err == null)
                 {
-                    tex = ScreenCapture.CaptureScreenshotAsTexture(ss);
+                    if (tex == null) tex = ScreenCapture.CaptureScreenshotAsTexture(ss);
                     w = tex.width; h = tex.height;
                     File.WriteAllBytes(png, tex.EncodeToPNG());
                 }
@@ -741,6 +871,6 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             else _status = "Screenshot failed: " + err;
         }
 
-        void OnDestroy() { try { ShowAll(); _photo.Exit(); Camera.onPreCull -= OnPreCullCamera; } catch { } }
+        void OnDestroy() { try { ShowAll(); _photo.Exit(); InputBlock.Release(); Camera.onPreCull -= OnPreCullCamera; } catch { } }
     }
 }

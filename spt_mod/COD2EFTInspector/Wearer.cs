@@ -129,10 +129,47 @@ namespace COD2EFTInspector
                             : PickEnum(pt, "Raid", "Hideout", "Player");
                 else if (ps[i].HasDefaultValue) args[i] = ps[i].DefaultValue;
                 else if (pt.IsValueType) args[i] = Activator.CreateInstance(pt);   // CancellationToken, bool, ...
-                else args[i] = null;                                              // progress callbacks
+                // a class with static instances of itself (EFT's JobPriorityClass.Immediate / .General): 0.6.0 passed null here,
+                // the likely cause of "Value cannot be null" (hunch until the next log)
+                else args[i] = StaticOfType(pt, "Immediate", "General", "Default");
             }
-            Game.LogOnce("loaderargs", "Wear: loader arguments: " + string.Join(", ", args.Select((a, i) => ps[i].Name + "=" + (a is Array ? $"[{((Array)a).Length} keys]" : a?.ToString() ?? "null"))), false);
+            Game.LogOnce("loaderargs", "Wear: loader arguments: " + string.Join(", ", args.Select((a, i) => ps[i].ParameterType.Name + " " + ps[i].Name + "=" +
+                (a is Array ? $"[{((Array)a).Length} keys]" : a?.ToString() ?? "null"))), false);
+            for (int i = 0; i < ps.Length; i++)
+                if (args[i] == null && !ps[i].HasDefaultValue)
+                    Game.LogOnce("loadernull:" + ps[i].Name, $"Wear: loader argument '{ps[i].Name}' ({ps[i].ParameterType.FullName}) is null: nothing of that type found", true);
             return args;
+        }
+
+        /// <summary>A public static field / property of this type holding an instance of it (preferred names first); null if none.</summary>
+        static object StaticOfType(Type t, params string[] preferred)
+        {
+            var found = new List<KeyValuePair<string, object>>();
+            try
+            {
+                foreach (var f in t.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                    if (t.IsAssignableFrom(f.FieldType)) { var v = f.GetValue(null); if (v != null) found.Add(new KeyValuePair<string, object>(f.Name, v)); }
+                foreach (var p in t.GetProperties(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                    if (t.IsAssignableFrom(p.PropertyType) && p.GetIndexParameters().Length == 0)
+                    { var v = p.GetValue(null, null); if (v != null) found.Add(new KeyValuePair<string, object>(p.Name, v)); }
+            }
+            catch (Exception e) { Warn($"reading the static members of {t.FullName} failed: {(e.InnerException ?? e).Message}"); }
+            if (found.Count == 0) return null;
+            foreach (var n in preferred)
+                foreach (var kv in found) if (string.Equals(kv.Key, n, StringComparison.OrdinalIgnoreCase)) { Log($"loader argument {t.Name} = {t.Name}.{kv.Key}"); return kv.Value; }
+            Log($"loader argument {t.Name} = {t.Name}.{found[0].Key} (of: {string.Join(", ", found.Select(kv => kv.Key))})");
+            return found[0].Value;
+        }
+
+        /// <summary>One line for an exception: type, message, the null parameter's name and the first game frames.</summary>
+        internal static string Describe(Exception e)
+        {
+            if (e == null) return "?";
+            e = e.GetBaseException();
+            var an = e as ArgumentException;
+            string param = an != null && !string.IsNullOrEmpty(an.ParamName) ? $" [parameter '{an.ParamName}']" : "";
+            var frames = (e.StackTrace ?? "").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0).Take(4);
+            return $"{e.GetType().Name}: {e.Message.Split('\n')[0].Trim()}{param} at {string.Join(" < ", frames)}";
         }
 
         static IEnumerator Await(Task t, string what, Action<string> fail)
@@ -140,7 +177,49 @@ namespace COD2EFTInspector
             float until = Time.realtimeSinceStartup + 60f;
             while (!t.IsCompleted && Time.realtimeSinceStartup < until) yield return null;
             if (!t.IsCompleted) fail(what + " did not finish in 60 s");
-            else if (t.IsFaulted) fail(what + " failed: " + (t.Exception?.GetBaseException().ToString() ?? "?"));
+            else if (t.IsFaulted)
+            {
+                InspectorPlugin.Log.LogWarning($"Wear: {what} failed, full exception: {t.Exception}");
+                fail(what + " failed: " + Describe(t.Exception));
+            }
+        }
+
+        static Array MakeKeys(Type keyType, IList<Outfit> items)
+        {
+            var keys = Array.CreateInstance(keyType, items.Count);
+            for (int i = 0; i < items.Count; i++)
+            {
+                var rk = Activator.CreateInstance(keyType);
+                SetMember(rk, "path", items[i].Bundle);
+                SetMember(rk, "rcid", "");
+                keys.SetValue(rk, i);
+            }
+            return keys;
+        }
+
+        static string Name(Outfit o) => $"{o.Part} '{o.Name}' (id {o.Id ?? "null"}, bundle '{o.Bundle ?? "null"}', from {o.Source})";
+
+        /// <summary>After a failed batch load: loads each bundle alone and names the ones that fail.</summary>
+        static IEnumerator Diagnose(Type keyType, IList<Outfit> items, Action<string> result)
+        {
+            var bad = new List<string>();
+            foreach (var o in items)
+            {
+                Task t = null;
+                string err = null;
+                try { t = _loader.Invoke(_loader.IsStatic ? null : _loaderTarget, LoaderArgs(keyType, MakeKeys(keyType, new[] { o }))) as Task; }
+                catch (Exception e) { err = Describe(e); }
+                if (t != null)
+                {
+                    float until = Time.realtimeSinceStartup + 30f;
+                    while (!t.IsCompleted && Time.realtimeSinceStartup < until) yield return null;
+                    if (!t.IsCompleted) err = "no answer in 30 s";
+                    else if (t.IsFaulted) err = Describe(t.Exception);
+                }
+                Log($"diagnosis: {Name(o)}: {err ?? "loads fine alone"}");
+                if (err != null) bad.Add($"{o.Part} '{o.Name}' bundle '{o.Bundle}'");
+            }
+            result(bad.Count == 0 ? "each bundle loads fine alone (see the log)" : "failing: " + string.Join("; ", bad));
         }
 
         /// <summary>Wears the given catalog entries (any parts). done(message) is called with the result.</summary>
@@ -162,6 +241,12 @@ namespace COD2EFTInspector
                 if (error == null && !FindLoader()) fail("bundle loader not found (see log)");
                 var init = body?.GetType().GetMethods(Inst).FirstOrDefault(m => m.Name == "Init" && m.GetParameters().Length == 8);
                 if (error == null && init == null) fail("PlayerBody.Init with 8 parameters not found");
+                foreach (var o in items)
+                    if (error == null && (string.IsNullOrEmpty(o.Id) || string.IsNullOrEmpty(o.Bundle)))
+                        fail("this catalog entry has no " + (string.IsNullOrEmpty(o.Id) ? "id" : "bundle path") + ": " + Name(o));
+                if (error == null)
+                    Log($"target: {player.GetType().Name} '{player.name}', PlayerBody #{body.GetInstanceID()} at {BodyScan.PathOf(body.transform)}; " +
+                        "items: " + string.Join("; ", items.Select(Name)));
 
                 if (error == null)
                 {
@@ -187,14 +272,7 @@ namespace COD2EFTInspector
 
                     var keyParam = _loader.GetParameters().First(p => p.ParameterType.IsArray || p.ParameterType.IsGenericType).ParameterType;
                     keyType = keyParam.IsArray ? keyParam.GetElementType() : keyParam.GetGenericArguments()[0];
-                    keys = Array.CreateInstance(keyType, items.Count);
-                    for (int i = 0; i < items.Count; i++)
-                    {
-                        var rk = Activator.CreateInstance(keyType);
-                        SetMember(rk, "path", items[i].Bundle);
-                        SetMember(rk, "rcid", "");
-                        keys.SetValue(rk, i);
-                    }
+                    keys = MakeKeys(keyType, items);
                     Log($"loading {items.Count} bundle(s): " + string.Join(", ", items.Select(o => o.Bundle)));
                 }
             }
@@ -204,9 +282,16 @@ namespace COD2EFTInspector
             if (error == null)
             {
                 try { load = _loader.Invoke(_loader.IsStatic ? null : _loaderTarget, LoaderArgs(keyType, keys)) as Task; }
-                catch (Exception e) { fail("bundle loader call failed: " + (e.InnerException ?? e)); }
+                catch (Exception e) { fail("bundle loader call failed: " + Describe(e)); }
             }
             if (load != null) yield return Await(load, "loading the bundles", fail);
+            if (error != null && keyType != null && _loader != null && items.Count > 0 && error.Contains("bundle"))
+            {
+                string which = null;
+                yield return Diagnose(keyType, items, r => which = r);
+                error += " | " + which;
+                Warn("bundle diagnosis: " + which);
+            }
 
             Task initTask = null;
             if (error == null)
@@ -229,11 +314,12 @@ namespace COD2EFTInspector
                         yo is bool && (bool)yo
                     };
                     for (int i = 0; i < ps.Length; i++)
-                        if (args[i] != null && !ps[i].ParameterType.IsInstanceOfType(args[i]))
+                        if (args[i] == null && i != 6) Warn($"Init argument {i} ({ps[i].ParameterType.Name} {ps[i].Name}) is null");
+                        else if (args[i] != null && !ps[i].ParameterType.IsInstanceOfType(args[i]))
                             Warn($"Init argument {i} ({ps[i].Name}) is a {args[i].GetType().Name}, expected {ps[i].ParameterType.Name}");
                     initTask = init.Invoke(body, args) as Task;
                 }
-                catch (Exception e) { fail("PlayerBody.Init failed: " + (e.InnerException ?? e)); }
+                catch (Exception e) { fail("PlayerBody.Init failed: " + Describe(e)); }
             }
             if (initTask != null) yield return Await(initTask, "PlayerBody.Init", fail);
 
@@ -272,6 +358,13 @@ namespace COD2EFTInspector
                     }
             }
             catch (Exception e) { Warn("putting the profile's real ids back failed: " + e); }
+            try
+            {
+                var body = (Game.Get(player, "_playerBody") ?? Game.Get(player, "PlayerBody")) as Component;
+                if (error == null && body != null) { _watchBody = body; _watchSkins = BodyScan.Skins(body); Log("body now shows " + _watchSkins); }
+                BodyScan.LogBodies(body);
+            }
+            catch (Exception e) { Warn("body diagnosis failed: " + e.Message); }
             Busy = false;
             string msg = error == null ? "Wearing: " + string.Join(", ", items.Select(o => $"{o.Part} '{o.Name}'")) + " (not saved)" : "Try-on failed: " + error;
             if (error == null) Log(msg);
@@ -319,6 +412,23 @@ namespace COD2EFTInspector
         }
 
         public static bool HasOriginal => _original != null;
+        public static bool HasTryOn => _tryOn.Count > 0;
+
+        // hideout vs menu diagnosis: does the game rebuild the body after a try-on (overwriting it)?
+        static Component _watchBody;
+        static string _watchSkins;
+
+        /// <summary>Called every second: a message once when the body the try-on dressed now shows something else.</summary>
+        public static string CheckOverwritten()
+        {
+            if (Busy || _watchBody == null) return null;
+            if (!Game.Alive(_watchBody)) { _watchBody = null; return "the try-on's body was destroyed (the game made a new one: your real outfit)"; }
+            string now = BodyScan.Skins(_watchBody);
+            if (now == _watchSkins) return null;
+            string msg = $"the game rebuilt your body after the try-on: [{_watchSkins}] -> [{now}]";
+            _watchBody = null;
+            return msg;
+        }
 
         static void SetMember(object o, string name, object value)
         {

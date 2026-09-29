@@ -53,6 +53,42 @@ namespace COD2EFTInspector
             return string.Join("/", parts);
         }
 
+        public static string PathOf(Transform t) => PathOf(t, 64);
+
+        /// <summary>"Body=name,Feet=name,..." of a PlayerBody's BodySkins (what it shows now).</summary>
+        public static string Skins(object body)
+        {
+            var skins = Game.Get(body, "BodySkins") as IDictionary;
+            if (skins == null) return "";
+            var names = new List<string>();
+            foreach (DictionaryEntry de in skins) { var c = de.Value as Component; names.Add(de.Key + "=" + (c != null ? Clean(c.gameObject.name) : "-")); }
+            return string.Join(",", names);
+        }
+
+        /// <summary>Hideout vs menu diagnosis: every PlayerBody in the loaded scenes (also inactive ones), who owns it, what it shows.</summary>
+        public static void LogBodies(Component tryOnTarget)
+        {
+            var bodyT = Game.FindType("EFT.PlayerBody");
+            if (bodyT == null) return;
+            var playerT = Game.FindType("EFT.Player");
+            var viewT = Game.FindType("EFT.UI.PlayerModelView");
+            var main = Game.MainPlayer();
+            var lines = new List<string>();
+            foreach (var o in Resources.FindObjectsOfTypeAll(bodyT))
+            {
+                var b = o as Component;
+                if (b == null || !b.gameObject.scene.IsValid()) continue;   // prefabs / assets
+                var pl = playerT != null ? b.GetComponentInParent(playerT) : null;
+                Component view = null;
+                if (viewT != null) for (var t = b.transform; t != null && view == null; t = t.parent) view = t.GetComponent(viewT);
+                string owner = pl != null ? (pl == main ? "YOUR PLAYER " : "player ") + pl.GetType().Name + " '" + pl.name + "'"
+                             : view != null ? "menu view '" + PathOf(view.transform, 4) + "'" : "no owner";
+                lines.Add($"  #{b.GetInstanceID()} {(b.gameObject.activeInHierarchy ? "active" : "INACTIVE")} {owner}{(b == tryOnTarget ? "  <- try-on target" : "")}" +
+                          $"\n      at {PathOf(b.transform)} (scene {b.gameObject.scene.name})\n      shows {Skins(b)}");
+            }
+            InspectorPlugin.Log.LogInfo($"Bodies: {lines.Count} PlayerBody component(s) (main player: {(main != null ? main.GetType().Name + " at " + (Game.Location(main) ?? "?") : "none")}):\n" + string.Join("\n", lines));
+        }
+
         public static string RelPath(Transform t, Transform root)
         {
             var parts = new List<string>();

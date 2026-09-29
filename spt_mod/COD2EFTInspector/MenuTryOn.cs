@@ -139,6 +139,7 @@ namespace COD2EFTInspector
             if (error == null && after == before) error = "the preview did not change (see the log)";
             string msg = error == null ? "Menu preview wearing: " + string.Join(", ", items.Select(o => $"{o.Part} '{o.Name}'")) + " (not saved)" : "Menu try-on failed: " + error;
             Log(msg + $"  [{before}] -> [{after}]");
+            try { BodyScan.LogBodies(call != null ? Game.Get(call.View, "PlayerBody") as Component : null); } catch { }
             done(msg);
         }
 
