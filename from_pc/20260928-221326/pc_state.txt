@@ -1,0 +1,6 @@
+﻿Sent: 2026-09-28T22:13:26
+Repo commit: 458e648 Record Park 24_1 Windows long-path test: pass
+Repo versions: COD2EFT v2.4.4, EFT Tools v1.6.1
+
+Unity last loaded: [EFT Tools] v1.6.1 (2026-09-29) loaded
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe
