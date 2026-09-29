@@ -1,0 +1,2 @@
+﻿[EFT Tools] v1.6.1 (2026-09-29) loaded
+NullReferenceException: Object reference not set to an instance of an object
