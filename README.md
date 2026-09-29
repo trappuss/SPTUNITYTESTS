@@ -27,6 +27,10 @@ Git talks to GitHub, it may open a browser for you to sign in.
 | `SYNC_TO_MY_PC.bat` | Pulls the latest from GitHub and copies changed files into your COD2EFT folder and Unity project. Every file it replaces is first backed up to `pc\_backup\<time>\`; it never deletes anything. It checks every file by SHA-256 afterwards and re-installs the Blender add-on if the add-on itself changed. It then watches Unity's Editor.log until you click into Unity: it reports either `EFT Tools vX loaded` or the compile errors. |
 | `SEND_RESULTS_TO_CLAUDE.bat` | Double-click it, or **drag reports, screenshots or folders onto it**. It collects the Unity Editor.log (tail + errors), the installed versions, any tool files that were changed on the PC (e.g. by a Cowork session) and your files. It also asks for an optional message. Everything goes to `from_pc\<time>\` and is pushed to GitHub. Then tell Claude "check from_pc". |
 
+Both scripts repair the repo folder themselves if an earlier run failed half-way. If Claude
+changed the same file in the meantime, your results go to a separate `pc-results/<time>` branch
+instead of failing.
+
 Your own per-PC files are never overwritten: `blender_path.txt`, `template_path.txt`,
 `wtt_path.txt`, `cod2eft_bonemap.json`, `cod2eft_pose_tweaks.json`, and the spec on the PC.
 The folder locations are asked once and kept in `pc\config.local.txt`.

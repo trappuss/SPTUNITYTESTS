@@ -42,6 +42,34 @@ function Invoke-Git([string[]]$argv) {
     if ($LASTEXITCODE -ne 0) { throw "git $($argv -join ' ') failed (exit $LASTEXITCODE)" }
 }
 
+# Makes the clone safe to pull: no line-ending conversion (the repo stores files exactly as used),
+# and no half-finished rebase / autostash left over from an earlier failed run.
+# Returns the tracked files that really differ from the last commit (after that clean-up).
+function Repair-Repo {
+    $ErrorActionPreference = 'Continue'   # (PS 5.1 turns redirected git stderr into terminating errors under Stop)
+    & git -C $Repo config core.autocrlf false
+    $gitDir = (& git -C $Repo rev-parse --git-dir).Trim()
+    if (-not [IO.Path]::IsPathRooted($gitDir)) { $gitDir = Join-Path $Repo $gitDir }
+    if ((Test-Path (Join-Path $gitDir 'rebase-merge')) -or (Test-Path (Join-Path $gitDir 'rebase-apply'))) {
+        Say '   finishing clean-up of an earlier failed update (rebase --abort)' Yellow
+        & git -C $Repo rebase --abort 2>$null
+    }
+    if (& git -C $Repo ls-files -u) {           # conflicted files from a failed autostash
+        Say '   clearing conflicted files from an earlier failed update' Yellow
+        $bk = Join-Path $PSScriptRoot "_backup\git-$(Get-Date -Format 'yyyyMMdd-HHmmss').diff"
+        New-Item -ItemType Directory -Force (Split-Path $bk) | Out-Null
+        & git -C $Repo diff HEAD | Set-Content -Encoding UTF8 $bk
+        Invoke-Git @('reset', '-q', '--hard', 'HEAD')
+    }
+    & git -C $Repo update-index -q --refresh 2>$null | Out-Null
+    # line-ending-only differences are not changes: restore those files from the commit
+    $dirty = @(& git -C $Repo diff --name-only HEAD)
+    foreach ($f in $dirty) {
+        if (-not (& git -C $Repo diff --ignore-cr-at-eol --name-only HEAD -- $f)) { Invoke-Git @('checkout', '-q', 'HEAD', '--', $f) }
+    }
+    @(& git -C $Repo diff --name-only HEAD)
+}
+
 # Pairs of (repo source folder, PC destination folder) that the sync deploys.
 function Get-Targets($cfg) {
     $editor = Join-Path $cfg.UNITY_PROJECT 'Assets\Editor'

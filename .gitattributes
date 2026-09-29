@@ -1,5 +1,3 @@
-*.bat text eol=crlf
-*.ps1 text eol=crlf
-*.png binary
-*.bytes binary
-*.zip binary
+# No line-ending conversion anywhere: files are stored exactly as they are used on Windows
+# (.bat/.ps1 with CRLF). This keeps the PC clone clean even with Git's core.autocrlf=true.
+* -text

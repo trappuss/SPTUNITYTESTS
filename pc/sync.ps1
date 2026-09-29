@@ -6,10 +6,16 @@ try {
     $cfg = Load-Config
 
     Say "`n== 1/4  Getting the latest from GitHub ($Branch) ==" Cyan
+    $dirty = Repair-Repo
+    if ($dirty) {
+        Say '   These files in the repo folder were edited on this PC:' Yellow
+        $dirty | ForEach-Object { Say "     $_" Yellow }
+        throw 'run SEND_RESULTS_TO_CLAUDE.bat first (it sends those edits to Claude), then sync again'
+    }
     Invoke-Git @('fetch', 'origin', $Branch)
     $cur = (& git -C $Repo rev-parse --abbrev-ref HEAD).Trim()
     if ($cur -ne $Branch) { Invoke-Git @('checkout', $Branch) }
-    Invoke-Git @('pull', '--rebase', '--autostash', 'origin', $Branch)
+    Invoke-Git @('pull', '--rebase', 'origin', $Branch)
     Say ("   now at: " + (& git -C $Repo log -1 --format='%h %s (%cr)'))
 
     Say "`n== 2/4  Copying changed files ==" Cyan

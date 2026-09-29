@@ -94,12 +94,24 @@ try {
     $info | Select-Object -Skip 3 | ForEach-Object { Say "   $_" }
 
     Say "`n== Uploading to GitHub ==" Cyan
-    & git -C $Repo config user.email *> $null
+    & git -C $Repo config user.email | Out-Null
     if ($LASTEXITCODE -ne 0) { Invoke-Git @('config', 'user.name', 'trappuss'); Invoke-Git @('config', 'user.email', 'notsomlgally@gmail.com') }
-    Invoke-Git @('add', '--', 'from_pc', 'blender/COD2EFT/unity')
+    $null = Repair-Repo
+    Invoke-Git @('add', '-A')          # from_pc, the spec, and any real edits made in the repo folder
     Invoke-Git @('commit', '-q', '-m', "PC results $stamp")
-    & git -C $Repo push -q origin $Branch
-    if ($LASTEXITCODE -ne 0) { Invoke-Git @('pull', '--rebase', '--autostash', 'origin', $Branch); Invoke-Git @('push', '-q', 'origin', $Branch) }
+    Invoke-Git @('fetch', '-q', 'origin', $Branch)
+    $ErrorActionPreference = 'Continue'
+    & git -C $Repo rebase -q "origin/$Branch"
+    if ($LASTEXITCODE -eq 0) {
+        Invoke-Git @('push', '-q', 'origin', $Branch)
+    } else {
+        # Claude changed the same file meanwhile: don't fight it - park the results on their own branch
+        & git -C $Repo rebase --abort | Out-Null
+        $side = "pc-results/$stamp"
+        Invoke-Git @('push', '-q', 'origin', "HEAD:refs/heads/$side")
+        Invoke-Git @('reset', '-q', '--hard', "origin/$Branch")
+        Say "   (conflict with Claude's newer work - results were pushed to branch $side instead)" Yellow
+    }
     Say "`nSent. Tell Claude: 'check from_pc/$stamp'" Green
     exit 0
 } catch {
