@@ -95,6 +95,8 @@ class COD2EFT_MatClass(bpy.types.PropertyGroup):
 
 
 class COD2EFT_Settings(bpy.types.PropertyGroup):
+    preset: EnumProperty(name="Preset", items=lambda self, context: _preset_items(self, context),
+                         description="Saved settings presets (settings folder, cod2eft_presets.json)")
     eft_armature: PointerProperty(
         name="EFT Armature", type=bpy.types.Object, poll=_poll_eft,
         description="The EFT armature to fit onto (empty = the one found in the scene)")
@@ -855,6 +857,163 @@ class COD2EFT_OT_fp_hands(bpy.types.Operator):
         return {"FINISHED"}
 
 
+# ---------------------------------------------------------------------------------------------
+# settings presets (2.6.5): named sets of the SETTINGS above, kept in the settings folder as
+# cod2eft_presets.json (never touched by SYNC_TO_MY_PC.bat).  One of them can be the start-up
+# preset: it is applied to scenes whose settings are all still at their defaults (a new file, the
+# template), never over settings a .blend already has.
+# ---------------------------------------------------------------------------------------------
+def presets_file():
+    return os.path.join(C.data_dir(), "cod2eft_presets.json")
+
+
+def load_presets():
+    try:
+        with open(presets_file(), "r", encoding="utf-8") as fh:
+            d = json.load(fh)
+        if isinstance(d, dict) and isinstance(d.get("presets"), dict):
+            d.setdefault("startup", "")
+            return d
+    except (OSError, ValueError):
+        pass
+    return {"presets": {}, "startup": ""}
+
+
+def save_presets(d):
+    with open(presets_file(), "w", encoding="utf-8") as fh:
+        json.dump(d, fh, indent=1, sort_keys=True)
+
+
+def settings_values(st):
+    return {name: getattr(st, name) for name, _ in SETTINGS}
+
+
+def apply_values(st, vals):
+    """Sets the known settings from `vals`; returns the names it couldn't set (renamed / removed
+    settings or enum values from an older version)."""
+    bad = []
+    for name, _ in SETTINGS:
+        if name not in vals:
+            continue
+        try:
+            setattr(st, name, vals[name])
+        except (TypeError, ValueError, AttributeError):
+            bad.append(name)
+    return bad
+
+
+_PRESET_ITEMS = []      # Blender needs the enum item strings kept alive by Python
+
+
+def _preset_items(self, context):
+    names = sorted(load_presets()["presets"])
+    _PRESET_ITEMS[:] = [(n, n, "") for n in names] or [("", "(no presets saved)", "")]
+    return _PRESET_ITEMS
+
+
+class COD2EFT_OT_preset_save(bpy.types.Operator):
+    bl_idname = "cod2eft.preset_save"
+    bl_label = "Save Preset"
+    bl_description = ("Save every Import / Batch setting under a name (settings folder, "
+                      "cod2eft_presets.json). An existing preset of that name is replaced")
+    name: StringProperty(name="Name", default="My settings")
+    startup: BoolProperty(name="Use for new scenes", default=True,
+                          description="Apply this preset automatically to new scenes / files whose "
+                                      "settings are still at the defaults")
+
+    def invoke(self, context, event):
+        d = load_presets()
+        if d["startup"]:
+            self.name = d["startup"]
+        return context.window_manager.invoke_props_dialog(self)
+
+    def execute(self, context):
+        n = self.name.strip()
+        if not n:
+            self.report({"ERROR"}, "Give the preset a name")
+            return {"CANCELLED"}
+        d = load_presets()
+        d["presets"][n] = settings_values(context.scene.cod2eft)
+        if self.startup:
+            d["startup"] = n
+        elif d["startup"] == n:
+            d["startup"] = ""
+        save_presets(d)
+        context.scene.cod2eft.preset = n
+        self.report({"INFO"}, f"Saved preset '{n}'" + (" (used for new scenes)" if self.startup else ""))
+        return {"FINISHED"}
+
+
+class COD2EFT_OT_preset_load(bpy.types.Operator):
+    bl_idname = "cod2eft.preset_load"
+    bl_label = "Load"
+    bl_description = "Set every Import / Batch setting from the chosen preset"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        st = context.scene.cod2eft
+        vals = load_presets()["presets"].get(st.preset)
+        if vals is None:
+            self.report({"ERROR"}, "Choose a saved preset")
+            return {"CANCELLED"}
+        bad = apply_values(st, vals)
+        self.report({"WARNING"} if bad else {"INFO"},
+                    f"Loaded '{st.preset}'" + (f" - not applied (from an older version): {', '.join(bad)}" if bad else ""))
+        return {"FINISHED"}
+
+
+class COD2EFT_OT_preset_delete(bpy.types.Operator):
+    bl_idname = "cod2eft.preset_delete"
+    bl_label = "Delete Preset"
+    bl_description = "Remove the chosen preset from cod2eft_presets.json"
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+
+    def execute(self, context):
+        d = load_presets()
+        n = context.scene.cod2eft.preset
+        if n not in d["presets"]:
+            return {"CANCELLED"}
+        del d["presets"][n]
+        if d["startup"] == n:
+            d["startup"] = ""
+        save_presets(d)
+        self.report({"INFO"}, f"Deleted preset '{n}'")
+        return {"FINISHED"}
+
+
+def apply_startup_preset(scene):
+    """The start-up preset onto `scene` if its settings are all at their defaults. Returns its name."""
+    st = getattr(scene, "cod2eft", None)
+    if st is None or changed_settings(st):
+        return ""
+    d = load_presets()
+    n = d.get("startup", "")
+    if n and n in d["presets"]:
+        apply_values(st, d["presets"][n])
+        try:
+            st.preset = n
+        except TypeError:
+            pass
+        return n
+    return ""
+
+
+@bpy.app.handlers.persistent
+def _on_load_post(*_args):
+    for sc in bpy.data.scenes:
+        apply_startup_preset(sc)
+
+
+def _startup_timer():
+    try:
+        _on_load_post()
+    except Exception:
+        pass
+    return None
+
+
 class COD2EFT_OT_reset_settings(bpy.types.Operator):
     bl_idname = "cod2eft.reset_settings"
     bl_label = "Reset Settings"
@@ -1373,6 +1532,14 @@ class COD2EFT_PT_settings(_SubPanel, bpy.types.Panel):
         sub = r.row(align=True)
         sub.enabled = bool(changed_settings(st))
         sub.operator("cod2eft.reset_settings", text="Reset", icon="LOOP_BACK")
+        r = self.layout.row(align=True)
+        r.prop(st, "preset", text="")
+        r.operator("cod2eft.preset_load", text="Load", icon="IMPORT")
+        r.operator("cod2eft.preset_save", text="", icon="FILE_TICK")
+        r.operator("cod2eft.preset_delete", text="", icon="TRASH")
+        start = load_presets()["startup"]
+        if start:
+            self.layout.label(text=f"New scenes start with preset '{start}'", icon="INFO")
 
 
 class COD2EFT_PT_settings_fit(_Panel, bpy.types.Panel):
@@ -1537,7 +1704,8 @@ classes = (COD2EFT_Prefs, COD2EFT_MatClass, COD2EFT_Settings, COD2EFT_OT_reload,
            COD2EFT_OT_oneclick, COD2EFT_OT_save_tweaks, COD2EFT_OT_clear_tweaks,
            COD2EFT_OT_export, COD2EFT_OT_textures, COD2EFT_OT_compare, COD2EFT_OT_test_pose,
            COD2EFT_OT_check_clipping, COD2EFT_OT_clear_clipping, COD2EFT_OT_adjust_start,
-           COD2EFT_OT_adjust_apply, COD2EFT_OT_adjust_cancel) + PANELS
+           COD2EFT_OT_adjust_apply, COD2EFT_OT_adjust_cancel, COD2EFT_OT_preset_save,
+           COD2EFT_OT_preset_load, COD2EFT_OT_preset_delete) + PANELS
 
 
 def register():
@@ -1550,9 +1718,14 @@ def register():
     for c in classes:
         bpy.utils.register_class(c)
     bpy.types.Scene.cod2eft = PointerProperty(type=COD2EFT_Settings)
+    if _on_load_post not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(_on_load_post)
+    bpy.app.timers.register(_startup_timer, first_interval=0.5)   # the file open at start-up
 
 
 def unregister():
+    if _on_load_post in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(_on_load_post)
     del bpy.types.Scene.cod2eft
     for c in reversed(classes):
         bpy.utils.unregister_class(c)

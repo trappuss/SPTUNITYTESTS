@@ -2,6 +2,18 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.5 — 2026-09-29
+- **Fix: "Export FBX for Unity" gave a shrunk, paper-thin, invisible character in game** (user report; exporting by hand with *Apply Scalings: FBX Units Scale* worked).
+  - Since 2.5.0 the export used *All Local*, which bakes the scene unit into the objects: ×100 in a metre scene, ×0.01 in a centimetre scene like the user's.
+  - Now *FBX Units Scale*: every object keeps scale 1 and the unit goes into the FBX header, like the Park 24_1 FBX that worked in game.
+  - Checked: a converted Kleo FBX has UnitScaleFactor 100 and all objects at scale 1 (metre scene). In a centimetre scene: UnitScaleFactor 1, scale 1.
+  - Before 2.5.0 the export took whatever settings were last used in Blender's own FBX exporter, which is probably why it worked then.
+- **Settings presets** (Settings sub-panel: preset list, *Load*, save icon, delete icon).
+  - *Save Preset* stores every Import / Batch setting under a name in `cod2eft_presets.json` in your settings folder. `SYNC_TO_MY_PC.bat` never touches that file.
+  - With *Use for new scenes* on, that preset is applied automatically to any scene whose settings are still at the defaults (a new file, the template). A .blend that has its own settings is never overwritten.
+  - A preset value from an older version that no longer exists is reported, not applied.
+  - Tested headless in Blender 4.4.
+
 ## 2.6.4 — 2026-09-29
 - **New adjustable look settings**, all off by default (the output is byte-identical unless you change them):
   - **Colour brightness** and **Colour saturation** (Texture Options; batch: `--colour-brightness`, `--colour-saturation`).

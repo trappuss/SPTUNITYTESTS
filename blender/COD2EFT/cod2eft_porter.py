@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 4)
+VERSION = (2, 6, 5)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -2263,11 +2263,12 @@ def export_fbx(eft, objs, path, log):
         o.hide_set(False)
         o.select_set(True)
     bpy.context.view_layer.objects.active = eft
-    # Blender's defaults, written out: bpy.ops re-uses the LAST values of an operator's properties
-    # in a session, so an FBX exported by hand with other settings would otherwise leak into this
-    # one.  They match how 'EFT BASIC [Template].fbx' was written and the Park 24_1 FBX that worked
-    # in game (2.4.4): UnitScaleFactor 100 (cm), -Z forward / Y up, all scales 1, leaf bones on,
-    # every armature bone written as a cluster.
+    # Every setting written out: bpy.ops re-uses an operator's LAST values in a session, so a hand-made
+    # FBX export would otherwise leak into this one.  Scale = "FBX Units Scale" (2.6.5): every object
+    # keeps scale 1 and the scene's unit goes into the FBX header (UnitScaleFactor 100 for metres, 1
+    # for a centimetre scene) - what the Park 24_1 FBX that worked in game had.  "All Local" (2.5.0 -
+    # 2.6.4) baked the unit into the objects (x100, or 0.01 in a cm scene) and Unity showed a shrunk,
+    # paper-thin character (user report 2026-09-29, fixed by exporting by hand with FBX Units Scale).
     try:
         from . import cod2eft_textures as TX
     except ImportError:
@@ -2276,7 +2277,7 @@ def export_fbx(eft, objs, path, log):
     try:
         bpy.ops.export_scene.fbx(filepath=path, use_selection=True, object_types={"ARMATURE", "MESH"},
                                  global_scale=1.0, apply_unit_scale=True,
-                                 apply_scale_options="FBX_SCALE_NONE", axis_forward="-Z", axis_up="Y",
+                                 apply_scale_options="FBX_SCALE_UNITS", axis_forward="-Z", axis_up="Y",
                                  use_space_transform=True, bake_space_transform=False,
                                  use_mesh_modifiers=True, mesh_smooth_type="OFF", use_triangles=False,
                                  use_tspace=False, use_custom_props=False, colors_type="SRGB",

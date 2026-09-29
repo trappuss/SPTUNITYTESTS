@@ -6,6 +6,7 @@ template_path.txt
 wtt_path.txt
 cod2eft_bonemap.json
 cod2eft_pose_tweaks.json
+cod2eft_presets.json
 # build output (Install_COD2EFT_Addon.bat rebuilds it)
 COD2EFT_Blender_Addon.zip
 __pycache__/

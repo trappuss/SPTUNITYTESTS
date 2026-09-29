@@ -6,7 +6,7 @@ $ConfigFile = Join-Path $PSScriptRoot 'config.local.txt'   # per-PC, not in git
 
 # Files that belong to the user's PC, never overwritten by a sync (and not reported as "changed on PC").
 $PcOwned = @('blender_path.txt', 'template_path.txt', 'wtt_path.txt', 'cod2eft_bonemap.json',
-             'cod2eft_pose_tweaks.json', 'COD2EFT_Blender_Addon.zip')
+             'cod2eft_pose_tweaks.json', 'cod2eft_presets.json', 'COD2EFT_Blender_Addon.zip')
 
 function Say($msg, $color = 'Gray') { Write-Host $msg -ForegroundColor $color }
 
