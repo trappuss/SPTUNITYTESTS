@@ -117,6 +117,21 @@ function Is-OldVersion($repoFile, $pcFile) {
     $false
 }
 
+# Files in a deployed PC folder that the repo has RETIRED: no longer in the repo, but the PC copy
+# is exactly an earlier repo version of that path (so nobody edited it on the PC).  E.g. the old
+# per-side NEXT_SESSION.md / BACKLOG.md after they moved to docs/archive.  Returns relative paths.
+function Get-Retired($t) {
+    if ($t.Only -or -not (Test-Path $t.Dst)) { return @() }
+    @(Get-ChildItem $t.Dst -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
+        $_.Length -lt 2MB -and $_.Extension -in '.py', '.cs', '.md', '.bat', '.txt', '.json', '.meta' -and
+        $_.FullName -notmatch '\\(_dev|__pycache__|vendor)\\' -and $PcOwned -notcontains $_.Name
+    } | ForEach-Object {
+        $rel = $_.FullName.Substring($t.Dst.Length).TrimStart('\')
+        $src = Join-Path $t.Src $rel
+        if (-not (Test-Path $src) -and (Is-OldVersion $src $_.FullName)) { $rel }
+    })
+}
+
 # Pairs of (repo source folder, PC destination folder) that the sync deploys.
 function Get-Targets($cfg) {
     $editor = Join-Path $cfg.UNITY_PROJECT 'Assets\Editor'

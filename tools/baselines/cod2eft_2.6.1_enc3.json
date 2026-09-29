@@ -1,0 +1,330 @@
+{
+ "mp_valeria_2_1": {
+  "version": "2.6.1",
+  "body_volume_cod": {
+   "pelvis": -7.1,
+   "spine2": 5.2,
+   "spine3": 6.0,
+   "knee_L": -1.7,
+   "shin_L": -3.1,
+   "thigh_L": -0.8,
+   "upperarm_L": -0.6,
+   "knee_R": -1.7,
+   "shin_R": -3.1,
+   "thigh_R": -0.8,
+   "upperarm_R": -0.6
+  },
+  "body_match": {
+   "pelvis": -3.1,
+   "spine2": 0.4,
+   "spine3": 0.0,
+   "knee_L": -0.2,
+   "shin_L": -0.7,
+   "thigh_L": -2.2,
+   "upperarm_L": 0.5,
+   "knee_R": -0.2,
+   "shin_R": -0.7,
+   "thigh_R": -2.2,
+   "upperarm_R": 0.5
+  },
+  "body_moved_cm": 2.3,
+  "soles_cm": 0.1,
+  "fingertips_cm": 0.0,
+  "head_height": 1.048,
+  "face_cm": [
+   -0.0,
+   -0.0
+  ],
+  "limited": "pelvis (-4.5 cm), spine3 (+1.5 cm), shin_L (-1.1 cm), shin_R (-1.1 cm), pelvis vs waist (-2.5 cm, hip shape)",
+  "parts": [
+   "mp_valeria_2_1_Head, mp_valeria_2_1_Upper, mp_valeria_2_1_Lower"
+  ],
+  "warnings": [],
+  "meshes": {
+   "mp_valeria_2_1_Head": [
+    91130,
+    126792,
+    [
+     "mp_valeria_2_1_Head",
+     "mp_valeria_2_1_Head_alpha"
+    ]
+   ],
+   "mp_valeria_2_1_Upper": [
+    97529,
+    127140,
+    [
+     "mp_valeria_2_1_Upper",
+     "mp_valeria_2_1_Upper_alpha"
+    ]
+   ],
+   "mp_valeria_2_1_Lower": [
+    6761,
+    9738,
+    [
+     "mp_valeria_2_1_Lower"
+    ]
+   ]
+  },
+  "png": {
+   "mp_valeria_2_1_Head_alpha_d.png": "a11f15a0ce401028",
+   "mp_valeria_2_1_Head_alpha_g.png": "db9b05fc30119355",
+   "mp_valeria_2_1_Head_alpha_n.png": "3e4bff39a6c1e88d",
+   "mp_valeria_2_1_Head_d.png": "e18f79b81ee8e879",
+   "mp_valeria_2_1_Head_g.png": "ddc57eeccae9a854",
+   "mp_valeria_2_1_Head_n.png": "3e88f544817ed0c8",
+   "mp_valeria_2_1_Lower_d.png": "72e6d916a0c220f9",
+   "mp_valeria_2_1_Lower_g.png": "af1f06a90d05baac",
+   "mp_valeria_2_1_Lower_n.png": "29dd11824993401c",
+   "mp_valeria_2_1_Upper_alpha_d.png": "1cc685bdf4d80db4",
+   "mp_valeria_2_1_Upper_alpha_g.png": "ab2ca6401799b520",
+   "mp_valeria_2_1_Upper_alpha_n.png": "80d81f096328e76e",
+   "mp_valeria_2_1_Upper_d.png": "102bf7278d11020a",
+   "mp_valeria_2_1_Upper_g.png": "e4d575d7f617ab38",
+   "mp_valeria_2_1_Upper_n.png": "b2897f14c3d29f50"
+  }
+ },
+ "mp_milsim_us_sf_1_1": {
+  "version": "2.6.1",
+  "body_volume_cod": {
+   "pelvis": -3.3,
+   "spine2": -0.2,
+   "spine3": 1.1,
+   "knee_L": -0.5,
+   "shin_L": -2.2,
+   "thigh_L": -2.5,
+   "upperarm_L": -0.2,
+   "knee_R": -0.5,
+   "shin_R": -2.2,
+   "thigh_R": -2.5,
+   "upperarm_R": -0.2
+  },
+  "body_match": {
+   "pelvis": -0.3,
+   "spine2": 1.8,
+   "spine3": 1.5,
+   "knee_L": 0.1,
+   "shin_L": -1.0,
+   "thigh_L": -0.7,
+   "upperarm_L": 0.5,
+   "knee_R": 0.1,
+   "shin_R": -1.0,
+   "thigh_R": -0.7,
+   "upperarm_R": 0.5
+  },
+  "body_moved_cm": 4.3,
+  "soles_cm": 0.0,
+  "fingertips_cm": 0.0,
+  "head_height": 1.035,
+  "face_cm": [
+   0.0,
+   -0.0
+  ],
+  "limited": "pelvis (-0.7 cm), shin_L (-0.2 cm), thigh_L (-0.9 cm), shin_R (-0.2 cm), thigh_R (-0.9 cm)",
+  "parts": [
+   "mp_milsim_us_sf_1_1_Head, mp_milsim_us_sf_1_1_Upper, mp_milsim_us_sf_1_1_Lower"
+  ],
+  "warnings": [],
+  "meshes": {
+   "mp_milsim_us_sf_1_1_Head": [
+    43731,
+    69889,
+    [
+     "mp_milsim_us_sf_1_1_Head",
+     "mp_milsim_us_sf_1_1_Head_alpha"
+    ]
+   ],
+   "mp_milsim_us_sf_1_1_Upper": [
+    106125,
+    141113,
+    [
+     "mp_milsim_us_sf_1_1_Upper",
+     "mp_milsim_us_sf_1_1_Upper_alpha"
+    ]
+   ],
+   "mp_milsim_us_sf_1_1_Lower": [
+    5401,
+    9497,
+    [
+     "mp_milsim_us_sf_1_1_Lower"
+    ]
+   ]
+  },
+  "png": {
+   "mp_milsim_us_sf_1_1_Head_alpha_d.png": "296968688b1fd844",
+   "mp_milsim_us_sf_1_1_Head_alpha_g.png": "b5e0ea4ac3b988c7",
+   "mp_milsim_us_sf_1_1_Head_alpha_n.png": "fb3479ec0f063d69",
+   "mp_milsim_us_sf_1_1_Head_d.png": "acf5ba781e7e06c0",
+   "mp_milsim_us_sf_1_1_Head_g.png": "0aa3f5ff2030296d",
+   "mp_milsim_us_sf_1_1_Head_n.png": "779d02162bb9032d",
+   "mp_milsim_us_sf_1_1_Lower_d.png": "2d95f2a5e873f693",
+   "mp_milsim_us_sf_1_1_Lower_g.png": "4416c71b50bcd8cb",
+   "mp_milsim_us_sf_1_1_Lower_n.png": "4631035f30a39b0e",
+   "mp_milsim_us_sf_1_1_Upper_alpha_d.png": "74d4d60d01f933dc",
+   "mp_milsim_us_sf_1_1_Upper_alpha_g.png": "ed0a1959513abe7c",
+   "mp_milsim_us_sf_1_1_Upper_alpha_n.png": "1adce5c89d587fd5",
+   "mp_milsim_us_sf_1_1_Upper_d.png": "6a7083ce3bafc32a",
+   "mp_milsim_us_sf_1_1_Upper_g.png": "1897ab8d96cc7f76",
+   "mp_milsim_us_sf_1_1_Upper_n.png": "7a7be6ca2d102dd8"
+  }
+ },
+ "c_sat_usa_pl_sunflower_base": {
+  "version": "2.6.1",
+  "body_volume_cod": {
+   "pelvis": 4.9,
+   "spine2": 5.5,
+   "spine3": 2.9,
+   "knee_L": 2.0,
+   "shin_L": 1.3,
+   "thigh_L": 3.5,
+   "upperarm_L": -1.3,
+   "knee_R": 2.0,
+   "shin_R": 1.3,
+   "thigh_R": 3.5,
+   "upperarm_R": -1.3
+  },
+  "body_match": {
+   "pelvis": -2.5,
+   "spine2": 0.5,
+   "spine3": 0.6,
+   "knee_L": 0.2,
+   "shin_L": 0.2,
+   "thigh_L": -0.4,
+   "upperarm_L": -0.2,
+   "knee_R": 0.2,
+   "shin_R": 0.2,
+   "thigh_R": -0.4,
+   "upperarm_R": -0.2
+  },
+  "body_moved_cm": -0.1,
+  "soles_cm": 0.1,
+  "fingertips_cm": 0.0,
+  "head_height": 1.06,
+  "face_cm": [
+   -0.9,
+   -0.3
+  ],
+  "limited": "pelvis (+1.5 cm)",
+  "parts": [
+   "c_sat_usa_pl_sunflower_base_Head, c_sat_usa_pl_sunflower_base_Upper, c_sat_usa_pl_sunflower_base_Lower"
+  ],
+  "warnings": [],
+  "meshes": {
+   "c_sat_usa_pl_sunflower_base_Head": [
+    43569,
+    56859,
+    [
+     "c_sat_usa_pl_sunflower_base_Head",
+     "c_sat_usa_pl_sunflower_base_Head_alpha"
+    ]
+   ],
+   "c_sat_usa_pl_sunflower_base_Upper": [
+    20185,
+    35042,
+    [
+     "c_sat_usa_pl_sunflower_base_Upper"
+    ]
+   ],
+   "c_sat_usa_pl_sunflower_base_Lower": [
+    6300,
+    9436,
+    [
+     "c_sat_usa_pl_sunflower_base_Lower"
+    ]
+   ]
+  },
+  "png": {
+   "c_sat_usa_pl_sunflower_base_Head_alpha_d.png": "429894b5b61b5e36",
+   "c_sat_usa_pl_sunflower_base_Head_alpha_g.png": "b6d4c26415fc7527",
+   "c_sat_usa_pl_sunflower_base_Head_alpha_n.png": "f92268f689f29132",
+   "c_sat_usa_pl_sunflower_base_Head_d.png": "a759ad6438df2c74",
+   "c_sat_usa_pl_sunflower_base_Head_g.png": "b0a9774be303ef28",
+   "c_sat_usa_pl_sunflower_base_Head_n.png": "f7a7bcbded65f2d4",
+   "c_sat_usa_pl_sunflower_base_Lower_d.png": "3dbe9a6011e0a41d",
+   "c_sat_usa_pl_sunflower_base_Lower_g.png": "6db3cdbc81265d70",
+   "c_sat_usa_pl_sunflower_base_Lower_n.png": "86ff8463a8a59f4f",
+   "c_sat_usa_pl_sunflower_base_Upper_d.png": "240bf3a3b049611f",
+   "c_sat_usa_pl_sunflower_base_Upper_g.png": "b631cd0eee24da73",
+   "c_sat_usa_pl_sunflower_base_Upper_n.png": "685994c4f2b928ab"
+  }
+ },
+ "mp_kleo_iw9_3_1": {
+  "version": "2.6.1",
+  "body_volume_cod": {
+   "pelvis": 1.0,
+   "spine2": 4.2,
+   "spine3": 3.2,
+   "knee_L": 1.1,
+   "shin_L": -0.6,
+   "thigh_L": 2.3,
+   "upperarm_L": -0.0,
+   "knee_R": 1.1,
+   "shin_R": -0.6,
+   "thigh_R": 2.3,
+   "upperarm_R": -0.0
+  },
+  "body_match": {
+   "pelvis": -0.2,
+   "spine2": 0.5,
+   "spine3": 0.7,
+   "knee_L": -0.1,
+   "shin_L": -1.1,
+   "thigh_L": 0.3,
+   "upperarm_L": 0.5,
+   "knee_R": -0.1,
+   "shin_R": -1.1,
+   "thigh_R": 0.3,
+   "upperarm_R": 0.5
+  },
+  "body_moved_cm": 2.3,
+  "soles_cm": 0.0,
+  "fingertips_cm": 0.0,
+  "head_height": 1.059,
+  "face_cm": [
+   -0.8,
+   0.0
+  ],
+  "limited": "",
+  "parts": [
+   "mp_kleo_iw9_3_1_Head, mp_kleo_iw9_3_1_Upper, mp_kleo_iw9_3_1_Lower"
+  ],
+  "warnings": [],
+  "meshes": {
+   "mp_kleo_iw9_3_1_Head": [
+    51448,
+    75841,
+    [
+     "mp_kleo_iw9_3_1_Head",
+     "mp_kleo_iw9_3_1_Head_alpha"
+    ]
+   ],
+   "mp_kleo_iw9_3_1_Upper": [
+    21925,
+    31101,
+    [
+     "mp_kleo_iw9_3_1_Upper"
+    ]
+   ],
+   "mp_kleo_iw9_3_1_Lower": [
+    4873,
+    8559,
+    [
+     "mp_kleo_iw9_3_1_Lower"
+    ]
+   ]
+  },
+  "png": {
+   "mp_kleo_iw9_3_1_Head_alpha_d.png": "ea30aced27401a0c",
+   "mp_kleo_iw9_3_1_Head_alpha_g.png": "b63cbefe5359ca6c",
+   "mp_kleo_iw9_3_1_Head_alpha_n.png": "630261bac4b00373",
+   "mp_kleo_iw9_3_1_Head_d.png": "239c858e68116067",
+   "mp_kleo_iw9_3_1_Head_g.png": "198e3d391a308d9f",
+   "mp_kleo_iw9_3_1_Head_n.png": "d88c3461b0c516f1",
+   "mp_kleo_iw9_3_1_Lower_d.png": "d37f4971a2888abb",
+   "mp_kleo_iw9_3_1_Lower_g.png": "2c3c9a5fdf4965ac",
+   "mp_kleo_iw9_3_1_Lower_n.png": "946f9d2227bf8cca",
+   "mp_kleo_iw9_3_1_Upper_d.png": "295c11bf067c4ff6",
+   "mp_kleo_iw9_3_1_Upper_g.png": "1a0c835f9deb3395",
+   "mp_kleo_iw9_3_1_Upper_n.png": "6734117721e6cda9"
+  }
+ }
+}

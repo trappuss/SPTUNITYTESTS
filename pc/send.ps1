@@ -87,6 +87,10 @@ try {
             } | ForEach-Object {
                 $rel = $_.FullName.Substring($t.Dst.Length).TrimStart('\')
                 if (-not (Test-Path (Join-Path $t.Src $rel)) -and $PcOwned -notcontains $_.Name) {
+                    if (Is-OldVersion (Join-Path $t.Src $rel) $_.FullName) {
+                        $info += "RETIRED on PC  [$($t.Label)] $rel  (the repo dropped it; SYNC_TO_MY_PC.bat moves it to the backup)"
+                        return
+                    }
                     $info += "ONLY on PC     [$($t.Label)] $rel"
                     $c = Join-Path $pcDir (Join-Path ($t.Label -replace '[^A-Za-z0-9]', '_') $rel)
                     New-Item -ItemType Directory -Force (Split-Path $c) | Out-Null

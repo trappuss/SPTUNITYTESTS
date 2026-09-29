@@ -40,6 +40,16 @@ try {
             $changed += $dst
         }
     }
+    # files the repo retired (moved / archived): out of the way, into the backup - not deleted
+    foreach ($t in Get-Targets $cfg) {
+        foreach ($rel in Get-Retired $t) {
+            $bk = Join-Path $backup (Join-Path ('retired_' + ($t.Label -replace '[^A-Za-z0-9]', '_')) $rel)
+            New-Item -ItemType Directory -Force (Split-Path $bk) | Out-Null
+            Move-Item -LiteralPath (Join-Path $t.Dst $rel) $bk -Force
+            Say "   retired  $($t.Label): $rel  (no longer in the repo - moved to the backup)" Green
+            $changed += $bk
+        }
+    }
     if ($changed.Count -eq 0) { Say '   everything was already up to date' }
     elseif (Test-Path $backup) { Say "   replaced files backed up to $backup" }
 
