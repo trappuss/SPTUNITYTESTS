@@ -1,0 +1,11 @@
+﻿Sent: 2026-09-28T23:15:14
+Repo commit: 715bc6c PC results 20260928-231226
+Repo versions: COD2EFT v2.5.1, EFT Tools v1.6.2
+
+Unity last loaded: [EFT Tools] v1.6.2 (2026-09-29) loaded
+OLDER on PC    [COD2EFT (Blender)] addon_init.py  (not synced yet - run SYNC_TO_MY_PC.bat)
+OLDER on PC    [COD2EFT (Blender)] CHANGELOG.md  (not synced yet - run SYNC_TO_MY_PC.bat)
+OLDER on PC    [COD2EFT (Blender)] cod2eft_porter.py  (not synced yet - run SYNC_TO_MY_PC.bat)
+OLDER on PC    [COD2EFT (Blender)] cod2eft_textures.py  (not synced yet - run SYNC_TO_MY_PC.bat)
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe
+SKIPPED (.blend): C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\CUSTOM\EFT BASIC [Template].blend
