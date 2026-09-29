@@ -1,0 +1,427 @@
+COD2EFT Inspector v0.2.0 - material report
+Time: 2026-09-29T07:12:37   Game: 1.0   Scene: Factory_Rework_Day_Scripts
+Character: You (factory4_day)
+Camera: FPS Camera pos (22.82, -1.05, 13.88) rot (321.77, 336.44, 0.00) fov 75
+
+Profile customization (ids):
+  Head = 6abb3d46f3df4a3361f4e0a8
+  Body = 6abb3d467ebcdcada6f4e09f
+  Feet = 6abb3d469dbe394964f4e0a3
+  Hands = 6abb3d4612829f14a1f4e0a0
+  DogTag = 67471938bafff850080488b7
+  Voice = 5fc615110b735e7b024c76ea
+
+Body parts on the character (PlayerBody.BodySkins) and the bundles they came from:
+  Head                   mp_valeria_2_1_enc=3_head   (25 renderers)
+      catalog: [RCTA_ClothingMod_Test] Head 'mp valeria 2 1 enc=3 head' id 6abb3d46f3df4a3361f4e0a8 bundle heads/mp_valeria_2_1_enc=3_head.bundle
+      mp_valeria_2_1_enc=3_head <- bundle 'heads/mp_valeria_2_1_enc=3_head.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_head.prefab)
+  Top                    mp_valeria_2_1_enc=3_upper   (45 renderers)
+      catalog: [RCTA_ClothingMod_Test] Top 'mp valeria 2 1 enc=3 upper' id 6abb3d467ebcdcada6f4e09f bundle clothing/mp_valeria_2_1_enc=3_top.bundle
+      mp_valeria_2_1_enc=3_upper <- bundle 'clothing/mp_valeria_2_1_enc=3_top.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_upper.prefab)
+  Pants                  mp_valeria_2_1_enc=2_lower   (3 renderers)
+      catalog: [RCTA_ClothingMod_Test] Pants 'mp valeria 2 1 enc=2 lower' id 6abb3d469dbe394964f4e0a3 bundle clothing/mp_valeria_2_1_enc=2_bottom.bundle
+      mp_valeria_2_1_enc=2_lower <- bundle 'clothing/mp_valeria_2_1_enc=2_bottom.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=2/mp_valeria_2_1_enc=2_lower.prefab)
+  Hands (first-person)   mp_valeria_2_1_enc=3_hands   (2 renderers)
+      catalog: [RCTA_ClothingMod_Test] Hands 'mp valeria 2 1 enc=3 upper (hands)' id 6abb3d4612829f14a1f4e0a0 bundle clothing/mp_valeria_2_1_enc=3_hands.bundle
+      mp_valeria_2_1_enc=3_hands <- bundle 'clothing/mp_valeria_2_1_enc=3_hands.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_hands.prefab)
+
+=== Head: mp_valeria_2_1_enc=3_head  [body]
+  mp_valeria_2_1_Head_m_body_mp_valeria_wires_iw9_8_1  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_body_mp_valeria_wires_iw9_8_1' 375 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_valeria_2_1_Head_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.302, 0.302, 0.302, 0.5)
+         _MainTex         'mp_valeria_2_1_Head_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Head_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 3, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0, 1, 2, 0)
+  mp_valeria_2_1_Head_m_head_shared_eyelashes_dense  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_head_shared_eyelashes_dense' 78 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        *_StencilType     0
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'mp_valeria_2_1_Head_alpha_d' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Head_alpha_n' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_Cutoff          0.3
+        *_SpecVals        vector (0.35, 2, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _Factor          0
+         _Units           0
+  mp_valeria_2_1_Head_m_head_shared_eyelashes_iw9  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_head_shared_eyelashes_iw9' 453 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_ext  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_ext' 1032 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_int  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_int' 384 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_setting  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_m_mp_western_lynch_diamond_earring_setting' 1394 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_1637b76ae7dc7c7d  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_1637b76ae7dc7c7d' 1496 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_1688e752f565c07e  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_1688e752f565c07e' 20899 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_2b151fa496249e36  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_2b151fa496249e36' 3836 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_2b375889e87ea831  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_2b375889e87ea831' 732 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_381463aca77d4ad4  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_381463aca77d4ad4' 3660 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_39914b889fdb01b0  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_39914b889fdb01b0' 151 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_3aebe7a31280d5e9  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_3aebe7a31280d5e9' 550 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_3bebc2a84046d055  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_3bebc2a84046d055' 178 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_3c5852033a98fa18  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_3c5852033a98fa18' 262 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_3e715c391e870b93  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_3e715c391e870b93' 608 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_409d026fa457b3b2  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_409d026fa457b3b2' 2545 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_4834d850249ad883  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_4834d850249ad883' 531 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_5363d7d0705c67ff  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_5363d7d0705c67ff' 254 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_5affd9d41e4139a1  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_5affd9d41e4139a1' 22113 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_6aa474a8a6fc0d71  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_6aa474a8a6fc0d71' 3780 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_71bca54fef9757a5  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_71bca54fef9757a5' 21930 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_7ec0971df64d840a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_7ec0971df64d840a' 1572 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_94f31797a0bcf7a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_94f31797a0bcf7a' 1774 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Head_material_de1f4a50960f0a7  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Head_material_de1f4a50960f0a7' 584 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+
+=== Top: mp_valeria_2_1_enc=3_upper  [body]
+  mp_valeria_2_1_Upper_m_body_mp_valeria_wires_iw9_8_1  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_body_mp_valeria_wires_iw9_8_1' 53 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_valeria_2_1_Upper_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.358, 0.358, 0.358, 0.5)
+         _MainTex         'mp_valeria_2_1_Upper_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Upper_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.85, 0.7, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0.1, 1, 1, 0)
+  mp_valeria_2_1_Upper_m_body_mp_zimo_3_1_grenade_pouch  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_body_mp_zimo_3_1_grenade_pouch' 1142 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_buckle_master_black  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_buckle_master_black' 334 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_buckle_master_urban  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_buckle_master_urban' 3117 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_c_jup_sp_hero_soap_urban_golf17  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_c_jup_sp_hero_soap_urban_golf17' 6195 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_mp_chuy_iw9_7_1_pouch_mag_ar_ronin  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_mp_chuy_iw9_7_1_pouch_mag_ar_ronin' 1093 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_mp_gus_radio_mbitr_iw9_4_1  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_mp_gus_radio_mbitr_iw9_4_1' 564 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_mp_western_dday_radio_a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_mp_western_dday_radio_a' 1427 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_mp_western_ghost_classic_udt_packstraps_  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_mp_western_ghost_classic_udt_packstraps_' 361 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_offhand_1h_grenade_concussion_v0  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_offhand_1h_grenade_concussion_v0' 7875 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_pararescue_marker_black  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_pararescue_marker_black' 295 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_parts_jewelry_rosary  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_parts_jewelry_rosary' 1053 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_plastic_handcuffs_a_black_02  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_plastic_handcuffs_a_black_02' 1212 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_radio_blade_antenna  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_radio_blade_antenna' 4586 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_usmc_grenade_top  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_usmc_grenade_top' 144 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_m_zip_tie_white  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_m_zip_tie_white' 284 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_187da838db4dffac  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_187da838db4dffac' 836 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_190faa01bb9a7943  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_190faa01bb9a7943' 745 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_1a06617a79d4f060  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_1a06617a79d4f060' 11500 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_1ba987de205ef23d  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_1ba987de205ef23d' 276 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_1fcc191871034185  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_1fcc191871034185' 550 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_21f4442054ba1358  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_21f4442054ba1358' 444 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_2fb3ac755c0f327c  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_2fb3ac755c0f327c' 442 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_31374a7e608a78bb  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_31374a7e608a78bb' 8357 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_3dfd02df8d036a5a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_3dfd02df8d036a5a' 618 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_4103c1f087f92c17  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_4103c1f087f92c17' 254 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_47d5206099cf3fee  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_47d5206099cf3fee' 3768 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_492c4ad714fc4d1a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_492c4ad714fc4d1a' 4710 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_4a8e7be84b396758  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_4a8e7be84b396758' 905 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_4b74c7bc60456b55  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_4b74c7bc60456b55' 1072 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_4ef61ef11f16287a  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_4ef61ef11f16287a' 5115 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_5b5e3fc639dcf63b  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_5b5e3fc639dcf63b' 3031 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_5c0f631a46605c45  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_5c0f631a46605c45' 2574 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_5d44fd6a61f9d34c  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_5d44fd6a61f9d34c' 2354 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_6832a58ea145954e  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_6832a58ea145954e' 369 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_69047e4a45a6aa18  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_69047e4a45a6aa18' 296 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        *_StencilType     0
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'mp_valeria_2_1_Upper_alpha_d' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Upper_alpha_n' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_Cutoff          0.3
+        *_SpecVals        vector (0.35, 2, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _Factor          0
+         _Units           0
+  mp_valeria_2_1_Upper_material_6949988fd37e424d  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_6949988fd37e424d' 9119 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_6ab08f88d0b70462  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_6ab08f88d0b70462' 663 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_7203f9bc323b936c  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_7203f9bc323b936c' 380 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_75002214da3df2f5  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_75002214da3df2f5' 532 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_77c8856eefa26b6b  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_77c8856eefa26b6b' 584 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_77f91908e33fe7e9  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_77f91908e33fe7e9' 511 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_791f7cfc3949e58b  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_791f7cfc3949e58b' 5316 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_7a706ec2c55a07ab  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_7a706ec2c55a07ab' 766 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Upper_material_b123f227bcdf41d  <SkinnedMeshRenderer> active=True enabled=True shadows=ShadowsOnly mesh 'mp_valeria_2_1_Upper_material_b123f227bcdf41d' 1602 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+
+=== Pants: mp_valeria_2_1_enc=2_lower  [body]
+  mp_valeria_2_1_Lower_material_20e337f4f22d8693  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_valeria_2_1_Lower_material_20e337f4f22d8693' 3378 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Lower'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_valeria_2_1_Lower_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       2
+        *_Specularness    0.75
+        *_ReflectColor    color (0.61, 0.61, 0.61, 0.5)
+         _MainTex         'mp_valeria_2_1_Lower_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Lower_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.85, 0.7, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0.1, 1, 1, 0)
+  mp_valeria_2_1_Lower_material_24e3182f41776fb4  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_valeria_2_1_Lower_material_24e3182f41776fb4' 468 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Lower'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+  mp_valeria_2_1_Lower_material_7203f9bc323b936c  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_valeria_2_1_Lower_material_7203f9bc323b936c' 2915 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Lower'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        (same material as listed above)
+
+=== Hands (first-person): mp_valeria_2_1_enc=3_hands  [body]
+  mp_valeria_2_1_Hands_material_1a06617a79d4f060  <SkinnedMeshRenderer> active=True enabled=True shadows=Off mesh 'mp_valeria_2_1_Hands_material_1a06617a79d4f060' 11500 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Hands (Instance)'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USERAIN
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (1, 1, 1, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'mp_valeria_2_1_Hands_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.198, 0.198, 0.198, 0.5)
+         _MainTex         'mp_valeria_2_1_Hands_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Hands_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.8, 0.7, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 1, 2, 0)
+         _RippleTexScale  0.25
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 1
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  mp_valeria_2_1_Hands_material_209fc2f894012f97  <SkinnedMeshRenderer> active=True enabled=True shadows=Off mesh 'mp_valeria_2_1_Hands_material_209fc2f894012f97' 5280 verts, 58 bones
+    [0] material 'mp_valeria_2_1_Hands (Instance)'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USERAIN
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (1, 1, 1, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'mp_valeria_2_1_Hands_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.198, 0.198, 0.198, 0.5)
+         _MainTex         'mp_valeria_2_1_Hands_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_valeria_2_1_Hands_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.8, 0.7, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 1, 2, 0)
+         _RippleTexScale  0.25
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 1
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+
+=== Gear: Weapon_root_3rd_anim  [gear]
+  XYZ_1  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        _SpecVals        (not on this material)
+        _DefVals         (not on this material)
+        _Cutoff          (not on this material)
+        _StencilType     (not on this material)
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'XYZ' 512x512 DXT1 mips 10 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Temperature     vector (0.1, 0.2, 0.25, 0)
+
+=== Other: Bend_Goal_Left  [other]
+  Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Left/XYZ_1 (1)  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        (same material as listed above)
+
+=== Other: Bend_Goal_Right  [other]
+  Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Right/XYZ_1  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        (same material as listed above)
+
+(* = a value the COD2EFT pipeline sets)

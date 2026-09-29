@@ -1,0 +1,12 @@
+﻿Sent: 2026-09-29T07:14:16
+Repo commit: 1f0061a Merge the Inspector / regress.py session; keep its harness, drop the duplicate
+Repo versions: COD2EFT v2.6.2, EFT Tools v1.7.2
+
+Unity last loaded: [EFT Tools] v1.7.2 (2026-09-29) loaded
+SPT game: G:\G Games\SPT4.1\SPT4.1 Game
+BepInEx log: 2026-09-29T07:13:51, Inspector: present
+Inspector installed: v0.2.0.0, built 2026-09-29T06:57:18 (repo v0.2.0)
+COD2EFT_Screenshots: 5 new file(s) since ever
+RETIRED on PC  [COD2EFT (Blender)] BACKLOG.md  (the repo dropped it; SYNC_TO_MY_PC.bat moves it to the backup)
+RETIRED on PC  [COD2EFT (Blender)] NEXT_SESSION.md  (the repo dropped it; SYNC_TO_MY_PC.bat moves it to the backup)
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe

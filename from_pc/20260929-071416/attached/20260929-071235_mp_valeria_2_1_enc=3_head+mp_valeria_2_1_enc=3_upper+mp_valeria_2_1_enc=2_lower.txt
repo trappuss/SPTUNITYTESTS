@@ -1,0 +1,31 @@
+COD2EFT Inspector v0.2.0 - screenshot 20260929-071235_mp_valeria_2_1_enc=3_head+mp_valeria_2_1_enc=3_upper+mp_valeria_2_1_enc=2_lower.png
+Time: 2026-09-29T07:12:36   Game: 1.0   Scene: Factory_Rework_Day_Scripts
+Character: You (factory4_day)
+Camera: FPS Camera pos (22.82, -1.05, 13.90) rot (322.12, 322.62, 0.00) fov 75
+
+Image: 5120 x 2880 (supersize 2)
+
+Profile customization (ids):
+  Head = 6abb3d46f3df4a3361f4e0a8
+  Body = 6abb3d467ebcdcada6f4e09f
+  Feet = 6abb3d469dbe394964f4e0a3
+  Hands = 6abb3d4612829f14a1f4e0a0
+  DogTag = 67471938bafff850080488b7
+  Voice = 5fc615110b735e7b024c76ea
+
+Body parts on the character (PlayerBody.BodySkins) and the bundles they came from:
+  Head                   mp_valeria_2_1_enc=3_head   (25 renderers)
+      catalog: [RCTA_ClothingMod_Test] Head 'mp valeria 2 1 enc=3 head' id 6abb3d46f3df4a3361f4e0a8 bundle heads/mp_valeria_2_1_enc=3_head.bundle
+      mp_valeria_2_1_enc=3_head <- bundle 'heads/mp_valeria_2_1_enc=3_head.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_head.prefab)
+  Top                    mp_valeria_2_1_enc=3_upper   (45 renderers)
+      catalog: [RCTA_ClothingMod_Test] Top 'mp valeria 2 1 enc=3 upper' id 6abb3d467ebcdcada6f4e09f bundle clothing/mp_valeria_2_1_enc=3_top.bundle
+      mp_valeria_2_1_enc=3_upper <- bundle 'clothing/mp_valeria_2_1_enc=3_top.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_upper.prefab)
+  Pants                  mp_valeria_2_1_enc=2_lower   (3 renderers)
+      catalog: [RCTA_ClothingMod_Test] Pants 'mp valeria 2 1 enc=2 lower' id 6abb3d469dbe394964f4e0a3 bundle clothing/mp_valeria_2_1_enc=2_bottom.bundle
+      mp_valeria_2_1_enc=2_lower <- bundle 'clothing/mp_valeria_2_1_enc=2_bottom.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=2/mp_valeria_2_1_enc=2_lower.prefab)
+  Hands (first-person)   mp_valeria_2_1_enc=3_hands   (2 renderers)
+      catalog: [RCTA_ClothingMod_Test] Hands 'mp valeria 2 1 enc=3 upper (hands)' id 6abb3d4612829f14a1f4e0a0 bundle clothing/mp_valeria_2_1_enc=3_hands.bundle
+      mp_valeria_2_1_enc=3_hands <- bundle 'clothing/mp_valeria_2_1_enc=3_hands.bundle' (Assets/Prefabs/mp_valeria_2_1_enc=3/mp_valeria_2_1_enc=3_hands.prefab)
+
+Hidden meshes:
+  none

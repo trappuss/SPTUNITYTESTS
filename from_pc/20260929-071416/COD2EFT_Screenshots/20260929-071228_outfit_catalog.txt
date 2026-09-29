@@ -1,0 +1,585 @@
+COD2EFT Inspector v0.2.0 - outfit catalog
+
+Server folder: G:\G Games\SPT4.1\SPT4.1 GAME\SPT_Runtime
+vanilla: 420 entries from G:\G Games\SPT4.1\SPT4.1 GAME\SPT_Runtime\SPT_Data\database\templates\customization.json
+mod c11-tn-4: 8 entries
+mod RCTA_ClothingMod_Test: 8 entries
+mod WTT-ContentBackport: 132 entries
+9 entries have no bundle file where expected
+
+=== vanilla: 151 Top, 112 Pants, 100 Hands, 57 Head
+  Hands  bear_hands_blacklynx  id 5d1f5a9786f7743014162046  bundle assets/content/hands/hand_bear_blacklynx/hand_bear_blacklynx.skin.bundle
+  Hands  bear_hands_borey  id 5fd760001189a17bcc172b85  bundle assets/content/hands/hands_bear_borey/hands_bear_borey.skin.bundle
+  Hands  bear_hands_contractortshirt  id 5d1f5aa286f7744bca3f0b9c  bundle assets/content/hands/hands_tshirt_bear_black/hands_tshirt_bear_black.skin.bundle
+  Hands  bear_hands_fsbfastresponse  id 5d1f5ab286f7743f8362bcdd  bundle assets/content/hands/hands_bear_fsbfastresponse/hands_bear_fsbfastresponse.skin.bundle
+  Hands  bear_hands_g99  id 5f5f3fa30bc58666c37e782e  bundle assets/content/hands/hands_bear_g99/hands_bear_g99.skin.bundle
+  Hands  bear_hands_ghostmarksman  id 5d1f5ac086f7744bcd1345a0  bundle assets/content/hands/hands_bear_ghostmarksman/hands_bear_ghostmarksman.skin.bundle
+  Hands  bear_hands_hawaii_01  id 6847e3cc13183100990dd1c8  bundle assets/content/hands/hands_bear_hawaii_01/hands_bear_hawaii_01.skin.bundle
+  Hands  bear_hands_hawaii_02  id 68be884813febe37b20e7e09  bundle assets/content/hands/hands_bear_hawaii_02/hands_bear_hawaii_02.skin.bundle
+  Hands  bear_hands_hawaii_03  id 685d08a741b02568210760ca  bundle assets/content/hands/hands_bear_hawaii_03/hands_bear_hawaii_03.skin.bundle
+  Hands  bear_hands_hawaii_miami  id 68d1b0ad34ff97b722076d4d  bundle assets/content/hands/hands_bear_kit_upper_hawaii_miami/hands_bear_kit_upper_hawaii_miami.bundle
+  Hands  bear_hands_instructor  id 675696574737376d69020746  bundle assets/content/hands/hands_bear_instructor/hands_bear_instructor.skin.bundle
+  Hands  bear_hands_nord  id 67506abae23c30f949061906  bundle assets/content/hands/hands_bear_nord/hands_bear_nord.skin.bundle
+  Hands  bear_hands_ops_windshirt  id 6572eafead200ced8e0f051a  bundle assets/content/hands/hands_bear_ops_windshirt/hands_bear_ops_windshirt.skin.bundle
+  Hands  bear_hands_spna  id 6390103dfdb42a2ccc0e8cca  bundle assets/content/hands/hands_bear_spna/hands_bear_spna.skin.bundle
+  Hands  bear_hands_summerfield  id 5d1f5aca86f7744bce0ee9f1  bundle assets/content/hands/hands_bear_polevoi/hands_bear_polevoi.skin.bundle
+  Hands  bear_hands_sumrak  id 618aeee10a5a59657e5f55ed  bundle assets/content/hands/hands_bear_sumrak/hands_bear_sumrak.skin.bundle
+  Hands  bear_hands_tactical_long  id 62961424869a02221651df53  bundle assets/content/hands/hands_bear_tactical_long/hands_bear_tactical_long.skin.bundle
+  Hands  bear_hands_telnik  id 5e4bb1d286f77406a313ec59  bundle assets/content/hands/hands_bear_telnik/hands_bear_telnik.skin.bundle
+  Hands  bear_hands_termo  id 5fd75289b1f9ad0f60509d25  bundle assets/content/hands/hands_bear_termo/hands_bear_termo.skin.bundle
+  Hands  bear_hands_tiger  id 5e9da26286f7741d2e3424a5  bundle assets/content/hands/hands_bear_tiger/hands_bear_tiger.bundle
+  Hands  bear_hands_turtleneck_black  id 66043cdcc8949a435906e430  bundle assets/content/hands/bear/hands_bear_turtleneck_black.bundle
+  Hands  bear_hands_voin  id 6034d3053903bc73173b0d35  bundle assets/content/hands/hands_bear_voin/hands_bear_voin.skin.bundle
+  Hands  bear_hands_windshirt_black  id 66043d59333907134309d649  bundle assets/content/hands/hands_bear_ops_windshirt/hands_bear_ops_windshirt_black.bundle
+  Hands  bear_hands_winterset  id 676014635fa2f21d3c0b9f56  bundle assets/content/hands/hands_bear_winterset/hands_bear_winterset.skin.bundle
+  Hands  bear_hands_zaslon  id 5df8e76486f7740bfe6df782  bundle assets/content/hands/hands_bear_zaslon/hands_bear_zaslon.skin.bundle
+  Hands  DefaultBearHands  id 5cc0876314c02e000c6bea6b  bundle assets/content/hands/bear/bear_hands_skin.bundle
+  Hands  DefaultUsecHands  id 5cde95fa7d6c8b04737c2d13  bundle assets/content/hands/usec/usec_hands_skin.bundle
+  Hands  Hands  id 5cc086a314c02e000c6bea69  bundle assets/content/hands/bear/bear_hands_skin.bundle
+  Hands  Hands_Arena_ACS4  id 685eb657608d2e0f0704818f  bundle assets/content/hands/hands_arena_acs4/hands_acs4.skin.bundle
+  Hands  Hands_Arena_Champion  id 68bc2de3e6068f34a7016e92  bundle assets/content/hands/hands_arena_champion/hands_arena_champion.skin.bundle
+  Hands  Hands_Arena_Gladiator  id 67af2d9c551084dbef0f3178  bundle assets/content/hands/hands_arena_gladiator/hands_arena_gladiator.skin.bundle
+  Hands  Hands_Arena_Intermediate_BEAR  id 68bc2e09b50500fb3d079f44  bundle assets/content/hands/hands_arena_intermediate/hands_arena_intermediate_bear.skin.bundle
+  Hands  Hands_Arena_Intermediate_USEC  id 68bc2e245997832aa10e08fc  bundle assets/content/hands/hands_arena_intermediate/hands_arena_intermediate_usec.skin.bundle
+  Hands  Hands_Arena_Rusguard_1_Tatau  id 68bc2e51b50500fb3d079f46  bundle assets/content/hands/hands_arena_rusguard_1/hands_arena_rusguard_1_tatau.skin.bundle
+  Hands  Hands_Arena_Rusguard_1_Whitevoron  id 68bc2e64d5e8d55c7d0d5231  bundle assets/content/hands/hands_arena_rusguard_1/hands_arena_rusguard_1_whitevoron.skin.bundle
+  Hands  Hands_Arena_Rusguard_3_Cuirass  id 68bc2e78f0fd79e3a206900c  bundle assets/content/hands/hands_arena_rusguard_3/hands_arena_rusguard_3_cuirass.skin.bundle
+  Hands  Hands_Arena_Rusguard_3_Icedragon  id 68bc2e8d5997832aa10e08fe  bundle assets/content/hands/hands_arena_rusguard_3/hands_arena_rusguard_3_icedragon.skin.bundle
+  Hands  Hands_Arena_Rusguard_4_BEAR  id 68bc2ea96e187357d10932ef  bundle assets/content/hands/hands_arena_rusguard_4/hands_arena_rusguard_4_bear.skin.bundle
+  Hands  Hands_Arena_Rusguard_4_USEC  id 68bc2ec1f0fd79e3a206900e  bundle assets/content/hands/hands_arena_rusguard_4/hands_arena_rusguard_4_usec.skin.bundle
+  Hands  Hands_Arena_Rusguard_5_Black  id 68bc2ee3f90f9465d4062508  bundle assets/content/hands/hands_arena_rusguard_5/hands_arena_rusguard_5_black.skin.bundle
+  Hands  Hands_Arena_Rusguard_5_Green  id 68bc2ef6d988da9e98031997  bundle assets/content/hands/hands_arena_rusguard_5/hands_arena_rusguard_5_green.skin.bundle
+  Hands  Hands_bear_Phoenix  id 66ace88c46fb07947008645b  bundle assets/content/hands/hands_bear_phoenix/hands_bear_phoenix.skin.bundle
+  Hands  Hands_bear_Phoenix_arena_bp_01  id 67ac82b05f7251f49d0e9b11  bundle assets/content/hands/hands_bear_phoenix/hands_bear_phoenix_arena_bp_01.skin.bundle
+  Hands  Hands_BP_1_black  id 67ac8728e4d14ccd6005de88  bundle assets/content/hands/hands_arena_bp_1/hands_bp_1_black.skin.bundle
+  Hands  Hands_BP_1_white  id 67ac873d5d717b44c00a0c96  bundle assets/content/hands/hands_arena_bp_1/hands_bp_1_white.skin.bundle
+  Hands  Hands_BP_2  id 67ac81ab5f7251f49d0e9b0d  bundle assets/content/hands/hands_arena_bp_2/hands_bp_2.skin.bundle
+  Hands  Hands_BP_3  id 67ac81fd5d717b44c00a0c8e  bundle assets/content/hands/hands_arena_bp_3/hands_bp_3.skin.bundle
+  Hands  Hands_BP_4  id 67ac8233a6749cd1690ae1db  bundle assets/content/hands/hands_arena_bp_4/hands_bp_4.skin.bundle
+  Hands  Hands_BP_5  id 67ac82465f7251f49d0e9b0f  bundle assets/content/hands/hands_arena_bp_5/hands_bp_5.skin.bundle
+  Hands  Hands_BP_6  id 67ac825b5d717b44c00a0c90  bundle assets/content/hands/hands_arena_bp_6/hands_bp_6.skin.bundle
+  Hands  Hands_BT_1  id 64355a2b7e17c882400c50a0  bundle assets/content/hands/hands_arena_bt_1/hands_bt_1.skin.bundle
+  Hands  Hands_BT_2  id 64368d69ac11c9eaf10d890e  bundle assets/content/hands/hands_arena_bt_2/hands_arena_bt_2.skin.bundle
+  Hands  Hands_BT_3  id 6436a4c2b6b75d4c89077fbd  bundle assets/content/hands/hands_arena_bt_3/hands_arena_bt_3.skin.bundle
+  Hands  Hands_FW_1  id 675845ecb96fa6b76c075a39  bundle assets/content/hands/hands_arena_fw_1/hands_fw_1.skin.bundle
+  Hands  Hands_RT_1  id 6436b8d00a69698d1b04a0a1  bundle assets/content/hands/hands_arena_rt_1/hands_arena_rt_1.skin.bundle
+  Hands  Hands_RT_2  id 6436d9ec6c06444bf7033a4e  bundle assets/content/hands/hands_arena_rt_2/hands_arena_rt_2.skin.bundle
+  Hands  Hands_RT_3  id 6437ef59881906a7fe086aae  bundle assets/content/hands/hands_arena_rt_3/hands_rt_3.skin.bundle
+  Hands  Hands_usec_carinthia_softshell_arena_bp_01  id 67ac83375d717b44c00a0c92  bundle assets/content/hands/hands_usec_carinthia_softshell/hands_usec_carinthia_softshell_arena_bp_01.skin.bundle
+  Hands  hands_usec_ClawGear  id 66b4d4ccd9281f8de00c6e02  bundle assets/content/hands/hands_usec_clawgear/hands_usec_clawgear.skin.bundle
+  Hands  pmc_hands_blackknight_quest  id 64ef3f3739e45b527a7c40ae  bundle assets/content/hands/hands_boss_blackknight_quest/hands_boss_blackknight_quest.skin.bundle
+  Hands  pmc_hands_cultist  id 6654957791883f6c9f0f1f50  bundle assets/content/hands/hands_pmc_cultist/hands_pmc_cultist.skin.bundle
+  Hands  SavageHands1  id 5cc2e68f14c02e28b47de290  bundle assets/content/hands/wild/wild_body_1_firsthands.bundle
+  Hands  SavageHands2  id 5cde9fff7d6c8b647a3769b1  bundle assets/content/hands/wild/wild_body_2_firsthands.bundle
+  Hands  SavageHands3  id 5cdea3947d6c8b04737c2d16  bundle assets/content/hands/wild/wild_body_3_firsthands.bundle
+  Hands  SavageHands_Blackknight  id 64ad4da55a592f21980c4723  bundle assets/content/hands/hands_boss_blackknight_quest/hands_boss_blackknight_quest.skin.bundle
+  Hands  SavageHands_bomber  id 618cf9540a5a59657e5f5677  bundle assets/content/hands/hands_wild_bomber/hands_wild_bomber.skin.bundle
+  Hands  SavageHands_feldparka  id 64ac23c449d74fd5ec0a124e  bundle assets/content/hands/hands_wild_feldparka/hands_wild_feldparka.skin.bundle
+  Hands  SavageHands_killa  id 5df8ead786f774530571b14b  bundle assets/content/hands/wild/hands_boss_killa.bundle
+  Hands  SavageHands_meteor  id 5df8eac086f77412640e2ea7  bundle assets/content/hands/hands_wild_meteor/hands_wild_meteor.skin.bundle
+  Hands  SavageHands_motocross  id 5e9da2dd86f774054e7d0f63  bundle assets/content/hands/hands_wild_motocross/hands_wild_motocross.skin.bundle
+  Hands  SavageHands_rainparka  id 5fd78fe9e3bfcf6cab4c9f54  bundle assets/content/hands/hands_wild_rainparka/hands_wild_rainparka.skin.bundle
+  Hands  SavageHands_russia1  id 5e4bb49586f77406a313ec5a  bundle assets/content/hands/hands_wild_russia/hands_wild_russia.skin.bundle
+  Hands  SavageHands_underarmour  id 5fd7901bdd870108a754c0e6  bundle assets/content/hands/hands_wild_underarmour/hands_wild_underarmour.skin.bundle
+  Hands  SavageHands_Victory  id 6391c6205dbbdb3b1b049840  bundle assets/content/hands/hands_wild_hoody_victory/hands_wild_hoody_victory.skin.bundle
+  Hands  SavageHands_yellowcoat  id 6197aca964ae5436d76c1f98  bundle assets/content/hands/hands_wild_yellowcoat/hands_wild_yellowcoat.skin.bundle
+  Hands  usec_hands_acu  id 5fd78519a8c881276c55eae6  bundle assets/content/hands/hands_usec_acu/hands_usec_acu.skin.bundle
+  Hands  usec_hands_aggressor  id 5d1f5b0686f7743f8362bcde  bundle assets/content/hands/hands_usec_aggressor_parka/hands_usec_aggressor_parka.skin.bundle
+  Hands  usec_hands_beltstaff  id 6034d33392ec1c31037959dc  bundle assets/content/hands/hands_usec_beltstaff/hands_usec_beltstaff.skin.bundle
+  Hands  usec_hands_carinthia_softshell  id 6393082c1c8f182ad90c8961  bundle assets/content/hands/hands_usec_carinthia_softshell/hands_usec_carinthia_softshell.skin.bundle
+  Hands  usec_hands_cereum  id 618d1a5574bb2d036a049ea9  bundle assets/content/hands/hands_usec_cereum/hands_usec_cereum.bundle
+  Hands  usec_hands_chameleon_softshell  id 6295e95e2ff06264a71c7c1f  bundle assets/content/hands/hands_usec_chameleon_softshell/hands_usec_chameleon_softshell.skin.bundle
+  Hands  usec_hands_commando  id 5d4da36686f77421522b35ee  bundle assets/content/hands/hands_usec_commando/hands_usec_commando.skin.bundle
+  Hands  usec_hands_CryeAC_Alpha_Green  id 6604375110bcdf80ff0e9f7a  bundle assets/content/hands/usec/hands_usec_cryeac_alpha_green.bundle
+  Hands  usec_hands_deadly_frog  id 675071099170ae7dd00d4216  bundle assets/content/hands/hands_usec_deadly_frog/hands_usec_deadly_frog.skin.bundle
+  Hands  usec_hands_flexion  id 5d1f5b1986f7744bcd1345a1  bundle assets/content/hands/hands_usec_softshell/hands_usec_softshell.skin.bundle
+  Hands  usec_hands_hawaii_01  id 6847e7ec93e9ca7c5b08fcea  bundle assets/content/hands/hands_usec_hawaii_01/hands_usec_hawaii_01.skin.bundle
+  Hands  usec_hands_hawaii_02  id 68be882ec89ccaee060c81ca  bundle assets/content/hands/hands_usec_hawaii_02/hands_usec_hawaii_02.skin.bundle
+  Hands  usec_hands_hawaii_03  id 685d08ebc18489365003668e  bundle assets/content/hands/hands_usec_hawaii_03/hands_usec_hawaii_03.skin.bundle
+  Hands  usec_hands_hawaii_miami  id 68d1b13d7cebb8b1540671c3  bundle assets/content/hands/hands_usec_kit_upper_hawaii_miami/hands_usec_kit_upper_hawaii_miami.bundle
+  Hands  usec_hands_hoody  id 5e9da2a786f774054c19ac94  bundle assets/content/hands/hands_usec_hoody/hands_usec_hoody.skin.bundle
+  Hands  usec_hands_infiltrator  id 5d1f5b3f86f7744bcd1345a2  bundle assets/content/hands/hands_usec_combatshirt/hands_usec_combatshirt.skin.bundle
+  Hands  usec_hands_NightPatrol  id 5f5f3fc66bdad616ad46d62f  bundle assets/content/hands/hands_usec_nightpatrol/hands_usec_nightpatrol.bundle
+  Hands  usec_hands_pcsmulticam  id 5d1f5b4886f7744bce0ee9f3  bundle assets/content/hands/hands_usec_pcsshirt/hands_usec_pcsshirt.skin.bundle
+  Hands  usec_hands_pcuironsight  id 5d1f5b5386f7744bcc048757  bundle assets/content/hands/hands_usec_orc_pcu/hands_usec_orc_pcu.skin.bundle
+  Hands  usec_hands_special_ops  id 675698339fe31e6df7031b28  bundle assets/content/hands/hands_usec_special_ops/hands_usec_special_ops.skin.bundle
+  Hands  usec_hands_tier2  id 5e4bb1fe86f774069342dec8  bundle assets/content/hands/hands_usec_tier2/hands_usec_tier2.skin.bundle
+  Hands  usec_hands_tier3  id 5fd7769cd3d418755f40ea43  bundle assets/content/hands/hands_usec_tier3/hands_usec_tier3.skin.bundle
+  Hands  usec_hands_velocity  id 657316a92dba425ccc0141a4  bundle assets/content/hands/hands_usec_velocity/hands_usec_velocity.skin.bundle
+  Hands  usec_hands_velocity_multicam  id 660438077502eca33a08cacc  bundle assets/content/hands/hands_usec_velocity/hands_usec_velocity_multicam.bundle
+  Hands  usec_hands_winterset  id 675ff2a7e3ee8ffb7e042465  bundle assets/content/hands/hands_usec_winterset/hands_usec_winterset.skin.bundle
+  Head   bear_head_1  id 5fdb50bb2b730a787b3f78cf  bundle assets/content/characters/character/prefabs/bear_head_1.bundle
+  Head   bear_head_3  id 5fdb7571e4ed5b5ea251e529  bundle assets/content/characters/character/prefabs/bear_head_3.bundle
+  Head   bear_head_4  id 60a6aaad42fd2735e4589978  bundle assets/content/characters/character/prefabs/bear_head_4.bundle
+  Head   bear_head_5  id 619f94f5b90286142b59d45f  bundle assets/content/characters/character/prefabs/bear_head_slava.bundle
+  Head   bear_head_6  id 62a9e7d15ea3b87d6f642a28  bundle assets/content/characters/character/prefabs/bear_head_5.bundle
+  Head   bear_head_amadu  id 675ac3957908e416a20861e6  bundle assets/content/characters/character/prefabs/bear_head_amadu.bundle
+  Head   bear_head_eug  id 6574aa9a1b144de18c0fba45  bundle assets/content/characters/character/prefabs/bear_head_eug.bundle
+  Head   DefaultBearHead  id 5cc084dd14c02e000b0550a3  bundle assets/content/characters/character/prefabs/bear_head_0.bundle
+  Head   DefaultUsecHead  id 5cde96047d6c8b20b577f016  bundle assets/content/characters/character/prefabs/usec_head_1.bundle
+  Head   Head  id 5cc085e214c02e000c6bea67  bundle assets/content/characters/character/prefabs/bear_head.bundle  <-- BUNDLE FILE MISSING
+  Head   Head_BOSS_BigPIpe  id 6287b0d239d8207cb27d66c7  bundle assets/content/characters/character/prefabs/head_boss_big_pipe.bundle
+  Head   Head_BOSS_Birdeye  id 628b57d800f171376e7b2634  bundle assets/content/characters/character/prefabs/head_boss_birdeye.bundle
+  Head   Head_BOSS_Blackknight  id 62875ad50828252c7a28b95c  bundle assets/content/characters/character/prefabs/head_boss_blackknight.bundle
+  Head   Head_BOSS_Glukhar  id 5d5e805d86f77439eb4c2d0e  bundle assets/content/characters/character/prefabs/head_boss_glukhar.bundle
+  Head   Head_BOSS_Kaban  id 64809e3077c11aeac5078e3c  bundle assets/content/characters/character/prefabs/head_boss_kaban.bundle
+  Head   Head_BOSS_Kolontai  id 654b5ed58558fd71f97254f4  bundle assets/content/characters/character/prefabs/head_boss_kolontai.bundle
+  Head   Head_Boss_Partizan  id 66aa5ca23d22c9416c010be0  bundle assets/content/characters/character/prefabs/head_boss_partizan.bundle
+  Head   Head_BOSS_Sanitar  id 5e99767c86f7741ac7399393  bundle assets/content/characters/character/prefabs/head_boss_sanitar.bundle
+  Head   Head_BOSS_Zryachi  id 636129784aa74b8fe30ab418  bundle assets/content/characters/character/prefabs/head_boss_zryachi.bundle
+  Head   head_cultist_01  id 5fb5297a0359a84b77066e56  bundle assets/content/characters/character/prefabs/head_cultist_01.bundle
+  Head   head_cultist_02  id 5fb52a3a1c69e5198e234118  bundle assets/content/characters/character/prefabs/head_cultist_02.bundle
+  Head   head_cultist_03  id 5fb52a537b5d1342ee24bd57  bundle assets/content/characters/character/prefabs/head_cultist_03.bundle
+  Head   Head_Mannequin  id 6644d2da35d958070c02642c  bundle assets/content/characters/character/prefabs/head_mannequin.bundle
+  Head   head_zombie_1  id 66fd4372bd170aa3fb012a56  bundle assets/content/characters/wip/zombies/prefabs_zombies/head_zombie_1.bundle
+  Head   usec_head_3  id 5fdb5950f5264a66150d1c6e  bundle assets/content/characters/character/prefabs/usec_head_3.bundle
+  Head   usec_head_4  id 5fdb4139e4ed5b5ea251e4ed  bundle assets/content/characters/character/prefabs/usec_head_4.bundle
+  Head   usec_head_5  id 60a6aa8fd559ae040d0d951f  bundle assets/content/characters/character/prefabs/usec_head_5.bundle
+  Head   usec_head_6  id 619f9e338858a474c8685cc9  bundle assets/content/characters/character/prefabs/usec_head_sean.bundle
+  Head   usec_head_7  id 62aca6a1310e67685a2fc2e7  bundle assets/content/characters/character/prefabs/usec_head_6.bundle
+  Head   usec_head_eric  id 6574aabee0423b9ebe0c79cf  bundle assets/content/characters/character/prefabs/usec_head_eric.bundle
+  Head   usec_head_Hugh  id 6764194e4dec6d46f106f9f6  bundle assets/content/characters/character/prefabs/usec_head_hugh.bundle
+  Head   Wild_Dealmaker_head  id 5d28b01486f77429242fc898  bundle assets/content/characters/character/prefabs/wild_dealmaker_head.bundle
+  Head   wild_head_1  id 5cc2e4d014c02e000d0115f8  bundle assets/content/characters/character/prefabs/wild_head_1.bundle
+  Head   wild_head_2  id 5cde9ff17d6c8b0474535daa  bundle assets/content/characters/character/prefabs/wild_head_2.bundle
+  Head   wild_head_3  id 5d28afe786f774292668618d  bundle assets/content/characters/character/prefabs/wild_head_misha.bundle
+  Head   wild_head_drozd  id 5f68c4a7c174a17c0f4c8945  bundle assets/content/characters/character/prefabs/wild_head_drozd.bundle
+  Head   wild_head_misha  id 5f68c4c217d579077152a252  bundle assets/content/characters/character/prefabs/wild_head_misha.bundle
+  Head   Wild_Head_nonMesh  id 5d5f8ba486f77431254e7fd2  bundle assets/content/characters/character/prefabs/wild_head_nonmesh.bundle
+  Head   Wild_Killa_head  id 5d28b03e86f7747f7e69ab8a  bundle assets/content/characters/character/prefabs/head_boss_killa.bundle
+  Head   wild_security_head_den  id 65749be133fdc9c0cf06d3c8  bundle assets/content/characters/character/prefabs/head_wild_security_den.bundle
+  Head   wild_security_head_gus  id 65749bcce32c4e3f7907bf44  bundle assets/content/characters/character/prefabs/head_wild_security_gus.bundle
+  Head   zombie_head_bear_evg  id 670d180f0fe9098f0c054642  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_bear_evg.bundle
+  Head   zombie_head_bear_head_1  id 670d18225eef3711b30ace74  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_bear_head_1.bundle
+  Head   zombie_head_bear_slava  id 670d18320fe9098f0c054644  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_bear_slava.bundle
+  Head   zombie_head_civ_head_1  id 670d125b7ca0004a2a021eae  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_civ_head_1.bundle
+  Head   zombie_head_civ_head_2  id 670d1749d57ec3c3e20e81a6  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_civ_head_2.bundle
+  Head   zombie_head_lab_assistant_1  id 670d176bb7a8f34fce07fd9d  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_lab_assistant_1.bundle
+  Head   zombie_head_lab_assistant_2  id 670d17df032591157e0c3538  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_lab_assistant_2.bundle
+  Head   zombie_head_lab_assistant_3  id 670d17f9d2d5ce4514027e83  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_lab_assistant_3.bundle
+  Head   zombie_head_usec_eric  id 670d1843186ee334e70ee700  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_usec_eric.bundle
+  Head   zombie_head_usec_head_2  id 670d1854032591157e0c353a  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_usec_head_2.bundle
+  Head   zombie_head_usec_head_6  id 670d1862b7a8f34fce07fda7  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_usec_head_6.bundle
+  Head   zombie_head_wild_drozd  id 670d18746f8cc0145f0a0314  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_wild_drozd.bundle
+  Head   zombie_head_wild_head_1  id 670d18827ca0004a2a022603  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_wild_head_1.bundle
+  Head   zombie_head_wild_head_2  id 670d1892d2d5ce4514027e8a  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_wild_head_2.bundle
+  Head   zombie_head_wild_head_3  id 670d18a3b7a8f34fce07fda9  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_wild_head_3.bundle
+  Head   zombie_head_wild_misha  id 670d18b5032591157e0c353e  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_head_wild_misha.bundle
+  Pants  bear_lower_combat  id 5e4bb39386f774067f79de05  bundle assets/content/characters/character/prefabs/pants_bear_combat.bundle
+  Pants  bear_lower_fsburban  id 5d1f58cb86f7744bca3f0b9a  bundle assets/content/characters/character/prefabs/pants_bear_fsburban.bundle
+  Pants  bear_lower_g99  id 5f5e40400bc58666c37e7819  bundle assets/content/characters/character/prefabs/pants_bear_g99.bundle
+  Pants  bear_lower_gorkakobra  id 5d1f58a086f7743f8362bcd9  bundle assets/content/characters/character/prefabs/pants_bear_gorkae.bundle
+  Pants  bear_lower_gorkasso  id 5d1f58bd86f7744bce0ee9ef  bundle assets/content/characters/character/prefabs/pants_bear_gorkasso.bundle
+  Pants  bear_lower_instructor  id 6756960dbe1cb7ec47002236  bundle assets/content/characters/character/prefabs/pants_bear_instructor.bundle
+  Pants  bear_lower_nord  id 67506f51caaa3394b2082166  bundle assets/content/characters/character/prefabs/pants_bear_nord.bundle
+  Pants  bear_lower_oldschool  id 5df89f8f86f77412672a1e38  bundle assets/content/characters/character/prefabs/pants_bear_oldschool.bundle
+  Pants  bear_lower_ops_windshirt  id 65707a89f5a6f1412f0c5f7b  bundle assets/content/characters/character/prefabs/pants_bear_ops_windshirt.bundle
+  Pants  bear_lower_shorts  id 685d087ae21676b134054474  bundle assets/content/characters/character/prefabs/pants_bear_shorts.bundle
+  Pants  bear_lower_spna  id 6377315993a3b4967208e437  bundle assets/content/characters/character/prefabs/pants_bear_spna.bundle
+  Pants  bear_lower_srvv_surpat  id 66043cf87502eca33a08cad2  bundle assets/content/characters/character/prefabs/pants_bear_srvv_surpat.bundle
+  Pants  bear_lower_striker  id 5d1f58ab86f7743014162042  bundle assets/content/characters/character/prefabs/pants_bear_striker.bundle
+  Pants  bear_lower_summerfield  id 5d1f588e86f7744bcc048753  bundle assets/content/characters/character/prefabs/pants_bear_polevoi.bundle
+  Pants  bear_lower_sumrak  id 617be9e4e02b3b3fa50fa8f2  bundle assets/content/characters/character/prefabs/pants_bear_sumrak.bundle
+  Pants  bear_lower_tactical_long  id 6295e63de08ed747e64ae991  bundle assets/content/characters/character/prefabs/pants_bear_tactical_long.bundle
+  Pants  bear_lower_triarius  id 5fce3e965a9f8c40685693bc  bundle assets/content/characters/character/prefabs/pants_bear_triarius.bundle
+  Pants  bear_lower_voin  id 6033a3d8ed2e0509b15f9031  bundle assets/content/characters/character/prefabs/pants_bear_voin.bundle
+  Pants  bear_lower_Windshirt_tan  id 66043d7ac8949a435906e434  bundle assets/content/characters/character/prefabs/pants_bear_ops_windshirt_tan.bundle
+  Pants  bear_lower_winterset  id 675994c9f7adb892bd080766  bundle assets/content/characters/character/prefabs/pants_bear_winterset.bundle
+  Pants  bear_lower_zaslon  id 5e9dc97c86f774054c19ac9a  bundle assets/content/characters/character/prefabs/pants_bear_zaslon.bundle
+  Pants  DefaultBearFeet  id 5cc085bb14c02e000e67a5c5  bundle assets/content/characters/character/prefabs/pants_bear_srvv.bundle
+  Pants  DefaulUsecFeet  id 5cde95ef7d6c8b04713c4f2d  bundle assets/content/characters/character/prefabs/pants_usec_cryeac.bundle
+  Pants  Feet  id 5cc0869814c02e000a4cad94  bundle assets/content/characters/character/prefabs/bear_feet.bundle
+  Pants  Pants_Arena_Champion  id 68bc2d4fd5e8d55c7d0d522f  bundle assets/content/characters/character/prefabs/pants_arena_champion.bundle
+  Pants  Pants_Arena_Intermediate_BEAR  id 68bc2d67b50500fb3d079f42  bundle assets/content/characters/character/prefabs/pants_arena_intermediate_bear.bundle
+  Pants  Pants_Arena_Intermediate_USEC  id 68bc2d7b5997832aa10e08fa  bundle assets/content/characters/character/prefabs/pants_arena_intermediate_usec.bundle
+  Pants  Pants_Bear_Phoenix  id 66acebd4ede86671bb09584b  bundle assets/content/characters/character/prefabs/pants_bear_phoenix.bundle
+  Pants  Pants_bear_Phoenix_arena_bp_01  id 67ab0b06755a9402da001199  bundle assets/content/characters/character/prefabs/pants_bear_phoenix_arena_bp_01.bundle
+  Pants  Pants_bear_Phoenix_arena_bp_02  id 67ab0b16755a9402da00119b  bundle assets/content/characters/character/prefabs/pants_bear_phoenix_arena_bp_02.bundle
+  Pants  Pants_bear_Phoenix_arena_bp_03  id 67ab0b27755a9402da00119d  bundle assets/content/characters/character/prefabs/pants_bear_phoenix_arena_bp_03.bundle
+  Pants  Pants_BOSS_BigPipe  id 6287b14b66bb7d4a3c32bc94  bundle assets/content/characters/character/prefabs/pants_boss_big_pipe.bundle
+  Pants  Pants_BOSS_Birdeye  id 628a4645c9327c7587388849  bundle assets/content/characters/character/prefabs/pants_boss_birdeye.bundle
+  Pants  Pants_BOSS_Blackknight  id 628771f70828252c7a28b961  bundle assets/content/characters/character/prefabs/pants_boss_blackknight.bundle
+  Pants  Pants_BOSS_Glukhar  id 5d5e7f2a86f77427997cfb80  bundle assets/content/characters/character/prefabs/pants_boss_glukhar.bundle
+  Pants  Pants_BOSS_Kaban  id 64806edf77c11aeac5078e33  bundle assets/content/characters/character/prefabs/pants_boss_kaban.bundle
+  Pants  Pants_BOSS_Killa_Xmass  id 6756d0f97c4045d8c708a4ec  bundle assets/content/characters/character/prefabs/pants_boss_killa_xmass.bundle
+  Pants  Pants_BOSS_Kolontai  id 654a2bc5ee6e547e9f6238e7  bundle assets/content/characters/character/prefabs/pants_boss_kolontai.bundle
+  Pants  Pants_Boss_Partizan  id 66aa5bba10d2d4006a3c4a84  bundle assets/content/characters/character/prefabs/pants_boss_partizan.bundle
+  Pants  Pants_BOSS_Sanitar  id 5e99762586f77466320ff9a9  bundle assets/content/characters/character/prefabs/pants_boss_sanitar.bundle
+  Pants  Pants_BOSS_Shturman  id 5d5e7f3c86f7742797262063  bundle assets/content/characters/character/prefabs/pants_boss_shturman.bundle
+  Pants  pants_boss_tagilla  id 609e86c09776a947754429b2  bundle assets/content/characters/character/prefabs/pants_boss_tagilla.bundle
+  Pants  Pants_BOSS_Zryachi  id 6361216278f9ab270a0a48d9  bundle assets/content/characters/character/prefabs/pants_boss_zryachi.bundle
+  Pants  Pants_BT_1  id 642c19360a69698d1b049e12  bundle assets/content/characters/character/prefabs/pants_bt_1.bundle
+  Pants  Pants_BT_2  id 642d4d8eb6b75d4c89077cf9  bundle assets/content/characters/character/prefabs/pants_bt_2.bundle
+  Pants  Pants_BT_3  id 642d6941ff5ecad7810a8a61  bundle assets/content/characters/character/prefabs/pants_bt_3.bundle
+  Pants  pants_cultist_01  id 5fb535bd1c69e5198e234125  bundle assets/content/characters/character/prefabs/pants_cultist_01.bundle
+  Pants  pants_cultist_02  id 5fb535cf1c69e5198e234126  bundle assets/content/characters/character/prefabs/pants_cultist_02.bundle
+  Pants  Pants_Mannequin  id 6644d32235d958070c02642e  bundle assets/content/characters/character/prefabs/pants_mannequin.bundle
+  Pants  Pants_RT_1  id 642e71620a69698d1b049f0a  bundle assets/content/characters/character/prefabs/pants_rt_1.bundle
+  Pants  Pants_RT_2  id 642ed40af5bdf1c04e01952e  bundle assets/content/characters/character/prefabs/pants_rt_2.bundle
+  Pants  Pants_RT_3  id 642eea6f881906a7fe086841  bundle assets/content/characters/character/prefabs/pants_rt_3.bundle
+  Pants  Pants_security_Flora  id 5d5e7f8986f7742798716582  bundle assets/content/characters/character/prefabs/pants_security_flora.bundle
+  Pants  Pants_security_Gorka4  id 5d5e7f4986f7746956659f8a  bundle assets/content/characters/character/prefabs/pants_security_gorka4.bundle
+  Pants  Pants_usec_cereum_arena_bp_01  id 67ab1543755a9402da0011a2  bundle assets/content/characters/character/prefabs/pants_usec_cereum_arena_bp_01.bundle
+  Pants  Pants_usec_cereum_arena_bp_02  id 67ab1556508ee9b6440e9c62  bundle assets/content/characters/character/prefabs/pants_usec_cereum_arena_bp_02.bundle
+  Pants  Pants_usec_cereum_arena_bp_03  id 67ab1570fe82855dcc0f2aec  bundle assets/content/characters/character/prefabs/pants_usec_cereum_arena_bp_03.bundle
+  Pants  pants_usec_raider  id 66acc8f719271bd6d00dec0b  bundle assets/content/characters/character/prefabs/pants_usec_raider.bundle
+  Pants  pants_wild_ment_gorka1  id 66bf680aa1b36f497a5d65bd  bundle assets/content/characters/character/prefabs/pants_wild_ment_gorka1.bundle
+  Pants  pants_wild_ment_specnaz_kamysh  id 66bf6885952b42739a5f2298  bundle assets/content/characters/character/prefabs/pants_wild_ment_specnaz_kamysh.bundle
+  Pants  pants_wild_ment_specnaz_kamysh_b  id 66bf68d0f08c35734d4940c6  bundle assets/content/characters/character/prefabs/pants_wild_ment_specnaz_kamysh_b.bundle
+  Pants  pants_wild_ment_specnaz_kamysh_g  id 66bf69195d6942454668fd5d  bundle assets/content/characters/character/prefabs/pants_wild_ment_specnaz_kamysh_g.bundle
+  Pants  pants_zombie_1  id 66fd4407390606b5e106e016  bundle assets/content/characters/wip/zombies/prefabs_zombies/pants_zombie_1.bundle
+  Pants  usec_lower_beltstaff  id 6033a3fee29c9f6c9b14e74e  bundle assets/content/characters/character/prefabs/pants_usec_beltstaff.bundle
+  Pants  usec_lower_carinthia_softshell  id 637ba17aa10a96c2b605dbc2  bundle assets/content/characters/character/prefabs/pants_usec_carinthia_softshell.bundle
+  Pants  usec_lower_cereum  id 617c02e24013b06b0b78df80  bundle assets/content/characters/character/prefabs/pants_usec_cereum.bundle
+  Pants  usec_lower_chameleon_softshell  id 6295e944e9de5e7b3751c4da  bundle assets/content/characters/character/prefabs/pants_usec_chameleon_softshell.bundle
+  Pants  usec_lower_commando  id 5e4bb3b586f77406812bd579  bundle assets/content/characters/character/prefabs/pants_usec_commando.bundle
+  Pants  usec_lower_CryeAC_Alpha_Green  id 660436487502eca33a08cac8  bundle assets/content/characters/character/prefabs/pants_usec_cryeac_alpha_green.bundle
+  Pants  usec_lower_deadly_frog  id 6750707dc1b42fa2ee09aeb6  bundle assets/content/characters/character/prefabs/pants_usec_deadly_frog.bundle
+  Pants  usec_lower_DeepRecon  id 5e9dcadd86f7743e20652f23  bundle assets/content/characters/character/prefabs/pants_usec_deeprecon.bundle
+  Pants  usec_lower_gen2khyber  id 5d1f591186f7744bcc048755  bundle assets/content/characters/character/prefabs/pants_usec_gen2.bundle
+  Pants  usec_lower_infiltrator  id 5d1f592286f7743f8362bcdb  bundle assets/content/characters/character/prefabs/pants_usec_cryeprecision.bundle
+  Pants  usec_lower_jeansranger  id 5d1f590486f7744bcd13459e  bundle assets/content/characters/character/prefabs/pants_usec_jeans01.bundle
+  Pants  usec_lower_shorts  id 685d0844a4c03ac885004b90  bundle assets/content/characters/character/prefabs/pants_usec_shorts.bundle
+  Pants  usec_lower_special_ops  id 675697fad588566bce0da766  bundle assets/content/characters/character/prefabs/pants_usec_special_ops.bundle
+  Pants  usec_lower_taclifeterrain  id 5d1f58ed86f7744bcb0acd1c  bundle assets/content/characters/character/prefabs/pants_usec_blackhawk_tac_life.bundle
+  Pants  usec_lower_tacres  id 5d1f593286f7743014162044  bundle assets/content/characters/character/prefabs/pants_usec_truspec.bundle
+  Pants  usec_lower_tier3  id 5fcf940bce1ba36a513bb9cc  bundle assets/content/characters/character/prefabs/pants_usec_tier3.bundle
+  Pants  usec_lower_tier_2  id 5df8a08886f7740bfe6df775  bundle assets/content/characters/character/prefabs/pants_usec_tier_2.bundle
+  Pants  usec_lower_UrbanResponder  id 5f5e40a06760b4138443b341  bundle assets/content/characters/character/prefabs/pants_usec_urbanresponder.bundle
+  Pants  usec_lower_velocity  id 6571cad4c8673f00290f5657  bundle assets/content/characters/character/prefabs/pants_usec_velocity.bundle
+  Pants  usec_lower_velocity_multicam  id 660436a810bcdf80ff0e9f78  bundle assets/content/characters/character/prefabs/pants_usec_velocity_grey.bundle
+  Pants  usec_lower_winterset  id 675fd6b2f26b0db5f0060eb6  bundle assets/content/characters/character/prefabs/pants_usec_winterset.bundle
+  Pants  Wild_Dealmaker_feet  id 5d28b3a186f7747f7e69ab8c  bundle assets/content/characters/character/prefabs/wild_dealmaker_feet.bundle
+  Pants  wild_feet  id 5cc2e5d014c02e15d53d9c03  bundle assets/content/characters/character/prefabs/wild_feet.bundle
+  Pants  wild_feet_1  id 5cde9fb87d6c8b0474535da9  bundle assets/content/characters/character/prefabs/wild_feet_1.bundle
+  Pants  wild_feet_2  id 5d28af3486f774292364a6e7  bundle assets/content/characters/character/prefabs/wild_feet_2.bundle
+  Pants  wild_feet_bomber  id 6193be546e5968395b260157  bundle assets/content/characters/character/prefabs/pants_wild_bomber.bundle
+  Pants  wild_feet_feldparka  id 64a2e970a74bb33d140e6dc5  bundle assets/content/characters/character/prefabs/pants_wild_feldparka.bundle
+  Pants  wild_feet_scavelite_taclite  id 6033a430ed2e0509b15f9033  bundle assets/content/characters/character/prefabs/pants_wild_scavelite_taclite.bundle
+  Pants  wild_feet_sklon  id 5df8a15186f77412640e2e6a  bundle assets/content/characters/character/prefabs/pants_wild_sklon.bundle
+  Pants  wild_feet_slimPants  id 5f5e41576760b4138443b344  bundle assets/content/characters/character/prefabs/pants_wild_slimpants.bundle
+  Pants  wild_feet_sweatpants  id 5f5e410c6bdad616ad46d60b  bundle assets/content/characters/character/prefabs/pants_wild_sweatpants.bundle
+  Pants  wild_feet_victory  id 637df25a1e688345e1097bd4  bundle assets/content/characters/character/prefabs/pants_wild_victory.bundle
+  Pants  wild_feet_wasatch  id 5f5e41366760b4138443b343  bundle assets/content/characters/character/prefabs/pants_wild_wasatch.bundle
+  Pants  Wild_Killa_feet  id 5cdea3c47d6c8b0475341734  bundle assets/content/characters/character/prefabs/pant_boss_killa.bundle
+  Pants  wild_pants_yellowcoat  id 61922589bb2cea6f7a22d964  bundle assets/content/characters/character/prefabs/pants_wild_yellowcoat.bundle
+  Pants  wild_pmcBot_feet  id 5d28af7886f77429275dba25  bundle assets/content/characters/character/prefabs/pants_wild_scavelite.bundle
+  Pants  wild_security_feet_1  id 5d28af5386f774292364a6e8  bundle assets/content/characters/character/prefabs/wild_security_feet_1.bundle
+  Pants  wild_security_feet_bratva_1  id 65749c05e0423b9ebe0c79c7  bundle assets/content/characters/character/prefabs/pants_wild_security_bratva_1.bundle
+  Pants  wild_security_feet_bratva_2  id 65749c1fe32c4e3f7907bf47  bundle assets/content/characters/character/prefabs/pants_wild_security_bratva_2.bundle
+  Pants  zombie_pants_bear_retar  id 670fb704b9e6567c8102cf08  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_bear_retar.bundle
+  Pants  zombie_pants_boss_tagilla  id 670fa4b08a2b9e2bde05b751  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_boss_tagilla.bundle
+  Pants  zombie_pants_civ_classic  id 670d18e2e002387b88029112  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_civ_classic.bundle
+  Pants  zombie_pants_civ_jeans  id 670d18f87ca0004a2a022606  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_civ_jeans.bundle
+  Pants  zombie_pants_civ_slim  id 670d1907b7a8f34fce07fdab  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_civ_slim.bundle
+  Pants  zombie_pants_usec_ac_cry  id 670fb76578245f17bb00ad85  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_usec_ac_cry.bundle
+  Pants  zombie_pants_wild_bomber  id 670fb78d5ce1f9ca3b04b6c6  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_wild_bomber.bundle
+  Pants  zombie_pants_wild_fieldparka  id 670fb7a4e6040a23520aa5d0  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_wild_fieldparka.bundle
+  Pants  zombie_pants_wild_scavelite  id 670fb7bd2e9d3564120e91c7  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_wild_scavelite.bundle
+  Pants  zombie_pants_wild_yellowcoat  id 670fb7d425772b9ffb0c7f3a  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_pants_wild_yellowcoat.bundle
+  Top    bear_top_borey  id 5fce3e47fe40296c1d5fd784  bundle assets/content/characters/character/prefabs/top_bear_borey.bundle
+  Top    bear_top_ops_windshirt  id 657058fddf9b3231400e9188  bundle assets/content/characters/character/prefabs/top_bear_ops_windshirt.bundle
+  Top    bear_tshirt_termo  id 5fce3e0cfe40296c1d5fd782  bundle assets/content/characters/character/prefabs/tshirt_bear_termo.bundle
+  Top    bear_upper_blacklynx  id 5d1f566d86f7744bcd13459a  bundle assets/content/characters/character/prefabs/top_bear_blacklynx.bundle
+  Top    bear_upper_contractortshirt  id 5d1f565786f7743f8362bcd5  bundle assets/content/characters/character/prefabs/tshirt_bear_black.bundle
+  Top    bear_upper_fsbfastresponse  id 5d1f568486f7744bca3f0b98  bundle assets/content/characters/character/prefabs/top_bear_fsbfastresponse.bundle
+  Top    bear_upper_g99  id 5f5e401747344c2e4f6c42c5  bundle assets/content/characters/character/prefabs/top_bear_g99.bundle
+  Top    bear_upper_ghostmarksman  id 5d1f567786f7744bcc04874f  bundle assets/content/characters/character/prefabs/top_bear_ghostmarksman.bundle
+  Top    bear_upper_hawaii_01  id 6847e3010f5df094fb072599  bundle assets/content/characters/character/prefabs/top_bear_hawaii_01.bundle
+  Top    bear_upper_hawaii_02  id 68be877aaf253218c00ebba9  bundle assets/content/characters/character/prefabs/top_bear_hawaii_02.bundle
+  Top    bear_upper_hawaii_03  id 685d07f8c18489365003668c  bundle assets/content/characters/character/prefabs/top_bear_hawaii_03.bundle
+  Top    bear_upper_hawaii_miami  id 68d1ad1f37e13fe7d20b5d08  bundle assets/content/characters/character/prefabs/top_bear_kit_upper_hawaii_miami.bundle
+  Top    bear_upper_instructor  id 675695d6e08b3ae7480096bf  bundle assets/content/characters/character/prefabs/tshirt_bear_instructor.bundle
+  Top    bear_upper_nord  id 675069c97348af9e3e0c2a96  bundle assets/content/characters/character/prefabs/top_bear_nord.bundle
+  Top    bear_upper_OPS_Windshirt_black  id 660440d2c8949a435906e43a  bundle assets/content/characters/character/prefabs/top_bear_ops_windshirt_black.bundle
+  Top    bear_upper_SpNa  id 6377266693a3b4967208e42b  bundle assets/content/characters/character/prefabs/top_bear_spna.bundle
+  Top    bear_upper_summerfield  id 5d1f564b86f7744bcb0acd16  bundle assets/content/characters/character/prefabs/top_bear_polevoi.bundle
+  Top    bear_upper_tactical_long  id 6295e698e9de5e7b3751c47a  bundle assets/content/characters/character/prefabs/top_bear_tactical_long.bundle
+  Top    bear_upper_telnik  id 5e4bb31586f7740695730568  bundle assets/content/characters/character/prefabs/tshirt_bear_telnik.bundle
+  Top    bear_upper_tiger  id 5e9d9fa986f774054d6b89f2  bundle assets/content/characters/character/prefabs/tshirt_bear_tiger.bundle
+  Top    bear_upper_turtleneck_black  id 66043cc27502eca33a08cad0  bundle assets/content/characters/character/prefabs/tshirt_bear_turtleneck_black.bundle
+  Top    bear_upper_winterset  id 67599500a378f89a3e089b56  bundle assets/content/characters/character/prefabs/top_bear_winterset.bundle
+  Top    bear_upper_zaslon  id 5df89f1f86f77412631087ea  bundle assets/content/characters/character/prefabs/top_bear_zaslon.bundle
+  Top    Body  id 5cc0868e14c02e000c6bea68  bundle assets/content/characters/character/prefabs/bear_body.bundle
+  Top    DefaultBearBody  id 5cc0858d14c02e000c6bea66  bundle assets/content/characters/character/prefabs/tshirt_bear_turtleneck.bundle
+  Top    DefaultUsecBody  id 5cde95d97d6c8b647a3769b0  bundle assets/content/characters/character/prefabs/tshirt_usec_cryeac.bundle
+  Top    pmc_upper_blackknight_quest  id 64ef3efdb63b74469b6c1499  bundle assets/content/characters/character/prefabs/top_boss_blackknight_quest.bundle
+  Top    pmc_upper_cultist  id 66546f823b51a4d21e0d17d7  bundle assets/content/characters/character/prefabs/top_pmc_cultist.bundle
+  Top    Top_Arena_ACS4  id 685eb62fb5ac4e22ba0f20d1  bundle assets/content/characters/character/prefabs/top_arena_acs4.bundle
+  Top    Top_Arena_Champion  id 68bc29c8b50500fb3d079f3e  bundle assets/content/characters/character/prefabs/top_arena_champion.bundle
+  Top    Top_Arena_Gladiator  id 67af2d83af9667d8ea0d39ac  bundle assets/content/characters/character/prefabs/top_arena_gladiator.bundle
+  Top    Top_Arena_Intermediate_BEAR  id 68bc2bb6dc0a9c7cea0d71de  bundle assets/content/characters/character/prefabs/top_arena_intermediate_bear.bundle
+  Top    Top_Arena_Intermediate_USEC  id 68bc2bdcd988da9e98031993  bundle assets/content/characters/character/prefabs/top_arena_intermediate_usec.bundle
+  Top    Top_Arena_Rusguard_1_Tatau  id 68bc2bfaa808761af80b3f60  bundle assets/content/characters/character/prefabs/top_arena_rusguard_1_tatau.bundle
+  Top    Top_Arena_Rusguard_1_Whitevoron  id 68bc2c4eb50500fb3d079f40  bundle assets/content/characters/character/prefabs/top_arena_rusguard_1_whitevoron.bundle
+  Top    Top_Arena_Rusguard_3_Cuirass  id 68bc2c67f99c8b660606276f  bundle assets/content/characters/character/prefabs/top_arena_rusguard_3_cuirass.bundle
+  Top    Top_Arena_Rusguard_3_Icedragon  id 68bc2c7fe6068f34a7016e90  bundle assets/content/characters/character/prefabs/top_arena_rusguard_3_icedragon.bundle
+  Top    Top_Arena_Rusguard_4_BEAR  id 68bc2c9692326cea6703ee9d  bundle assets/content/characters/character/prefabs/top_arena_rusguard_4_bear.bundle
+  Top    Top_Arena_Rusguard_4_USEC  id 68bc2cb4f90f9465d4062506  bundle assets/content/characters/character/prefabs/top_arena_rusguard_4_usec.bundle
+  Top    Top_Arena_Rusguard_5_Black  id 68bc2cd56e187357d10932ed  bundle assets/content/characters/character/prefabs/top_arena_rusguard_5_black.bundle
+  Top    Top_Arena_Rusguard_5_Green  id 68bc2ce992326cea6703ee9f  bundle assets/content/characters/character/prefabs/top_arena_rusguard_5_green.bundle
+  Top    Top_Bear_Phoenix  id 66acec1dc94f4bf5bc063a16  bundle assets/content/characters/character/prefabs/top_bear_phoenix.bundle
+  Top    Top_bear_Phoenix_arena_bp_01  id 67ab0ab4755a9402da001196  bundle assets/content/characters/character/prefabs/top_bear_phoenix_arena_bp_01.bundle
+  Top    top_bear_sumrak  id 617bca4b4013b06b0b78df2a  bundle assets/content/characters/character/prefabs/top_bear_sumrak.bundle
+  Top    top_bear_voin  id 6033a31e9ec839204e6a2f3e  bundle assets/content/characters/character/prefabs/top_bear_voin.bundle
+  Top    Top_BOSS_BigPipe  id 6287b16b05846043f15a790d  bundle assets/content/characters/character/prefabs/top_boss_big_pipe.bundle
+  Top    Top_BOSS_Birdeye  id 628a6801805c5b6c100cc200  bundle assets/content/characters/character/prefabs/top_boss_birdeye.bundle
+  Top    Top_BOSS_Blackknight  id 628796f2af0a053a6672c29a  bundle assets/content/characters/character/prefabs/top_boss_blackknight.bundle
+  Top    Top_BOSS_Blackknight_quest  id 64a436122d2c4e6e970f4117  bundle assets/content/characters/character/prefabs/top_boss_blackknight_quest.bundle
+  Top    Top_BOSS_Kaban  id 648067b8aa32c2049f098463  bundle assets/content/characters/character/prefabs/top_boss_kaban.bundle
+  Top    Top_BOSS_Killa_Xmass  id 6756d0d27c4045d8c708a4ea  bundle assets/content/characters/character/prefabs/top_boss_killa_xmass.bundle
+  Top    Top_BOSS_Kolontai  id 654b5eb7a29f3736215dd030  bundle assets/content/characters/character/prefabs/top_boss_kolontai.bundle
+  Top    Top_Boss_Partizan  id 66aa5d36f641b13ad238f8c3  bundle assets/content/characters/character/prefabs/top_boss_partizan.bundle
+  Top    Top_BOSS_Sanitar  id 5e9975c486f774382b6320cb  bundle assets/content/characters/character/prefabs/top_boss_sanitar.bundle
+  Top    top_boss_tagilla  id 609e86926e8078716f600883  bundle assets/content/characters/character/prefabs/top_boss_tagilla.bundle
+  Top    Top_BOSS_Zryachi  id 63628b825c1b30a79d09ccb9  bundle assets/content/characters/character/prefabs/top_boss_zryachi.bundle
+  Top    Top_BP_1_black  id 67ac86f8a6749cd1690ae1dd  bundle assets/content/characters/character/prefabs/top_bp_1_black.bundle
+  Top    Top_BP_1_white  id 67ac870e5d717b44c00a0c94  bundle assets/content/characters/character/prefabs/top_bp_1_white.bundle
+  Top    Top_BP_2  id 67ac7eeba6749cd1690ae1d7  bundle assets/content/characters/character/prefabs/top_bp_2.bundle
+  Top    Top_BP_3  id 67ac7f135f7251f49d0e9b0b  bundle assets/content/characters/character/prefabs/top_bp_3.bundle
+  Top    Top_BP_4  id 67ac7f295d717b44c00a0c8c  bundle assets/content/characters/character/prefabs/top_bp_4.bundle
+  Top    Top_BP_5  id 67ac7f3ca6749cd1690ae1d9  bundle assets/content/characters/character/prefabs/top_bp_5.bundle
+  Top    Top_BP_6  id 67ac7f52e4d14ccd6005de86  bundle assets/content/characters/character/prefabs/top_bp_6.bundle
+  Top    Top_BT_1  id 642c18b8a6a0660b560fb31c  bundle assets/content/characters/character/prefabs/top_bt_1.bundle
+  Top    Top_BT_2  id 642c5273ff5ecad7810a89d7  bundle assets/content/characters/character/prefabs/top_bt_2.bundle
+  Top    Top_BT_3  id 642d9bbf6c06444bf7033855  bundle assets/content/characters/character/prefabs/top_bt_3.bundle
+  Top    top_cultist_01  id 5fb53cc97b5d1342ee24bd63  bundle assets/content/characters/character/prefabs/top_cultist_01.bundle
+  Top    top_cultist_02  id 5fb53d0b7b5d1342ee24bd64  bundle assets/content/characters/character/prefabs/top_cultist_02.bundle
+  Top    Top_FW_1  id 675844f8a31925671c000af6  bundle assets/content/characters/character/prefabs/top_fw_1.bundle
+  Top    Top_Mannequin  id 6644d2ffd85107e63500a61c  bundle assets/content/characters/character/prefabs/top_mannequin.bundle
+  Top    Top_RT_1  id 642e8ae07e17c882400c4f87  bundle assets/content/characters/character/prefabs/top_rt_1.bundle
+  Top    Top_RT_2  id 642ed297ac11c9eaf10d87e8  bundle assets/content/characters/character/prefabs/top_rt_2.bundle
+  Top    Top_RT_3  id 6430119aac11c9eaf10d881b  bundle assets/content/characters/character/prefabs/top_rt_3.bundle
+  Top    Top_security_Gorka4  id 5d5e7e8386f774393602d6fa  bundle assets/content/characters/character/prefabs/top_security_gorka4.bundle
+  Top    Top_security_Husky  id 5d5e7e7586f77427997cfb7f  bundle assets/content/characters/character/prefabs/top_security_husky.bundle
+  Top    top_security_ment_gorka1  id 66bf6769f08c35734d4940c4  bundle assets/content/characters/character/prefabs/top_security_ment_gorka1.bundle
+  Top    top_security_ment_jacket  id 66bf66f1fb051905704a22d5  bundle assets/content/characters/character/prefabs/top_security_ment_jacket.bundle
+  Top    Top_usec_carinthia_softshell_arena_bp_01  id 67ab150c508ee9b6440e9c60  bundle assets/content/characters/character/prefabs/top_usec_carinthia_softshell_arena_bp_01.bundle
+  Top    top_usec_clawgear  id 66acbe49dc61999a6a03d4d6  bundle assets/content/characters/character/prefabs/top_usec_clawgear.bundle
+  Top    top_zombie_1  id 66fd43dfe7690d4e7b0b1516  bundle assets/content/characters/wip/zombies/prefabs_zombies/top_zombie_1.bundle
+  Top    tshirt_security_ment_tshirt  id 66bf67c65d6942454668fd58  bundle assets/content/characters/character/prefabs/tshirt_security_ment_tshirt.bundle
+  Top    Tshirt_security_TshirtTatu_01  id 5d5e7e4a86f774279a21cc0d  bundle assets/content/characters/character/prefabs/tshirt_security_tshirttatu_01.bundle
+  Top    Tshirt_security_TshirtTatu_02  id 5d5e7e5d86f774279b4f4b01  bundle assets/content/characters/character/prefabs/tshirt_security_tshirttatu_02.bundle
+  Top    usec_top_beltstaff  id 6033a35f80ae5e2f970ba6bb  bundle assets/content/characters/character/prefabs/top_usec_beltstaff.bundle
+  Top    usec_upper_acu  id 5fd3e9f71b735718c25cd9f8  bundle assets/content/characters/character/prefabs/top_usec_acu.bundle
+  Top    usec_upper_aggressor  id 5d1f56c686f7744bcd13459c  bundle assets/content/characters/character/prefabs/top_usec_aggressor_parka.bundle
+  Top    usec_upper_carinthia_softshell  id 637b945722e2a933ed0e33c8  bundle assets/content/characters/character/prefabs/top_usec_carinthia_softshell.bundle
+  Top    usec_upper_cereum  id 618109c96d7ca35d076b3363  bundle assets/content/characters/character/prefabs/top_usec_cereum.bundle
+  Top    usec_upper_chameleon_softshell  id 6295e8c3e08ed747e64aea00  bundle assets/content/characters/character/prefabs/top_usec_chameleon_softshell.bundle
+  Top    usec_upper_commando  id 5d4da0cb86f77450fe0a6629  bundle assets/content/characters/character/prefabs/tshirt_usec_commando.skin.bundle
+  Top    usec_upper_CryeAC_Alpha_Green  id 66043728333907134309d647  bundle assets/content/characters/character/prefabs/tshirt_usec_cryeac_alpha_green.bundle
+  Top    usec_upper_deadly_frog  id 6750704650f7ea9dc604afc6  bundle assets/content/characters/character/prefabs/top_usec_deadly_frog.bundle
+  Top    usec_upper_flexion  id 5d1f56e486f7744bce0ee9ed  bundle assets/content/characters/character/prefabs/top_usec_softshell.bundle
+  Top    usec_upper_hawaii_01  id 6847e338c9626d92b40d2789  bundle assets/content/characters/character/prefabs/top_usec_hawaii_01.bundle
+  Top    usec_upper_hawaii_02  id 68be87b9a48c3c320808abbb  bundle assets/content/characters/character/prefabs/top_usec_hawaii_02.bundle
+  Top    usec_upper_hawaii_03  id 685d0819f16ea024b00ca192  bundle assets/content/characters/character/prefabs/top_usec_hawaii_03.bundle
+  Top    usec_upper_hawaii_miami  id 68d1b03b2859303af00eb233  bundle assets/content/characters/character/prefabs/top_usec_kit_upper_hawaii_miami.bundle
+  Top    usec_upper_hoody  id 5e9da17386f774054b6f79a3  bundle assets/content/characters/character/prefabs/top_usec_hoody.bundle
+  Top    usec_upper_infiltrator  id 5d1f56f186f7744bcb0acd1a  bundle assets/content/characters/character/prefabs/tshirt_usec_combatshirt.bundle
+  Top    usec_upper_pcsmulticam  id 5d1f56ff86f7743f8362bcd7  bundle assets/content/characters/character/prefabs/top_usec_pcsshirt.bundle
+  Top    usec_upper_pcuironsight  id 5d1f56a686f7744bce0ee9eb  bundle assets/content/characters/character/prefabs/top_usec_orc_pcu.bundle
+  Top    usec_upper_special_ops  id 675697b09fe31e6df7031b26  bundle assets/content/characters/character/prefabs/tshirt_usec_special_ops.bundle
+  Top    usec_upper_tier3  id 5fcf63da5c287f01f22bf245  bundle assets/content/characters/character/prefabs/top_usec_tier3.bundle
+  Top    usec_upper_tier_2  id 5e4bb35286f77406a511c9bc  bundle assets/content/characters/character/prefabs/top_usec_tier2.bundle
+  Top    usec_upper_velocity  id 6571cb0923aa6d72760a7f8f  bundle assets/content/characters/character/prefabs/tshirt_usec_velocity.bundle
+  Top    usec_upper_velocity_multicam  id 660437e57502eca33a08caca  bundle assets/content/characters/character/prefabs/tshirt_usec_velocity_multicam.bundle
+  Top    usec_upper_winterset  id 675fd6897a57e0b2a00e3405  bundle assets/content/characters/character/prefabs/top_usec_winterset.bundle
+  Top    user_upper_NightPatrol  id 5f5e4075df4f3100376a8138  bundle assets/content/characters/character/prefabs/top_usec_nightpatrol.bundle
+  Top    wild_body  id 5cc2e59214c02e000f16684e  bundle assets/content/characters/character/prefabs/wild_body.bundle
+  Top    wild_body_1  id 5cde9f337d6c8b0474535da8  bundle assets/content/characters/character/prefabs/wild_body_1.bundle
+  Top    wild_body_2  id 5d28ad6986f77429275dba22  bundle assets/content/characters/character/prefabs/wild_body_2.bundle
+  Top    wild_body_3  id 5d28ad7286f7742926686182  bundle assets/content/characters/character/prefabs/wild_body_3.bundle
+  Top    wild_body_bomber  id 619238266c614e6d15792bca  bundle assets/content/characters/character/prefabs/top_wild_bomber.bundle
+  Top    wild_body_feldparka  id 64a2edba08d26f8d62049c06  bundle assets/content/characters/character/prefabs/top_wild_feldparka.bundle
+  Top    wild_body_meteor  id 5df8a10486f77412672a1e3a  bundle assets/content/characters/character/prefabs/top_wild_meteor.bundle
+  Top    wild_body_motocross  id 5e9da1d086f774054a667134  bundle assets/content/characters/character/prefabs/top_wild_motocross.bundle
+  Top    wild_body_rainparka  id 5fd1eb3fbe3b7107d66cb645  bundle assets/content/characters/character/prefabs/top_wild_rainparka.bundle
+  Top    wild_body_russia1  id 5e4bb3ee86f77406975c934e  bundle assets/content/characters/character/prefabs/top_wild_russia.bundle
+  Top    wild_body_underarmour  id 5fd22d311add82653b5a704c  bundle assets/content/characters/character/prefabs/top_wild_underarmour.bundle
+  Top    wild_body_victory  id 637df28ac22da5bb8d046935  bundle assets/content/characters/character/prefabs/top_wild_victory.bundle
+  Top    Wild_Dealmaker_body  id 5d28adcb86f77429242fc893  bundle assets/content/characters/character/prefabs/wild_dealmaker_body.bundle
+  Top    wild_Gluhar_body  id 5d5e7dd786f7744a7a274322  bundle assets/content/characters/character/prefabs/top_boss_glukhar.bundle
+  Top    wild_Killa_body  id 5cdea33e7d6c8b0474535dac  bundle assets/content/characters/character/prefabs/top_boss_killa.bundle
+  Top    wild_pmcBot_body  id 5d28ae4986f7742926686187  bundle assets/content/characters/character/prefabs/top_wild_scavelite.bundle
+  Top    wild_security_body_1  id 5d28adfd86f774292364a6e5  bundle assets/content/characters/character/prefabs/wild_security_body_1.bundle
+  Top    wild_security_body_2  id 5d28ae2986f7742926686185  bundle assets/content/characters/character/prefabs/wild_security_body_2.bundle
+  Top    wild_security_body_bratva_1  id 65749b8fe32c4e3f7907bf42  bundle assets/content/characters/character/prefabs/top_wild_security_bratva_1.bundle
+  Top    wild_security_body_bratva_2  id 65749ba32fdb04fb79092d37  bundle assets/content/characters/character/prefabs/top_wild_security_bratva_2.bundle
+  Top    wild_Shturman_body  id 5d5e7c9186f774393602d6f9  bundle assets/content/characters/character/prefabs/top_boss_shturman_skin.bundle
+  Top    wild_top_yellowcoat  id 618d1af10a5a59657e5f56f3  bundle assets/content/characters/character/prefabs/top_wild_yellowcoat.bundle
+  Top    zombie_top_bear_opswindshirt  id 670d1928e002387b88029114  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_bear_opswindshirt.bundle
+  Top    zombie_top_bear_telnik  id 670d19397ca0004a2a022608  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_bear_telnik.bundle
+  Top    zombie_top_bear_thermo  id 670d19467ca0004a2a02260a  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_bear_thermo.bundle
+  Top    zombie_top_boss_tagilla  id 670fa21e788477a9ce0549f6  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_boss_tagilla.bundle
+  Top    zombie_top_civ_class_jacket  id 670d1989186ee334e70ee8cd  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_civ_class_jacket.bundle
+  Top    zombie_top_civ_coat  id 670d1999d57ec3c3e20e81da  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_civ_coat.bundle
+  Top    zombie_top_civ_jacket  id 670d19ab42245e21c30eed24  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_civ_jacket.bundle
+  Top    zombie_top_lab_personnal_a  id 671654b5f68df05790043128  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_lab_personnal_a.bundle
+  Top    zombie_top_lab_personnal_b  id 671654d56ccf4799d007d4b9  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_lab_personnal_b.bundle
+  Top    zombie_top_usec_ac_cry  id 670d195519b4a3d9e9057637  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_usec_ac_cry.bundle
+  Top    zombie_top_usec_carinthia_softshell  id 670d1966186ee334e70ee702  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_usec_carinthia_softshell.bundle
+  Top    zombie_top_usec_velocity  id 670d197632cadb3aad0a49a5  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_usec_velocity.bundle
+  Top    zombie_top_wild_bomber  id 670d1a053460753f070bb9b3  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_bomber.bundle
+  Top    zombie_top_wild_hoody01  id 670d1a13e002387b8802950c  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_hoody01.bundle
+  Top    zombie_top_wild_hoody_victory  id 670d1a2be002387b8802950e  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_hoody_victory.bundle
+  Top    zombie_top_wild_meteor  id 670d1a396f8cc0145f0a0742  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_meteor.bundle
+  Top    zombie_top_wild_raincoat  id 670d1a4d6f8cc0145f0a0744  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_raincoat.bundle
+  Top    zombie_top_wild_rainparka  id 670d1a5cd2d5ce45140289c3  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_rainparka.bundle
+  Top    zombie_top_wild_scavelite  id 670d1a6f3460753f070bc0d9  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_scavelite.bundle
+  Top    zombie_top_wild_vest  id 670d1a81b7a8f34fce080717  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_vest.bundle
+  Top    zombie_top_wild_yellowcoat  id 670d1a92d2d5ce4514028b90  bundle assets/content/characters/wip/zombies/zombiesbody/prefabs/zombie_top_wild_yellowcoat.bundle
+
+=== c11-tn-4: 2 Top, 2 Hands, 4 Pants
+  Hands  Gorka Top NWU (hands)  id 6a40054534baa926af2ee1e4  bundle gorka_arms_nwu.bundle  <-- BUNDLE FILE MISSING
+  Hands  Gorka Top Regular (hands)  id 6a40050c1cf48d40e12ee1e1  bundle gorka_hands_reg.bundle  <-- BUNDLE FILE MISSING
+  Pants  Crye CADPAT  id 6a4670df94e62eb21de59626  bundle crye_pants_cadpat.bundle  <-- BUNDLE FILE MISSING
+  Pants  Crye SAR  id 6a405afb649c945c31e59624  bundle crye_pants_sar.bundle  <-- BUNDLE FILE MISSING
+  Pants  Gorka Bottom Reg  id 6a40124eef5e70e4ad2ee1e9  bundle gorka_bottom_reg.bundle  <-- BUNDLE FILE MISSING
+  Pants  Gorka Strichtarn  id 6a401257ce9726068a2ee1ea  bundle gorka_bottom_strick.bundle  <-- BUNDLE FILE MISSING
+  Top    Gorka Top NWU  id 6a4005435517a9c9412ee1e3  bundle gorka_top_nwu.bundle  <-- BUNDLE FILE MISSING
+  Top    Gorka Top Regular  id 6a4005094e6709e7212ee1e0  bundle gorka_top_reg.bundle  <-- BUNDLE FILE MISSING
+
+=== RCTA_ClothingMod_Test: 2 Top, 2 Hands, 2 Pants, 2 Head
+  Hands  mp valeria 2 1 enc=2 upper (hands)  id 6abb3d46c3d740bfa5f4e09c  bundle clothing/mp_valeria_2_1_enc=2_hands.bundle
+  Hands  mp valeria 2 1 enc=3 upper (hands)  id 6abb3d4612829f14a1f4e0a0  bundle clothing/mp_valeria_2_1_enc=3_hands.bundle
+  Head   mp valeria 2 1 enc=2 head  id 6abb3d46306f7a934ef4e0a7  bundle heads/mp_valeria_2_1_enc=2_head.bundle
+  Head   mp valeria 2 1 enc=3 head  id 6abb3d46f3df4a3361f4e0a8  bundle heads/mp_valeria_2_1_enc=3_head.bundle
+  Pants  mp valeria 2 1 enc=2 lower  id 6abb3d469dbe394964f4e0a3  bundle clothing/mp_valeria_2_1_enc=2_bottom.bundle
+  Pants  mp valeria 2 1 enc=3 lower  id 6abb3d46d87d2bf0d9f4e0a6  bundle clothing/mp_valeria_2_1_enc=3_bottom.bundle
+  Top    mp valeria 2 1 enc=2 upper  id 6abb3d46f39d998434f4e09b  bundle clothing/mp_valeria_2_1_enc=2_top.bundle
+  Top    mp valeria 2 1 enc=3 upper  id 6abb3d467ebcdcada6f4e09f  bundle clothing/mp_valeria_2_1_enc=3_top.bundle
+
+=== WTT-ContentBackport: 45 Top, 45 Hands, 31 Pants, 11 Head
+  Hands  BEAR Arktika (hands)  id 697a1ae6e418da3bd10ca7b8  bundle assets/content/hands/hands_bear_winterset_2/hands_bear_winterset_2.skin.bundle
+  Hands  BEAR Biotics (hands)  id 69cf7b50bf01912d7909c428  bundle assets/content/hands/hands_arena_bear_turtle/hands_arena_bear_turtle.skin.bundle
+  Hands  BEAR Lonsdale (hands)  id 69ce76acf0705b519f047495  bundle assets/content/hands/hands_arena_bear_longdale/hands_arena_bear_longdale.skin.bundle
+  Hands  BEAR Old Guard (hands)  id 69bbac088cf4694fee0d9031  bundle assets/content/hands/hands_bear_green_preppers/hands_bear_green_preppers.skin.bundle
+  Hands  BEAR Senezh (hands)  id 694c21b7b21bf92c549a5715  bundle assets/content/hands/hands_bear_sso/hands_bear_sso.skin.bundle
+  Hands  BEAR Slavianka (hands)  id 69ef7b34fd73ad53ac0ac5e1  bundle assets/content/hands/hands_bear_slavianka/hands_bear_slavianka.skin.bundle
+  Hands  BEAR Sumrak Reverse Side (hands)  id 68dbf8e9d3604076f90b18ca  bundle assets/content/hands/hands_bear_sumrak/hands_bear_sumrak_reverse_side.skin.bundle
+  Hands  BEAR Three Stripes (hands)  id 69a95f899220537f52033778  bundle assets/content/hands/hands_bear_goptac_2/hands_bear_goptac_2.skin.bundle
+  Hands  BEAR Winged Infantry (hands)  id 692e9df1ea74444ec30a28cb  bundle assets/content/hands/hands_bear_tank/hands_bear_tank.skin.bundle
+  Hands  Black Division Leader (hands)  id 692a513f26e612ad6d274c60  bundle fphands/top_team_leader_bd1_hands.bundle
+  Hands  Black Division Operator (V2) (hands)  id 692a513b0c5c6a331c1ebcef  bundle fphands/top_operator_bd2_hands.bundle
+  Hands  Black Division Operator (V3) (hands)  id 692a512d0eab61d758387da3  bundle fphands/top_operator_bd3_hands.bundle
+  Hands  Black Division Operator (V4) (hands)  id 692a5137256f7daf5e43c9d0  bundle fphands/top_operator_bd4_hands.bundle
+  Hands  Champion JP upper (hands)  id 69ce6b1288dd37c3fd095ea2  bundle assets/content/hands/hands_arena_warrior_champion/hands_warrior_champion.skin.bundle
+  Hands  Civilian Port Jacket (Orange) (hands)  id 692a514183b020c028e7cfe7  bundle fphands/top_civilian_port_jacket_lod0_hands.bundle
+  Hands  Civilian Port Jacket (TG) (hands)  id 692a5c4299229b622de66d81  bundle fphands/top_civilian_port_jacket_lod0_hands.bundle
+  Hands  Civilian Port Jacket (Yellow) (hands)  id 692a5c47cde93481db7e2bb4  bundle fphands/top_civilian_port_jacket_lod0_hands.bundle
+  Hands  Civilian Port Raincoat (Orange) (hands)  id 692a512603d28a3680688aff  bundle fphands/top_civilian_port_yellowcoat_lod0_hands.bundle
+  Hands  Civilian Port Raincoat (Yellow) (hands)  id 692a513370caa33270c0c84c  bundle fphands/top_civilian_port_yellowcoat_lod0_hands.bundle
+  Hands  Civilian Port Sweater (Orange) (hands)  id 692a5128bd24b7d7b754a312  bundle fphands/top_civilian_port_sweater_lod0_hands.bundle
+  Hands  Civilian Port Sweater (Yellow) (hands)  id 692a513dab629370a3e1258f  bundle fphands/top_civilian_port_sweater_lod0_hands.bundle
+  Hands  MC Black shirt (hands)  id 6a3d2365edbde7807f07b113  bundle assets/content/hands/hands_bp_bd_hawaii/hands_bp_bd_hawaii.skin.bundle
+  Hands  Nocturnal upper (hands)  id 6a3d23ef9c27a8a7550fe389  bundle assets/content/hands/hands_bp_bd_set2/hands_bp_bd_set2.skin.bundle
+  Hands  Rash guard (Arena Gladiator) (hands)  id 69b144112c6ed131290d924a  bundle assets/content/hands/hands_arena_rusguard_6/hands_arena_rusguard_6_v2.skin.bundle
+  Hands  Rash guard (Arena Warrior) (hands)  id 69b1396b2c6ed131290d9243  bundle assets/content/hands/hands_arena_rusguard_6/hands_arena_rusguard_6_v1.skin.bundle
+  Hands  Rash guard (Blue Raven) (hands)  id 69cf8fe5596291dd3805767c  bundle assets/content/hands/hands_arena_rusguard_8/hands_arena_rusguard_8_bear.skin.bundle
+  Hands  Rash guard (Boomba) (hands)  id 69cf8f10d5a512d1830f1c98  bundle assets/content/hands/hands_arena_rusguard_7/hands_arena_rusguard_7_bear.skin.bundle
+  Hands  Rash guard (Gray Raven) (hands)  id 69cf9008bf01912d7909c43b  bundle assets/content/hands/hands_arena_rusguard_8/hands_arena_rusguard_8_usec.skin.bundle
+  Hands  Rash guard (Prepare for War) (hands)  id 69cf8f8d2aa615fbd401e8bd  bundle assets/content/hands/hands_arena_rusguard_7/hands_arena_rusguard_7_usec.skin.bundle
+  Hands  RUAF Ballistic (hands)  id 692a512ff82eaecd774bd519  bundle fphands/top_ruaf_ballistic_base_lod0_hands.bundle
+  Hands  RUAF Corporal (hands)  id 692a513562a4e1cd8127a548  bundle fphands/top_ruaf_corporal_base_lod0_hands.bundle
+  Hands  RUAF Lieutenant (hands)  id 692a51399cf4c47071bd9758  bundle fphands/top_ruaf_lieutenant_base_lod0_hands.bundle
+  Hands  RUAF Major (hands)  id 692a512c8e2db159b344a46d  bundle fphands/top_ruaf_major_base_lod0_hands.bundle
+  Hands  RUAF Sergeant (hands)  id 692a5131a1971499a0327a8a  bundle fphands/top_ruaf_sergeant_base_lod0_hands.bundle
+  Hands  Scorpion upper (hands)  id 6a3d23cff69c0e3a4b05f8e9  bundle assets/content/hands/hands_bp_bd_set1/hands_bp_bd_set1.skin.bundle
+  Hands  USEC Alone in Woods (hands)  id 69ce83095294cce6e30adde6  bundle assets/content/hands/hands_arena_usec_vintage/hands_arena_usec_vintage.skin.bundle
+  Hands  USEC Corsair (hands)  id 692eb247311ead1025025616  bundle assets/content/hands/hands_usec_pirate/hands_usec_pirate.skin.bundle
+  Hands  USEC Fahrenheit (hands)  id 697a1b40e614e1b1e006f648  bundle assets/content/hands/hands_usec_winterset_2/hands_usec_winterset_2.skin.bundle
+  Hands  USEC Fullmetal (hands)  id 69cf7ed57e099a3f800edb5c  bundle assets/content/hands/hands_arena_usec_turtle/hands_arena_usec_turtle.skin.bundle
+  Hands  USEC Gen 4 (hands)  id 69ef7a4445f58c90fa099aa2  bundle assets/content/hands/hands_usec_summerset_g4/hands_usec_summerset_g4.skin.bundle
+  Hands  USEC Gold Squadron (hands)  id 694c21b12827d05b749a5712  bundle assets/content/hands/hands_usec_crusader/hands_usec_crusader.skin.bundle
+  Hands  USEC Legionnaire Olive (hands)  id 68dbae61f35e3e0b350c8a59  bundle assets/content/hands/hands_usec_clawgear/hands_usec_clawgear_olive_drab.skin.bundle
+  Hands  USEC ScavTac (hands)  id 69a96f08c08d716baa0385cd  bundle assets/content/hands/hands_usec_goptac_2/hands_usec_goptac_2.skin.bundle
+  Hands  USEC Veteran (hands)  id 69bbacd7f2270918a10ba367  bundle assets/content/hands/hands_usec_red_preppers/hands_usec_red_preppers.skin.bundle
+  Hands  Wedge Top (hands)  id 6a39f6927c8df2e2e3b88980  bundle fphands/wedgehands.bundle
+  Head   Basilevs  id 68fb88b9d4b0e9617502c1c4  bundle assets/content/characters/character/prefabs/bear_head_vas_tattoo.bundle
+  Head   Civilian 1  id 68a6fb5ca1eb443ead010e8a  bundle assets/content/characters/character/prefabs/head_civilian_1.bundle
+  Head   Civilian 2  id 68a6fb6d62b09585f80dd73b  bundle assets/content/characters/character/prefabs/head_civilian_2.bundle
+  Head   Civilian 3  id 68a6fb7a226a60005506faff  bundle assets/content/characters/character/prefabs/head_civilian_3.bundle
+  Head   Civilian 4  id 68a6fb8ac8a3ef285c060b7b  bundle assets/content/characters/character/prefabs/head_civilian_4.bundle
+  Head   Knyazev  id 6a3e61337462374d270c6696  bundle assets/content/characters/character/prefabs/bear_head_bp_leonid_vera.bundle
+  Head   Knyazev (After Battle)  id 6a3e614ef7864d27bd030bfc  bundle assets/content/characters/character/prefabs/bear_head_bp_leonid_verb.bundle
+  Head   O’Connor  id 6a3e6177da479effd5076f1c  bundle assets/content/characters/character/prefabs/usec_head_bp_celt_vera.bundle
+  Head   O’Connor (After Battle)  id 6a3e6183d2260323500c178a  bundle assets/content/characters/character/prefabs/usec_head_bp_celt_verb.bundle
+  Head   Shawn  id 68fb8872fb3842532002cbc1  bundle assets/content/characters/character/prefabs/usec_head_sean_tattoo.bundle
+  Head   Wedge  id 69e24393d10363e6f90064d0  bundle assets/content/characters/character/prefabs/head_boss_wedge.bundle
+  Pants  BEAR Arktika  id 697a1a91dd691ac297075dde  bundle assets/content/characters/character/prefabs/pants_bear_winterset_2.bundle
+  Pants  BEAR Lonsdale  id 69ce76827b2cba28400393b2  bundle assets/content/characters/character/prefabs/pants_arena_bear_longdale.bundle
+  Pants  BEAR Old Guard  id 69bbabe0d46ffd18130b7f63  bundle assets/content/characters/character/prefabs/pants_bear_green_preppers.bundle
+  Pants  BEAR Recon EMR  id 68dbf9c64db394dd450455b1  bundle assets/content/characters/character/prefabs/pants_bear_sumrak_emr.bundle
+  Pants  BEAR Senezh  id 694c21bcf7722319c19a5717  bundle assets/content/characters/character/prefabs/pants_bear_sso.bundle
+  Pants  BEAR Slavianka  id 69ef792499eabc008b0997f6  bundle assets/content/characters/character/prefabs/pants_bear_slavianka.bundle
+  Pants  BEAR Three Stripes  id 69a95f6c9220537f52033772  bundle assets/content/characters/character/prefabs/pants_bear_goptac_2.bundle
+  Pants  BEAR Winged Infantry  id 692e9dcf0e2335306408a5de  bundle assets/content/characters/character/prefabs/pants_bear_tank.bundle
+  Pants  Black Division Operator (V2)  id 688de71374514d35fd003556  bundle assets/content/characters/character/prefabs/pants_bd_operator_02.bundle
+  Pants  Black Division Operator (V3)  id 688dec1429e9479b850276b9  bundle assets/content/characters/character/prefabs/pants_bd_operator_03.bundle
+  Pants  Black Division Operator (V4)  id 688df7b620025952eb0e0626  bundle assets/content/characters/character/prefabs/pants_bd_operator_04.bundle
+  Pants  Black Division Team Leader  id 688dddcd152c0d0767056496  bundle assets/content/characters/character/prefabs/pants_bd_team_leader_01.bundle
+  Pants  Champion JP lower  id 69ce6ad725d2ee3f290913c0  bundle assets/content/characters/character/prefabs/pants_arena_warrior_champion.bundle
+  Pants  Civilian Jeans  id 68a6fb2d226a60005506fafd  bundle assets/content/characters/character/prefabs/pants_civilian_jeans.bundle
+  Pants  Civilian Slim Pants  id 68a6fb3dc8a3ef285c060b79  bundle assets/content/characters/character/prefabs/pants_civilian_slim.bundle
+  Pants  Nocturnal lower  id 6a3d22f39c27a8a7550fe384  bundle assets/content/characters/character/prefabs/pants_bp_bd_set_2.bundle
+  Pants  RUAF Ballistic  id 689489c18c57a8a52301d7ac  bundle assets/content/characters/character/prefabs/pants_ruaf_ballistic.bundle
+  Pants  RUAF Officer  id 689489dc5d9e0b06a400694a  bundle assets/content/characters/character/prefabs/pants_ruaf_officer.bundle
+  Pants  RUAF Soldier (V1)  id 68948a002c87773b9f06d73d  bundle assets/content/characters/character/prefabs/pants_ruaf_solider_1.bundle
+  Pants  RUAF Soldier (V2)  id 68948a165d9e0b06a400694c  bundle assets/content/characters/character/prefabs/pants_ruaf_solider_2.bundle
+  Pants  Scorpion lower  id 6a3d22da7d9cd060470522f0  bundle assets/content/characters/character/prefabs/pants_bp_bd_set_1.bundle
+  Pants  Tactical shorts  id 6a3d230e93da421c9e03d3a0  bundle assets/content/characters/character/prefabs/pants_bp_bd_shorts.bundle
+  Pants  USEC Alone in Woods  id 69ce82ea53833bcd2f012b50  bundle assets/content/characters/character/prefabs/pants_arena_usec_vintage.bundle
+  Pants  USEC Corsair  id 692eb210e79aee6550068a16  bundle assets/content/characters/character/prefabs/pants_usec_pirate.bundle
+  Pants  USEC Fahrenheit  id 697a1abc93250c9ec90b74ae  bundle assets/content/characters/character/prefabs/pants_usec_winterset_2.bundle
+  Pants  USEC Gen 4  id 69ef79fc99eabc008b0997fa  bundle assets/content/characters/character/prefabs/pants_usec_summerset_g4.bundle
+  Pants  USEC Gold Squadron  id 694c21bf0db5fcbd7f9a5719  bundle assets/content/characters/character/prefabs/pants_usec_crusader.bundle
+  Pants  USEC Legionnaire MC  id 68dbae96d3604076f90b18bb  bundle assets/content/characters/character/prefabs/pants_usec_raider_multicam.bundle
+  Pants  USEC ScavTac  id 69a96ee623a2238c4303e470  bundle assets/content/characters/character/prefabs/pants_usec_goptac_2.bundle
+  Pants  USEC Veteran  id 69bbacb04737dae55e0940da  bundle assets/content/characters/character/prefabs/pants_usec_red_preppers.bundle
+  Pants  Wedge Pants  id 69e24294e0d3dc5cfd031434  bundle assets/content/characters/character/prefabs/pants_boss_wedge.bundle
+  Top    BEAR Arktika  id 697a1a3801958b2b7b0cce7a  bundle assets/content/characters/character/prefabs/top_bear_winterset_2.bundle
+  Top    BEAR Biotics  id 69cf7b2f596291dd38057665  bundle assets/content/characters/character/prefabs/top_arena_bear_turtle.bundle
+  Top    BEAR Lonsdale  id 69ce765230056e9ce1007cc1  bundle assets/content/characters/character/prefabs/top_arena_bear_longdale.bundle
+  Top    BEAR Old Guard  id 69bbabbc01559eb68707629b  bundle assets/content/characters/character/prefabs/top_bear_green_preppers.bundle
+  Top    BEAR Senezh  id 694c21b6f73dcba7ac9a5714  bundle assets/content/characters/character/prefabs/top_bear_sso.bundle
+  Top    BEAR Slavianka  id 69ef790399eabc008b0997f2  bundle assets/content/characters/character/prefabs/tshirt_bear_slavianka.bundle
+  Top    BEAR Sumrak Reverse Side  id 68dbf93dfe547b515a0db953  bundle assets/content/characters/character/prefabs/top_bear_sumrak_reverse_side.bundle
+  Top    BEAR Three Stripes  id 69a95f2ac4bc6e0cb9075b55  bundle assets/content/characters/character/prefabs/top_bear_goptac_2.bundle
+  Top    BEAR Winged Infantry  id 692e9d9da658cccb560b8356  bundle assets/content/characters/character/prefabs/tshirt_bear_tank.bundle
+  Top    Black Division Leader  id 688ddcdd0551c30a1700d75e  bundle assets/content/characters/character/prefabs/top_bd_team_leader_01.bundle
+  Top    Black Division Operator (V2)  id 688de6ea74514d35fd003554  bundle assets/content/characters/character/prefabs/top_bd_operator_02.bundle
+  Top    Black Division Operator (V3)  id 688dec55152c0d07670564af  bundle assets/content/characters/character/prefabs/top_bd_operator_03.bundle
+  Top    Black Division Operator (V4)  id 688df7e020025952eb0e0628  bundle assets/content/characters/character/prefabs/top_bd_operator_04.bundle
+  Top    Champion JP upper  id 69ce69ff49b447e32200cc0d  bundle assets/content/characters/character/prefabs/top_arena_warrior_champion.bundle
+  Top    Civilian Port Jacket (Orange)  id 68a6fa93a1eb443ead010e86  bundle assets/content/characters/character/prefabs/top_civilian_port_jacket_orange.bundle
+  Top    Civilian Port Jacket (TG)  id 68ac5b17017f18f77c007914  bundle assets/content/characters/character/prefabs/top_civilian_port_jacket_tg.bundle
+  Top    Civilian Port Jacket (Yellow)  id 68a6faa1c8a3ef285c060b75  bundle assets/content/characters/character/prefabs/top_civilian_port_jacket_yellow.bundle
+  Top    Civilian Port Raincoat (Orange)  id 68a6faeea1eb443ead010e88  bundle assets/content/characters/character/prefabs/top_civilian_port_yellowcoat_orange.bundle
+  Top    Civilian Port Raincoat (Yellow)  id 68a6fb00c8a3ef285c060b77  bundle assets/content/characters/character/prefabs/top_civilian_port_yellowcoat_yellow.bundle
+  Top    Civilian Port Sweater (Orange)  id 68a6fac1226a60005506fafb  bundle assets/content/characters/character/prefabs/top_civilian_port_sweater_orange.bundle
+  Top    Civilian Port Sweater (Yellow)  id 68a6fadc62b09585f80dd739  bundle assets/content/characters/character/prefabs/top_civilian_port_sweater_yellow.bundle
+  Top    MC Black shirt  id 6a3d22689c27a8a7550fe380  bundle assets/content/characters/character/prefabs/top_bp_bd_hawaii.bundle
+  Top    Nocturnal upper  id 6a3d223d93da421c9e03d39b  bundle assets/content/characters/character/prefabs/tshirt_bp_bd_set_2.bundle
+  Top    Rash guard (Arena Gladiator)  id 69b143db3e1980dbd208a80b  bundle assets/content/characters/character/prefabs/top_arena_rusguard_6_v2.bundle
+  Top    Rash guard (Arena Warrior)  id 69b1390cf3783ec37c03a12b  bundle assets/content/characters/character/prefabs/top_arena_rusguard_6_v1.bundle
+  Top    Rash guard (Blue Raven)  id 69cf8e8d2aa615fbd401e8b8  bundle assets/content/characters/character/prefabs/top_arena_rusguard_8_bear.bundle
+  Top    Rash guard (Boomba)  id 69cf8e0e7eaa38bd2407047b  bundle assets/content/characters/character/prefabs/top_arena_rusguard_7_bear.bundle
+  Top    Rash guard (Gray Raven)  id 69cf8ea6e15d6dfd4c0d1d98  bundle assets/content/characters/character/prefabs/top_arena_rusguard_8_usec.bundle
+  Top    Rash guard (Prepare for War)  id 69cf8e57b2dc32a22007c12b  bundle assets/content/characters/character/prefabs/top_arena_rusguard_7_usec.bundle
+  Top    RUAF Ballistic  id 689489305d9e0b06a4006948  bundle assets/content/characters/character/prefabs/top_ruaf_ballistic.bundle
+  Top    RUAF Corporal  id 689489518c57a8a52301d7a8  bundle assets/content/characters/character/prefabs/top_ruaf_corporal.bundle
+  Top    RUAF Lieutenant  id 68948968e4bf255d1b0ca765  bundle assets/content/characters/character/prefabs/top_ruaf_lieutenant.bundle
+  Top    RUAF Major  id 689489848c57a8a52301d7aa  bundle assets/content/characters/character/prefabs/top_ruaf_major.bundle
+  Top    RUAF Sergeant  id 6894899de4bf255d1b0ca767  bundle assets/content/characters/character/prefabs/top_ruaf_sergeant.bundle
+  Top    Scorpion upper  id 6a3d21d05f92d4bd690fadd0  bundle assets/content/characters/character/prefabs/tshirt_bp_bd_set_1.bundle
+  Top    USEC Alone in Woods  id 69ce82c51f77d6bab30376a3  bundle assets/content/characters/character/prefabs/top_arena_usec_vintage.bundle
+  Top    USEC Corsair  id 692eb1c940d144d02606c2ff  bundle assets/content/characters/character/prefabs/tshirt_usec_pirate.bundle
+  Top    USEC Fahrenheit  id 697a1a642706743ec00766d3  bundle assets/content/characters/character/prefabs/top_usec_winterset_2.bundle
+  Top    USEC Fullmetal  id 69cf7e9b9bc1d9c46b0b4fcc  bundle assets/content/characters/character/prefabs/top_arena_usec_turtle.bundle
+  Top    USEC Gen 4  id 69ef7a29fd73ad53ac0ac5dd  bundle assets/content/characters/character/prefabs/tshirt_usec_summerset_g4.bundle
+  Top    USEC Gold Squadron  id 694c21ace2428faaef9a5711  bundle assets/content/characters/character/prefabs/top_usec_crusader.bundle
+  Top    USEC Legionnaire Olive  id 68dbae11d3604076f90b18b9  bundle assets/content/characters/character/prefabs/top_usec_clawgear_olive_drab.bundle
+  Top    USEC ScavTac  id 69a96ea6c4bc6e0cb9075b6f  bundle assets/content/characters/character/prefabs/top_usec_goptac_2.bundle
+  Top    USEC Veteran  id 69bbac8c117765efcf039c26  bundle assets/content/characters/character/prefabs/top_usec_red_preppers.bundle
+  Top    Wedge Top  id 69e2427109707df7660efa26  bundle assets/content/characters/character/prefabs/top_boss_wedge.bundle
+
