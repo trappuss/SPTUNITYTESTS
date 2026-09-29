@@ -1,10 +1,11 @@
+# Run with Blender's Python (bpy) and the add-on importable as package "cod2eft" (see docs/PROJECT_CONTEXT.md)
 import sys, os, json, glob
-sys.path.insert(0, "/tmp/c2e_addon")
+sys.path.insert(0, os.environ.get("COD2EFT_ADDON_PARENT", "/tmp/c2e_addon"))
 import bpy, numpy as np
 import cod2eft
 from cod2eft import cod2eft_porter as C, cod2eft_textures as TX
 from PIL import Image, ImageDraw
-ROOT = "/home/user/SPTUNITYTESTS/from_pc/20260928-223033/attached"
+ROOT = sys.argv[1] if len(sys.argv) > 1 else "from_pc/20260928-223033/attached"
 models = sorted(p for p in glob.glob(ROOT + "/**/*_LOD0.cast", recursive=True))
 out, thumbs = [], []
 W = 256
@@ -54,11 +55,11 @@ for mp in models:
             im = Image.fromarray((np.clip(d[::-1, :, :3], 0, 1) ** (1 / 1.0) * 255).astype(np.uint8)).resize((128, 128))
             thumbs.append((rec["i"], im))
             print(f'{rec["i"]:3d} {model[:28]:28s} {key[:30]:30s} {str(rec["alpha_kind"]):12s} cut={int(rec["cutout"])} spec{rec["spec_q"]} gloss{rec["gloss_q"]}')
-json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "cod_material_survey.json", "w"), indent=1)
+json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "cod_material_survey.json"), "w"), indent=1)
 cols = 8; rows = (len(thumbs) + cols - 1) // cols
 sheet = Image.new("RGB", (cols * 132, rows * 146), (30, 30, 30)); dr = ImageDraw.Draw(sheet)
 for k, (i, im) in enumerate(thumbs):
     x, y = (k % cols) * 132 + 2, (k // cols) * 146 + 2
     sheet.paste(im, (x, y + 14)); dr.text((x, y), str(i), fill=(255, 255, 0))
-sheet.save("/tmp/claude-0/-home-user-SPTUNITYTESTS/cb8e3e4b-fb79-5945-9a40-c987e6f580f4/scratchpad/cod_sheet.png")
+sheet.save("cod_sheet.png")
 print("models:", len(models), "materials:", len(out))

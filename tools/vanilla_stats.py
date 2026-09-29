@@ -1,4 +1,4 @@
-import UnityPy, glob, json, sys, numpy as np
+import os, UnityPy, glob, json, sys, numpy as np
 from PIL import Image, ImageDraw
 R = 512
 def cov_mask(meshes):
@@ -54,4 +54,4 @@ for f in sorted(glob.glob("*.bundle")):
         print(f"{d['m_Name'][:34]:34s} G{G:<5.2f} S{S:<5.2f} SV{SV[0]:.2f},{SV[1]:.2f} cov{rec['cover']:.2f} skin{rec['skin_frac']:.2f} "
               f"spec_eff{rec['spec_eff_q']} smooth_eff{rec['smooth_eff_q']}" + (f" | skin spec{rec['skin_spec_eff_q']} smooth{rec['skin_smooth_eff_q']}" if "skin_spec_eff_q" in rec else "")
               + (f" | a>0.5 {rec['metalish_frac']:.3f} smooth{rec['metalish_smooth_eff_q']}" if "metalish_frac" in rec else ""))
-json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "vanilla_material_stats.json", "w"), indent=1)
+json.dump(out, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "vanilla_material_stats.json"), "w"), indent=1)
