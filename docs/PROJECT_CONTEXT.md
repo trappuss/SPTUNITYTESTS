@@ -1,11 +1,9 @@
 # Project context: COD → EFT (SPT) pipeline, both halves (2026-09-29)
 
-This doc merges the Blender and Unity handoffs of 2026-09-27. The two sessions are now one, so
-the user no longer has to relay messages between them.
-Details stay in the per-side docs:
-- Blender: `blender/COD2EFT/NEXT_SESSION.md`, `README.md`, `BACKLOG.md`
-- Unity: `unity/NEXT_SESSION.md`, `unity/README.md`
-- The original context dumps are unchanged in `docs/archive/`
+This is **the** handoff and work queue for both halves; the Blender and Unity sides are one project now. Rules for sessions are in `CLAUDE.md`.
+Tool docs: `blender/COD2EFT/README.md` (Blender), `unity/README.md` (Unity).
+Contract: `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md`. Materials: `docs/MATERIALS_PLAN.md`.
+The old per-side handoffs and backlog (2026-09-27) are in `docs/archive/`; they are history, not instructions.
 
 ## Goal
 Port Call of Duty characters (currently Warzone-era: MW2019, Vanguard, Cold War, MW2, MW3, BO6,
@@ -43,8 +41,7 @@ The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
 See the root `README.md`. This replaces the Cowork `device_commit_files` route, which silently wrote stale files.
 
 ## The contract between the halves
-The source of truth is `COD2EFT_TEXTURE_SPEC.md`. **It is not in the repo yet** (`blender/COD2EFT/unity/`).
-It was **not** found at `COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md` on the PC (first send, 2026-09-28), so its location is unknown. The audit (below) checked it against the code of both sides.
+The source of truth is `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md` (agreed by both sessions 2026-09-27; uploaded with the first PC send - an earlier note here that it was missing was wrong). The table below summarises it; if they disagree, the spec wins. The audit (below) checked it against the code of both sides.
 
 | Item | Agreed | Code status |
 |---|---|---|
@@ -70,35 +67,46 @@ Measured COD hand-skin gloss (Kleo FP 0.56, BO5 esports 0.49, Park 24_1 FP 0.35)
 Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters and isn't applied yet.
 
 ## Open work, in order
-**Current focus (user, 2026-09-29): material accuracy.** See `docs/MATERIALS_PLAN.md` (the `enc=3` bake-in-pixels plan).
+**Current focus (user, 2026-09-29): material accuracy.** A separate cloud session ("COD2EFT material fix (enc=3)") is implementing `docs/MATERIALS_PLAN.md` on this branch: COD2EFT 2.6.0 + EFT Tools 1.7.0. Don't edit `cod2eft_textures.py`, `EFTMaterialCore.cs`, `EFTMaterialFixer.cs` or the spec until it has pushed.
 
-**Hips/waist twist on curvy characters:** fixed in 2.5.2 (the pelvis section is limited against the waist section). Valeria's waist went from −4.0 to +0.4 cm. Still to check on the PC and in game.
+**Done and verified (history):**
+- Long-path fix verified on real Windows: Park 24_1 (COD2EFT 2.4.4, from_pc/20260928-211853).
+- First complete character in game: Park 24_1 (from_pc/20260928-221326). The user's verdict: "looks good".
+- Hand-adjust layer works on the PC (2.5.0).
 
-1. ✅ **Long-path fix verified on real Windows** (2026-09-28, COD2EFT 2.4.4, from_pc/20260928-211853).
-   - Park 24_1 (paths up to 269 characters) imported through the temp junction and packed 3 long-path images.
-   - All 19 materials got textures and the conversion finished Upper + Lower. It used to stop at Upper.
-   - All 12 PNGs are tagged `enc=2`, and the atlases show no grey or missing blocks.
-   - **Open:** no head was converted (no `head_…` file was paired with the body). Also, 40% of Lower's vertices stick out more than 3 cm beyond EFT's body (up to 10.8 cm).
-   - ✅ **First complete character in game** (2026-09-28, from_pc/20260928-221326).
-     - Park 24_1 was re-converted in Blender with head and first-person hands, then run through the Unity one-click pipeline.
-     - Result: 4 prefabs (top, pants, head, hands), 4 bundles plus the `shaders`/`cubemaps` dependencies, and mod `RCTA_ClothingMod_Test` (`com.wuvgawore.rcta-clothingmod-test`).
-     - The user's verdict in game: "looks good". Visible in the screenshot: hair cut-out, sunglasses, decals, belt and holster all render; the pistol sits in the COD thigh holster.
-     - **To look at:** a dark ring around the neck where head meets top (possibly COD's texture edge, the normals or occlusion; not investigated). The white shirt also reads a bit flat next to vanilla.
-   - Mod Builder gotcha: bundles appear in its list for as long as their prefabs are in `Assets`, even after the source character is deleted. Remove old prefabs, then Rescan + Clean.
-2. **User:** re-convert Kleo with *First-person hands* on. The current `EFT_Converted\kleo_empty_.fbx` is hand-edited: its arms are on the Upper slot/atlas and COD2EFT's Hands mesh is missing. The re-conversion unblocks calibration step 2 (tagged textures).
-3. **Blender 2.5.0: `_skin` slots.**
-   - The hard part is the skin detector. It must work on hashed IW names and Cold War names.
-   - Hand-label every test material first, then report precision and recall per game and show the user a contact sheet of the misses.
-   - Also split `_Hands` into `_Hands_skin`.
-4. **Unity 1.7.0:** values per part + class, editable in the Auto Prefabber settings.
-   - Skin preset: 0.5/0.5 looked good on the old untagged Kleo textures.
-   - Hands `_Specularness` ≈ 0.55.
-5. **Unity suggestions, not started:**
-   - verify bundles after each build (Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin);
-   - calibration heads A/B/C against a vanilla head in game;
-   - default hands for tops without arms.
-6. **Parked:** a .bat that runs the whole Unity step in `-batchmode`. See the audit for what blocks it.
-7. **Blender backlog:** drop `COD_original_UV` from the FBX.
+**Waiting on the user (PC):**
+1. Check 2.5.2 on valeria: re-convert and look at the side view (the swayback fix).
+2. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
+3. After the material session: convert one character with enc2 and with enc3, run the Unity one-click build, and take in-game screenshots next to vanilla.
+4. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
+
+**Queue, in order.** Each is a separate step. Items touching material code wait for the material session.
+1. **Unify the contract (after the material session).** Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
+2. **One source for the per-part material numbers.** Today they are hard-coded twice: `EFT_PART` in `cod2eft_textures.py` (Blender preview) and `EFTMaterialCore.cs` (Unity). Either a shared JSON that both read, or a `tools/` check that fails when they differ. Do this after enc=3 lands, which changes these numbers.
+3. **`_EFT` name suffix.** Batch export writes `<name>_EFT.fbx`, so Unity names bundles `…_eft_top`. The panel export for Park gave `…_top`. Pick one: Unity strips a trailing `_EFT`, or Blender stops adding it. Changing bundle keys breaks existing mods, so ask the user first.
+4. **Regression harness in `tools/`.** Batch-convert every test character and compare against a stored baseline (fit numbers from the reports, PNG hashes, material survey). The old `_dev` harness never reached the repo.
+5. **Test data out of git.** `from_pc/` holds GBs of COD exports and bundles, and every clone downloads them. Options: a separate data repo, Git LFS, or a send script that uploads big folders elsewhere. Rewriting history to drop what's already committed needs the user's OK.
+6. **Mod Builder:** default hands for tops without their own. Pick a game hands bundle automatically; the user got stuck on this with Park.
+7. **Mod Builder:** show "has not been built" before the first build as a note, not an error.
+8. **Bundle check after build:** Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin.
+9. **Unity step in batch mode** (a `.bat`: COD model in, SPT mod out). Blockers are listed in the audit below. Best done once the materials settle.
+10. **Smaller items:**
+    - the neck ring (if confirmed);
+    - drop `COD_original_UV` from the FBX;
+    - calibration heads A/B/C against a vanilla head;
+    - Park 24_1's head wasn't paired with its body (no `head_…` found);
+    - audit leftovers: the Mod Builder overwrite guard only checks DLLs; the PNG tag reader can hang on a corrupt chunk length; the `install_addon.py` template path encoding; `COD2EFT_To_Unity.bat` copies `<name>_*.png` too broadly.
+
+**Superseded:** the `_skin` slot plan (Blender 2.5.0 / Unity 1.7.0 per-class values) is replaced by the enc=3 plan. The version numbers 2.5.x went to other fixes.
+
+## Version compatibility
+| Texture tag | Blender (COD2EFT) | Unity (EFT Tools) |
+|---|---|---|
+| untagged (older COD2EFT, other sources) | < 2.4 | any (generic path: packs `_eft.png`) |
+| `COD2EFT enc=2` | ≥ 2.4 | ≥ 1.4.0 |
+| `COD2EFT enc=3` (planned, material session) | ≥ 2.6.0 | ≥ 1.7.0 |
+
+Sub-mesh names `<name>_<Part>_<label>` (Separate by COD material / Join parts off) need EFT Tools ≥ 1.6.2.
 
 ## Facts already established (don't re-derive)
 **Game and rendering**
@@ -128,14 +136,13 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 - MW2019 split exports deliberately lack the packed `X_n&Y_g` image.
 
 ## Missing from the repo (upload if possible)
-- `COD2EFT_TEXTURE_SPEC.md`: the contract. `SEND_RESULTS_TO_CLAUDE.bat` fetches it.
 - The Blender dev harness `COD2EFT\_dev\`:
   - `runall2.py`, `runsel.py`, `cmpall.py`;
   - `ui/uitest4.py`;
   - `mat/codhist.py` + `codhist.json`, `mat/skindet.py`.
   Needed for regressions and for the skin detector.
 - Test characters (the `Testing\` folder, COD exports). Too big for git (GitHub caps files at 100 MB), so send single characters as needed.
-- `EFT BASIC [Template].blend`, needed to run COD2EFT at all.
+- `EFT BASIC [Template].blend`. Only the `.fbx` is here (from_pc/20260928-231514); the cloud sessions rebuild the .blend from it (see CLAUDE.md).
 - The Unity side's unit tests (parser, materials, bundle reader) and its compile setup (84 Unity module DLLs). Without these, C# can only be checked by reading it.
 
 ## Audit (2026-09-29, by reading the code; Blender and Unity were not available to run)
