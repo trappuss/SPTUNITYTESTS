@@ -75,7 +75,12 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
    - All 19 materials got textures and the conversion finished Upper + Lower. It used to stop at Upper.
    - All 12 PNGs are tagged `enc=2`, and the atlases show no grey or missing blocks.
    - **Open:** no head was converted (no `head_…` file was paired with the body). Also, 40% of Lower's vertices stick out more than 3 cm beyond EFT's body (up to 10.8 cm).
-   - **Next:** take Park 24_1 through Unity (COD2EFT_To_Unity.bat → Auto Prefabber → Mod Builder) and into the game.
+   - ✅ **First complete character in game** (2026-09-28, from_pc/20260928-221326).
+     - Park 24_1 was re-converted in Blender with head and first-person hands, then run through the Unity one-click pipeline.
+     - Result: 4 prefabs (top, pants, head, hands), 4 bundles plus the `shaders`/`cubemaps` dependencies, and mod `RCTA_ClothingMod_Test` (`com.wuvgawore.rcta-clothingmod-test`).
+     - The user's verdict in game: "looks good". Visible in the screenshot: hair cut-out, sunglasses, decals, belt and holster all render; the pistol sits in the COD thigh holster.
+     - **To look at:** a dark ring around the neck where head meets top (possibly COD's texture edge, the normals or occlusion; not investigated). The white shirt also reads a bit flat next to vanilla.
+   - Mod Builder gotcha: bundles appear in its list for as long as their prefabs are in `Assets`, even after the source character is deleted. Remove old prefabs, then Rescan + Clean.
 2. **User:** re-convert Kleo with *First-person hands* on. The current `EFT_Converted\kleo_empty_.fbx` is hand-edited: its arms are on the Upper slot/atlas and COD2EFT's Hands mesh is missing. The re-conversion unblocks calibration step 2 (tagged textures).
 3. **Blender 2.5.0: `_skin` slots.**
    - The hard part is the skin detector. It must work on hashed IW names and Cold War names.
