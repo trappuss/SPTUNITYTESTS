@@ -33,8 +33,36 @@ function Load-Config {
             $ok = if ($k -eq 'UNITY_PROJECT') { Test-Path (Join-Path $cfg[$k] 'Assets') } else { Test-Path $cfg[$k] }
         }
     }
-    ($cfg.Keys | ForEach-Object { "$_=$($cfg[$_])" }) | Set-Content -Encoding UTF8 $ConfigFile
+    Save-Config $cfg
     return $cfg
+}
+
+function Save-Config($cfg) {
+    ($cfg.Keys | ForEach-Object { "$_=$($cfg[$_])" }) | Set-Content -Encoding UTF8 $ConfigFile
+}
+
+# The SPT game folder (EscapeFromTarkov.exe, BepInEx\). Asked once, then kept in config.local.txt as SPT_GAME.
+# -Ask:$false only returns it when it is already known and valid (send.ps1 must not prompt for it).
+function Test-SptGame($p) {
+    $p -and (Test-Path (Join-Path $p 'EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll')) -and
+            (Test-Path (Join-Path $p 'BepInEx\core\BepInEx.dll'))
+}
+function Get-SptGame($cfg, [bool]$Ask = $true) {
+    if (-not $cfg.SPT_GAME) { $cfg['SPT_GAME'] = 'G:\G Games\SPT4.1\SPT4.1 Game' }
+    if (Test-SptGame $cfg.SPT_GAME) { Save-Config $cfg; return $cfg.SPT_GAME }
+    if (-not $Ask) { return $null }
+    while (-not (Test-SptGame $cfg.SPT_GAME)) {
+        Say "Not an SPT game folder (needs EscapeFromTarkov_Data\Managed and BepInEx\core): $($cfg.SPT_GAME)" Yellow
+        $cfg['SPT_GAME'] = (Read-Host 'Drag your SPT game folder (the one with EscapeFromTarkov.exe) here and press Enter').Trim('"', ' ')
+    }
+    Save-Config $cfg
+    return $cfg.SPT_GAME
+}
+
+# COD2EFT Inspector (spt_mod\COD2EFTInspector): version from Plugin.cs
+function Inspector-Version {
+    $src = Get-Content (Join-Path $Repo 'spt_mod\COD2EFTInspector\Plugin.cs') -Raw
+    if ($src -match 'const string Version = "([^"]+)"') { $Matches[1] } else { '?' }
 }
 
 function Invoke-Git([string[]]$argv) {
@@ -87,6 +115,21 @@ function Is-OldVersion($repoFile, $pcFile) {
         }
     } finally { Remove-Item $tmp -ErrorAction SilentlyContinue }
     $false
+}
+
+# Files in a deployed PC folder that the repo has RETIRED: no longer in the repo, but the PC copy
+# is exactly an earlier repo version of that path (so nobody edited it on the PC).  E.g. the old
+# per-side NEXT_SESSION.md / BACKLOG.md after they moved to docs/archive.  Returns relative paths.
+function Get-Retired($t) {
+    if ($t.Only -or -not (Test-Path $t.Dst)) { return @() }
+    @(Get-ChildItem $t.Dst -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
+        $_.Length -lt 2MB -and $_.Extension -in '.py', '.cs', '.md', '.bat', '.txt', '.json', '.meta' -and
+        $_.FullName -notmatch '\\(_dev|__pycache__|vendor)\\' -and $PcOwned -notcontains $_.Name
+    } | ForEach-Object {
+        $rel = $_.FullName.Substring($t.Dst.Length).TrimStart('\')
+        $src = Join-Path $t.Src $rel
+        if (-not (Test-Path $src) -and (Is-OldVersion $src $_.FullName)) { $rel }
+    })
 }
 
 # Pairs of (repo source folder, PC destination folder) that the sync deploys.

@@ -3,6 +3,8 @@
 #  - copies of tool files that were changed on the PC (e.g. by a Cowork session) so they can be merged
 #  - the COD2EFT <-> Unity contract (COD2EFT_TEXTURE_SPEC.md) if the repo doesn't have it yet
 #  - anything dragged onto SEND_RESULTS_TO_CLAUDE.bat (reports, screenshots, logs, folders)
+#  - SPT (if SPT_GAME is known): BepInEx LogOutput.log, the Inspector build log, and every file in
+#    <SPT game>\COD2EFT_Screenshots that is new since the last send
 $Extra = $args   # files / folders dragged onto the .bat
 . (Join-Path $PSScriptRoot 'common.ps1')
 $MaxBytes = 90MB
@@ -29,6 +31,41 @@ try {
         Say '   collected'
     } else { $info += "Editor.log not found at $log" }
 
+    Say '== SPT game: BepInEx log + COD2EFT Inspector screenshots ==' Cyan
+    $sentAt = Get-Date
+    $marker = Join-Path $PSScriptRoot '_state\screenshots_last_send.txt'
+    $game = Get-SptGame $cfg $false
+    if (-not $game) { $info += 'SPT game folder not known yet (BUILD_SPT_INSPECTOR.bat asks for it once)' }
+    else {
+        $info += "SPT game: $game"
+        $bl = Join-Path $game 'BepInEx\LogOutput.log'
+        if (Test-Path $bl) {
+            $fs = [IO.File]::Open($bl, 'Open', 'Read', 'ReadWrite')
+            try { $lines = (New-Object IO.StreamReader($fs)).ReadToEnd() -split "`r?`n" } finally { $fs.Close() }
+            $lines | Select-Object -Last 20000 | Set-Content -Encoding UTF8 (Join-Path $out 'BepInEx_LogOutput.log')
+            $ins = $lines | Select-String -SimpleMatch 'COD2EFT Inspector' | Select-Object -Last 1
+            $info += "BepInEx log: $((Get-Item $bl).LastWriteTime.ToString('s')), Inspector: $(if ($ins) { 'present' } else { 'no COD2EFT Inspector lines' })"
+            Say '   BepInEx LogOutput.log collected'
+        } else { $info += "BepInEx log not found: $bl" }
+        $dll = Join-Path $game 'BepInEx\plugins\COD2EFTInspector\COD2EFTInspector.dll'
+        $info += "Inspector installed: $(if (Test-Path $dll) { 'v' + (Get-Item $dll).VersionInfo.FileVersion + ', built ' + (Get-Item $dll).LastWriteTime.ToString('s') } else { 'no' }) (repo v$(Inspector-Version))"
+        $bld = Join-Path $PSScriptRoot '_build\inspector_build.log'
+        if (Test-Path $bld) { Copy-Item -LiteralPath $bld (Join-Path $out 'inspector_build.log') }
+        $shots = Join-Path $game 'COD2EFT_Screenshots'
+        if (Test-Path $shots) {
+            $since = if (Test-Path $marker) { [datetime]::Parse((Get-Content $marker -TotalCount 1).Trim(), [Globalization.CultureInfo]::InvariantCulture) } else { [datetime]::MinValue }
+            $new = @(Get-ChildItem $shots -File | Where-Object { $_.LastWriteTime -gt $since })
+            $dstS = Join-Path $out 'COD2EFT_Screenshots'
+            foreach ($f in $new) {
+                if ($f.Length -gt $MaxBytes) { $info += "SKIPPED (over 90 MB, use a lower supersize): $($f.Name)"; continue }
+                New-Item -ItemType Directory -Force $dstS | Out-Null
+                Copy-Item -LiteralPath $f.FullName $dstS
+            }
+            $info += "COD2EFT_Screenshots: $($new.Count) new file(s) since $(if ($since -eq [datetime]::MinValue) { 'ever' } else { $since.ToString('s') })"
+            Say "   $($new.Count) new screenshot / report file(s)"
+        }
+    }
+
     Say '== Deployed files vs repo ==' Cyan
     $pcDir = Join-Path $out 'changed_on_pc'
     foreach ($t in Get-Targets $cfg) {
@@ -50,6 +87,10 @@ try {
             } | ForEach-Object {
                 $rel = $_.FullName.Substring($t.Dst.Length).TrimStart('\')
                 if (-not (Test-Path (Join-Path $t.Src $rel)) -and $PcOwned -notcontains $_.Name) {
+                    if (Is-OldVersion (Join-Path $t.Src $rel) $_.FullName) {
+                        $info += "RETIRED on PC  [$($t.Label)] $rel  (the repo dropped it; SYNC_TO_MY_PC.bat moves it to the backup)"
+                        return
+                    }
                     $info += "ONLY on PC     [$($t.Label)] $rel"
                     $c = Join-Path $pcDir (Join-Path ($t.Label -replace '[^A-Za-z0-9]', '_') $rel)
                     New-Item -ItemType Directory -Force (Split-Path $c) | Out-Null
@@ -93,6 +134,8 @@ try {
     if ($note) { $note | Set-Content -Encoding UTF8 (Join-Path $out 'message.txt') }
     $info | Set-Content -Encoding UTF8 (Join-Path $out 'pc_state.txt')
     $info | Select-Object -Skip 3 | ForEach-Object { Say "   $_" }
+    $total = (Get-ChildItem $out -Recurse -File | Measure-Object Length -Sum).Sum
+    if ($total -gt 300MB) { Say "   warning: $([math]::Round($total / 1MB)) MB to upload" Yellow }
 
     Say "`n== Uploading to GitHub ==" Cyan
     & git -C $Repo config user.email | Out-Null
@@ -113,6 +156,8 @@ try {
         Invoke-Git @('reset', '-q', '--hard', "origin/$Branch")
         Say "   (conflict with Claude's newer work - results were pushed to branch $side instead)" Yellow
     }
+    New-Item -ItemType Directory -Force (Split-Path $marker) | Out-Null
+    $sentAt.ToString('o') | Set-Content -Encoding ASCII $marker    # next send only takes screenshots newer than this
     Say "`nSent. Tell Claude: 'check from_pc/$stamp'" Green
     exit 0
 } catch {

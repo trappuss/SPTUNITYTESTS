@@ -43,10 +43,10 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
   - COD exports: `from_pc/20260928-223033/attached/` (Kleo MW2, sunflower_base BO7, MW4 Beta Male) and `from_pc/20260928-230805/attached/` (MW4 Beta Female / valeria).
   - Vanilla EFT bundles: `from_pc/20260928-222836/attached/`.
   - Park 24_1 output that worked in game: `from_pc/20260928-221326/attached/`.
-- **Regression:** convert the test characters before and after a change. Compare the report lines ("Body volume", "Body match after fit") and the PNG hashes. `tools/cod_survey.py` re-measures every COD material. Report exactly what changed.
-  - `python tools/regress.py run OUT --mode enc2` (then `--mode enc3`) converts all 4 test characters (about 7 minutes each mode); `python tools/regress.py check OUT --mode enc2` compares with `tools/regress_baseline_enc2.json`. After an intended change, `save` a new baseline and say so in the commit.
+- **Regression:** run `python tools/regress.py --out /tmp/reg --baseline tools/baselines/cod2eft_<ver>.json` (Python with bpy). It converts all 4 test characters with the add-on in the repo and compares the fit numbers, parts, mesh counts and PNG hashes. Exit code 1 means something changed, and the output lists exactly what. Output is deterministic: a repeat run is identical. Add `-- --material-mode enc3` for the enc3 path, and `--save-baseline` after an intended change. `tools/cod_survey.py` re-measures every COD material.
   - `python tools/check_contract.py` (no bpy) checks that the Blender preview's material numbers and cutoff match Unity's.
 - **C#:** there is no compiler, so check by reading. Mirror regexes and maths in Python where useful. Say it is uncompiled.
+- **SPT client plugin** (`spt_mod/COD2EFTInspector/`): `tests/compile_check.sh` compiles it with mono `mcs` (`apt-get install mono-mcs`) against public Unity/BepInEx reference DLLs; `tests/run_tests.sh` runs the Unity-free tests. mcs lacks C# 7 type patterns, so avoid `x is T t`. See `docs/SPT_INSPECTOR.md`.
 - **PowerShell** (`pc/*.ps1`): must run on Windows PowerShell 5.1. Parse-check with pwsh if available. Under `$ErrorActionPreference = 'Stop'`, don't redirect native stderr (`2>$null`).
 
 ## Known traps

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    COD2EFT Inspector: BepInEx 5 client plugin for SPT 4.1.x.
+    Built on the user's PC by BUILD_SPT_INSPECTOR.bat against the PC's own game and BepInEx DLLs:
+      dotnet build -c Release -p:GamePath="<SPT game folder>" -p:Version=<Plugin.Version>
+    Target framework and reference style follow SPT's own client modules
+    (github.com/sp-tarkov/modules, project/Directory.Build.props: netstandard2.1, game DLLs with Private=False).
+    Game classes (GameWorld, Player, PlayerBody) are reached by reflection at runtime, so this project needs
+    no Assembly-CSharp reference and cannot fail to compile when EFT renames something.
+    Never commit any of the referenced DLLs.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>COD2EFTInspector</AssemblyName>
+    <RootNamespace>COD2EFTInspector</RootNamespace>
+    <LangVersion>9.0</LangVersion>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>none</DebugType>
+    <GamePath Condition="'$(GamePath)' == ''">G:\G Games\SPT4.1\SPT4.1 Game</GamePath>
+    <Managed>$(GamePath)\EscapeFromTarkov_Data\Managed</Managed>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="tests/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BepInEx" HintPath="$(GamePath)\BepInEx\core\BepInEx.dll" Private="False" />
+    <Reference Include="UnityEngine" HintPath="$(Managed)\UnityEngine.dll" Private="False" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)\UnityEngine.CoreModule.dll" Private="False" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(Managed)\UnityEngine.IMGUIModule.dll" Private="False" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(Managed)\UnityEngine.TextRenderingModule.dll" Private="False" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(Managed)\UnityEngine.InputLegacyModule.dll" Private="False" />
+    <Reference Include="UnityEngine.ImageConversionModule" HintPath="$(Managed)\UnityEngine.ImageConversionModule.dll" Private="False" />
+    <Reference Include="UnityEngine.ScreenCaptureModule" HintPath="$(Managed)\UnityEngine.ScreenCaptureModule.dll" Private="False" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(Managed)\UnityEngine.UIModule.dll" Private="False" />
+    <Reference Include="UnityEngine.AssetBundleModule" HintPath="$(Managed)\UnityEngine.AssetBundleModule.dll" Private="False" />
+  </ItemGroup>
+</Project>
