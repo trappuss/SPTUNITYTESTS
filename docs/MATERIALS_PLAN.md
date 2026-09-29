@@ -18,6 +18,28 @@ COD2EFT puts **all** of a part's COD materials into one atlas, and so into one U
 
 Splitting the atlas into one Unity material per surface class (the `_skin` slot plan) would help, but it only moves the problem. Every class then needs hand-tuned numbers in Unity, a class-detection contract between the two sides, and more draw calls.
 
+## Measured: what vanilla EFT does (15 bundles, from_pc/20260928-222836, 2026-09-29)
+Per-material numbers and texel statistics are in `docs/vanilla_material_stats.json`. Only texels the meshes' UVs cover are counted. "eff" = what the G-buffer gets at F=0: specular `a·G·SpecVals.x/2`, smoothness `SpecMap.r·S`.
+
+- **Clothing uses neutral numbers: `_Glossness` = 1.0 on all 12 clothing materials, `_Specularness` 1.0–1.27.** EFT bakes the whole look into the pixels, so this plan is how EFT itself works.
+- **Heads and bodies are tuned by hand** and don't follow a pattern:
+  - USEC head: G 3.0, S 4.37;
+  - Wild head: G 2.39, S 1.5;
+  - Wild body: G 3.94, S 0.17.
+- **One material holds many surfaces.** Inside one clothing texture, smoothness spans roughly 0.1 → 0.45 (10th → 90th percentile) and specular 0.02 → 0.10.
+
+| Vanilla (median of materials) | specular eff | smoothness eff |
+|---|---|---|
+| Tops (7) | 0.02–0.08, median ≈ 0.03 | 0.06–0.54, median ≈ 0.17 |
+| Pants (6) | 0.02–0.11, median ≈ 0.045 | 0.15–0.25, median ≈ 0.16 |
+| Heads (2) | 0.03 / 0.11 | 0.26 / 0.37 |
+| Wild body skin | 0.13 | 0.02 (very matte) |
+| Texels with `a` > 0.5 (metal-like; ≤ 1.5 % of any material) | – | 0.5–0.7 |
+
+The skin-tone split inside tops and pants is unreliable: tan or brown fabric passes the colour rule. Use it only on heads and bodies.
+
+**Consequence for `enc=3`:** use EFT's own clothing numbers, not G₀ = 2. That means `_Glossness` 1.0, `_Specularness` 1.0, `_SpecVals` (1.1, 2), and `_DefVals` / `_ReflectColor` at the vanilla medians. A dielectric's `_d.a` is then 0.04 / 0.55 ≈ 0.073, about 19 steps of 8 bits. That's more precision than the G₀ = 2 estimate below.
+
 ## The fix: bake the look into the pixels, keep Unity's numbers fixed
 The per-part numbers are only gains, so the same result can be written straight into the textures, per pixel and per COD material:
 

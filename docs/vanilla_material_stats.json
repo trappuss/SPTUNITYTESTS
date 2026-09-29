@@ -1,0 +1,820 @@
+{
+ "pants_usec_commando.bundle:Pants_usec_commando": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.7,
+   0.7
+  ],
+  "Reflect": 0.217,
+  "cover": 0.863,
+  "skin_frac": 0.125,
+  "alpha_q": [
+   0.133,
+   0.192,
+   0.282
+  ],
+  "smap_q": [
+   0.141,
+   0.247,
+   0.431
+  ],
+  "spec_eff_q": [
+   0.073,
+   0.106,
+   0.155
+  ],
+  "smooth_eff_q": [
+   0.141,
+   0.247,
+   0.431
+  ],
+  "skin_spec_eff_q": [
+   0.104,
+   0.127,
+   0.239
+  ],
+  "skin_smooth_eff_q": [
+   0.216,
+   0.286,
+   0.624
+  ],
+  "cloth_spec_eff_q": [
+   0.071,
+   0.104,
+   0.145
+  ],
+  "cloth_smooth_eff_q": [
+   0.133,
+   0.235,
+   0.412
+  ],
+  "metalish_frac": 0.006,
+  "metalish_smooth_eff_q": [
+   0.427,
+   0.498,
+   0.745
+  ]
+ },
+ "pants_usec_raider.bundle:Pants_usec_Raider": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.9,
+   0.7
+  ],
+  "Reflect": 0.236,
+  "cover": 0.862,
+  "skin_frac": 0.033,
+  "alpha_q": [
+   0.055,
+   0.086,
+   0.184
+  ],
+  "smap_q": [
+   0.09,
+   0.153,
+   0.318
+  ],
+  "spec_eff_q": [
+   0.03,
+   0.047,
+   0.101
+  ],
+  "smooth_eff_q": [
+   0.09,
+   0.153,
+   0.318
+  ],
+  "skin_spec_eff_q": [
+   0.03,
+   0.052,
+   0.073
+  ],
+  "skin_smooth_eff_q": [
+   0.106,
+   0.165,
+   0.231
+  ],
+  "cloth_spec_eff_q": [
+   0.03,
+   0.047,
+   0.101
+  ],
+  "cloth_smooth_eff_q": [
+   0.09,
+   0.153,
+   0.322
+  ],
+  "metalish_frac": 0.001,
+  "metalish_smooth_eff_q": [
+   0.596,
+   0.682,
+   0.725
+  ]
+ },
+ "pants_usec_winterset.bundle:Pants_usec_WinterSet": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   1.0,
+   0.7
+  ],
+  "Reflect": 0.377,
+  "cover": 0.87,
+  "skin_frac": 0.266,
+  "alpha_q": [
+   0.063,
+   0.106,
+   0.18
+  ],
+  "smap_q": [
+   0.106,
+   0.169,
+   0.294
+  ],
+  "spec_eff_q": [
+   0.035,
+   0.058,
+   0.099
+  ],
+  "smooth_eff_q": [
+   0.106,
+   0.169,
+   0.294
+  ],
+  "skin_spec_eff_q": [
+   0.045,
+   0.069,
+   0.129
+  ],
+  "skin_smooth_eff_q": [
+   0.133,
+   0.204,
+   0.392
+  ],
+  "cloth_spec_eff_q": [
+   0.032,
+   0.054,
+   0.084
+  ],
+  "cloth_smooth_eff_q": [
+   0.102,
+   0.161,
+   0.251
+  ]
+ },
+ "pants_wild_ment_specnaz_kamysh_g.bundle:weapon_pr_taran": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.9,
+   0.7
+  ],
+  "Reflect": 0.17,
+  "cover": 0.969,
+  "skin_frac": 0.0,
+  "alpha_q": [
+   0.063,
+   0.082,
+   0.086
+  ],
+  "smap_q": [
+   0.353,
+   0.612,
+   0.655
+  ],
+  "spec_eff_q": [
+   0.035,
+   0.045,
+   0.047
+  ],
+  "smooth_eff_q": [
+   0.353,
+   0.612,
+   0.655
+  ]
+ },
+ "pants_wild_ment_specnaz_kamysh_g.bundle:Pants_wild_Ment_Specnaz_KAMYSH_G": {
+  "G": 1.0,
+  "S": 1.1,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.8,
+   0.7
+  ],
+  "Reflect": 0.17,
+  "cover": 0.969,
+  "skin_frac": 0.003,
+  "alpha_q": [
+   0.043,
+   0.075,
+   0.149
+  ],
+  "smap_q": [
+   0.078,
+   0.145,
+   0.361
+  ],
+  "spec_eff_q": [
+   0.024,
+   0.041,
+   0.082
+  ],
+  "smooth_eff_q": [
+   0.086,
+   0.16,
+   0.397
+  ],
+  "skin_spec_eff_q": [
+   0.035,
+   0.211,
+   0.255
+  ],
+  "skin_smooth_eff_q": [
+   0.156,
+   0.569,
+   0.746
+  ],
+  "cloth_spec_eff_q": [
+   0.024,
+   0.041,
+   0.082
+  ],
+  "cloth_smooth_eff_q": [
+   0.086,
+   0.16,
+   0.388
+  ]
+ },
+ "pants_wild_security_bratva_2.bundle:Pants_security_bratva2": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   1.0,
+   0.7
+  ],
+  "Reflect": 0.189,
+  "cover": 0.901,
+  "skin_frac": 0.011,
+  "alpha_q": [
+   0.059,
+   0.078,
+   0.106
+  ],
+  "smap_q": [
+   0.106,
+   0.149,
+   0.235
+  ],
+  "spec_eff_q": [
+   0.032,
+   0.043,
+   0.058
+  ],
+  "smooth_eff_q": [
+   0.106,
+   0.149,
+   0.235
+  ],
+  "skin_spec_eff_q": [
+   0.05,
+   0.06,
+   0.067
+  ],
+  "skin_smooth_eff_q": [
+   0.165,
+   0.263,
+   0.349
+  ],
+  "cloth_spec_eff_q": [
+   0.032,
+   0.043,
+   0.056
+  ],
+  "cloth_smooth_eff_q": [
+   0.106,
+   0.149,
+   0.227
+  ]
+ },
+ "top_bear_phoenix_arena_bp_01.bundle:Top_bear_Phoenix_arena_bp_01": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   0.7,
+   2.5
+  ],
+  "DefVals": [
+   1.0,
+   1.0
+  ],
+  "Reflect": 0.358,
+  "cover": 0.867,
+  "skin_frac": 0.059,
+  "alpha_q": [
+   0.035,
+   0.051,
+   0.082
+  ],
+  "smap_q": [
+   0.055,
+   0.094,
+   0.153
+  ],
+  "spec_eff_q": [
+   0.012,
+   0.018,
+   0.029
+  ],
+  "smooth_eff_q": [
+   0.055,
+   0.094,
+   0.153
+  ],
+  "skin_spec_eff_q": [
+   0.021,
+   0.036,
+   0.047
+  ],
+  "skin_smooth_eff_q": [
+   0.106,
+   0.18,
+   0.243
+  ],
+  "cloth_spec_eff_q": [
+   0.012,
+   0.018,
+   0.026
+  ],
+  "cloth_smooth_eff_q": [
+   0.055,
+   0.094,
+   0.141
+  ]
+ },
+ "top_bt_1.bundle:Top_BT_1": {
+  "G": 1.0,
+  "S": 1.27,
+  "SpecVals": [
+   1.0,
+   2.0
+  ],
+  "DefVals": [
+   0.85,
+   0.4
+  ],
+  "Reflect": 0.368,
+  "cover": 0.886,
+  "skin_frac": 0.129,
+  "alpha_q": [
+   0.027,
+   0.055,
+   0.196
+  ],
+  "smap_q": [
+   0.078,
+   0.196,
+   0.357
+  ],
+  "spec_eff_q": [
+   0.014,
+   0.027,
+   0.098
+  ],
+  "smooth_eff_q": [
+   0.1,
+   0.249,
+   0.453
+  ],
+  "skin_spec_eff_q": [
+   0.078,
+   0.102,
+   0.114
+  ],
+  "skin_smooth_eff_q": [
+   0.329,
+   0.418,
+   0.478
+  ],
+  "cloth_spec_eff_q": [
+   0.012,
+   0.025,
+   0.053
+  ],
+  "cloth_smooth_eff_q": [
+   0.08,
+   0.239,
+   0.359
+  ]
+ },
+ "top_usec_cereum.bundle:Top_usec_cereum": {
+  "G": 1.0,
+  "S": 1.15,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.8,
+   0.7
+  ],
+  "Reflect": 0.34,
+  "cover": 0.917,
+  "skin_frac": 0.0,
+  "alpha_q": [
+   0.067,
+   0.153,
+   0.192
+  ],
+  "smap_q": [
+   0.235,
+   0.467,
+   0.557
+  ],
+  "spec_eff_q": [
+   0.037,
+   0.084,
+   0.106
+  ],
+  "smooth_eff_q": [
+   0.271,
+   0.537,
+   0.64
+  ]
+ },
+ "top_wild_victory.bundle:Top_wild_victory": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.8,
+   0.0
+  ],
+  "Reflect": 0.179,
+  "cover": 0.897,
+  "skin_frac": 0.046,
+  "alpha_q": [
+   0.024,
+   0.035,
+   0.047
+  ],
+  "smap_q": [
+   0.031,
+   0.059,
+   0.086
+  ],
+  "spec_eff_q": [
+   0.013,
+   0.019,
+   0.026
+  ],
+  "smooth_eff_q": [
+   0.031,
+   0.059,
+   0.086
+  ],
+  "skin_spec_eff_q": [
+   0.06,
+   0.119,
+   0.162
+  ],
+  "skin_smooth_eff_q": [
+   0.071,
+   0.141,
+   0.227
+  ],
+  "cloth_spec_eff_q": [
+   0.013,
+   0.019,
+   0.024
+  ],
+  "cloth_smooth_eff_q": [
+   0.031,
+   0.059,
+   0.082
+  ]
+ },
+ "tshirt_usec_cryeac_alpha_green.bundle:Tshirt_usec_CryeAC_Alpha_Green": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.0,
+   2.0
+  ],
+  "DefVals": [
+   0.9,
+   0.8
+  ],
+  "Reflect": 0.415,
+  "cover": 0.907,
+  "skin_frac": 0.012,
+  "alpha_q": [
+   0.039,
+   0.067,
+   0.094
+  ],
+  "smap_q": [
+   0.098,
+   0.165,
+   0.251
+  ],
+  "spec_eff_q": [
+   0.02,
+   0.033,
+   0.047
+  ],
+  "smooth_eff_q": [
+   0.098,
+   0.165,
+   0.251
+  ],
+  "skin_spec_eff_q": [
+   0.045,
+   0.053,
+   0.059
+  ],
+  "skin_smooth_eff_q": [
+   0.161,
+   0.2,
+   0.251
+  ],
+  "cloth_spec_eff_q": [
+   0.02,
+   0.033,
+   0.045
+  ],
+  "cloth_smooth_eff_q": [
+   0.098,
+   0.161,
+   0.251
+  ]
+ },
+ "tshirt_usec_velocity_multicam.bundle:Top_usec_velocity_multicam": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   0.8,
+   1.0
+  ],
+  "Reflect": 0.472,
+  "cover": 0.911,
+  "skin_frac": 0.173,
+  "alpha_q": [
+   0.043,
+   0.075,
+   0.114
+  ],
+  "smap_q": [
+   0.094,
+   0.251,
+   0.431
+  ],
+  "spec_eff_q": [
+   0.024,
+   0.041,
+   0.063
+  ],
+  "smooth_eff_q": [
+   0.094,
+   0.251,
+   0.431
+  ],
+  "skin_spec_eff_q": [
+   0.028,
+   0.043,
+   0.101
+  ],
+  "skin_smooth_eff_q": [
+   0.09,
+   0.196,
+   0.376
+  ],
+  "cloth_spec_eff_q": [
+   0.024,
+   0.041,
+   0.054
+  ],
+  "cloth_smooth_eff_q": [
+   0.098,
+   0.263,
+   0.443
+  ]
+ },
+ "usec_body.bundle:Pants_usec_CryeAC": {
+  "G": 1.0,
+  "S": 1.0,
+  "SpecVals": [
+   1.0,
+   2.0
+  ],
+  "DefVals": [
+   1.0,
+   0.3
+  ],
+  "Reflect": 0.434,
+  "cover": 0.758,
+  "skin_frac": 0.002,
+  "alpha_q": [
+   0.012,
+   0.043,
+   0.071
+  ],
+  "smap_q": [
+   0.098,
+   0.161,
+   0.322
+  ],
+  "spec_eff_q": [
+   0.006,
+   0.022,
+   0.035
+  ],
+  "smooth_eff_q": [
+   0.098,
+   0.161,
+   0.322
+  ]
+ },
+ "usec_head.bundle:USEC_head_0": {
+  "G": 3.0,
+  "S": 4.37,
+  "SpecVals": [
+   0.5,
+   3.0
+  ],
+  "DefVals": [
+   1.0,
+   0.4
+  ],
+  "Reflect": 0.721,
+  "cover": 0.9,
+  "skin_frac": 0.002,
+  "alpha_q": [
+   0.012,
+   0.043,
+   0.153
+  ],
+  "smap_q": [
+   0.035,
+   0.059,
+   0.161
+  ],
+  "spec_eff_q": [
+   0.009,
+   0.032,
+   0.115
+  ],
+  "smooth_eff_q": [
+   0.154,
+   0.257,
+   0.703
+  ],
+  "metalish_frac": 0.015,
+  "metalish_smooth_eff_q": [
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ "wild_body_1.bundle:Wild_Body_1": {
+  "G": 3.94,
+  "S": 0.17,
+  "SpecVals": [
+   1.0,
+   2.0
+  ],
+  "DefVals": [
+   1.0,
+   0.52
+  ],
+  "Reflect": 0.272,
+  "cover": 0.786,
+  "skin_frac": 0.065,
+  "alpha_q": [
+   0.039,
+   0.067,
+   0.094
+  ],
+  "smap_q": [
+   0.063,
+   0.114,
+   0.125
+  ],
+  "spec_eff_q": [
+   0.077,
+   0.131,
+   0.185
+  ],
+  "smooth_eff_q": [
+   0.011,
+   0.019,
+   0.021
+  ],
+  "skin_spec_eff_q": [
+   0.1,
+   0.155,
+   0.224
+  ],
+  "skin_smooth_eff_q": [
+   0.011,
+   0.02,
+   0.025
+  ],
+  "cloth_spec_eff_q": [
+   0.077,
+   0.131,
+   0.185
+  ],
+  "cloth_smooth_eff_q": [
+   0.011,
+   0.019,
+   0.021
+  ]
+ },
+ "wild_head_1.bundle:Wild_Head_1": {
+  "G": 2.39,
+  "S": 1.5,
+  "SpecVals": [
+   1.1,
+   2.0
+  ],
+  "DefVals": [
+   1.0,
+   0.7
+  ],
+  "Reflect": 1.0,
+  "cover": 0.68,
+  "skin_frac": 0.661,
+  "alpha_q": [
+   0.063,
+   0.086,
+   0.118
+  ],
+  "smap_q": [
+   0.176,
+   0.247,
+   0.31
+  ],
+  "spec_eff_q": [
+   0.082,
+   0.113,
+   0.155
+  ],
+  "smooth_eff_q": [
+   0.265,
+   0.371,
+   0.465
+  ],
+  "skin_spec_eff_q": [
+   0.103,
+   0.134,
+   0.155
+  ],
+  "skin_smooth_eff_q": [
+   0.335,
+   0.418,
+   0.471
+  ],
+  "cloth_spec_eff_q": [
+   0.072,
+   0.088,
+   0.103
+  ],
+  "cloth_smooth_eff_q": [
+   0.229,
+   0.288,
+   0.341
+  ]
+ }
+}
