@@ -3,6 +3,16 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.6.0 (2026-09-29)
+- **Try-on in the main menu**: *Wear* also works on the Character / Inventory screen preview. A Harmony prefix records the
+  game's own `PlayerModelView.Show(...)` call; try-on puts the ids into that profile, calls the same Show again (the game
+  loads the bundles itself), then puts the real ids back. If the view skips an identical subject it is closed and shown
+  again. *Restore my outfit* shows the real outfit again. Approach as in Improved Customization UI.
+- **Poses** (Photo tab): Stand, Crouch, Low crouch, Prone, Aim, the game's own animations driven through the player's
+  movement state (`MovementContext.SetPoseLevel`, prone, `HandsController` aiming). *Pose turntables*: 4 angles in each
+  of the 5 poses, for clipping checks; file names carry the pose. The member names are hunches: the first use logs the
+  members that exist, so a wrong guess is fixable from one log.
+
 ## 0.5.1 (2026-09-29)
 Review fixes (found by reading; nothing tested in game yet):
 - Try-on no longer leaves the try-on ids in your profile: as soon as the body is rebuilt (or on any failure) the

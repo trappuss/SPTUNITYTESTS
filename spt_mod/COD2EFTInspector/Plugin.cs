@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.5.1";
+        public const string Version = "0.6.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -82,6 +82,7 @@ namespace COD2EFTInspector
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
             try { Game.LogStartup(); } catch (Exception e) { Log.LogError("Startup check failed: " + e); }
             PhotoMode.InstallPatch(Guid);
+            MenuTryOn.InstallPatch(Guid);
             Camera.onPreCull += OnPreCullCamera;
         }
 
@@ -420,12 +421,17 @@ namespace COD2EFTInspector
             Log.LogInfo(_status);
         }
 
+        /// <summary>Try-on is possible: your character (raid / hideout) or a menu preview that the game has shown.</summary>
+        bool CanWear() => !Wearer.Busy && !MenuTryOn.Busy && (Game.MainPlayer() != null || MenuTryOn.Available);
+
         void WearItems(List<Outfit> items)
         {
-            if (Wearer.Busy || items == null || items.Count == 0) return;
+            if (!CanWear() || items == null || items.Count == 0) return;
             var all = WithHands(items);
             _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
-            StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } }));
+            Action<string> done = msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } };
+            if (Game.MainPlayer() != null) StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, done));
+            else StartCoroutine(MenuTryOn.Wear(_scan?.Target?.Player == null ? _scan?.Target?.Body : null, all, done));
         }
 
         void AutoWearTick()
@@ -444,9 +450,9 @@ namespace COD2EFTInspector
 
         void DrawTryOn(Catalog cat)
         {
-            GUILayout.Label("Try on your character (raid / hideout; not saved, a reload shows your real outfit). Newest mod first:");
+GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or Inventory screen preview). Not saved. Newest mod first:");
             var sets = cat.ModSets();
-            bool can = Game.MainPlayer() != null && !Wearer.Busy;
+            bool can = CanWear();
             int n = 0;
             foreach (var set in sets)
             {
@@ -471,11 +477,16 @@ namespace COD2EFTInspector
             }
             GUILayout.BeginHorizontal();
             if (sets.Count > 6) _allSets = GUILayout.Toggle(_allSets, $" all {sets.Count} mod outfits");
-            GUI.enabled = can && Wearer.HasOriginal;
-            if (GUILayout.Button("Restore my outfit", GUILayout.Width(140))) WearItems(Wearer.OriginalOutfit(cat));
+            bool inMenu = Game.MainPlayer() == null;
+            GUI.enabled = can && (inMenu || Wearer.HasOriginal);
+            if (GUILayout.Button("Restore my outfit", GUILayout.Width(140)))
+            {
+                if (inMenu) StartCoroutine(MenuTryOn.Reshow(msg => { _status = msg; Refresh(true); }));
+                else WearItems(Wearer.OriginalOutfit(cat));
+            }
             GUI.enabled = true;
             GUILayout.EndHorizontal();
-            if (Game.MainPlayer() == null) GUILayout.Label("(Wear needs your character: go to the hideout or a raid.)");
+            if (!can && !Wearer.Busy && !MenuTryOn.Busy) GUILayout.Label("(Wear needs your character (hideout / raid) or, in the menu, the Character or Inventory screen opened once.)");
         }
 
         void DrawOutfits()
@@ -523,7 +534,7 @@ namespace COD2EFTInspector
             GUILayout.Label($"{_shown.Count} shown" + (_shown.Count > 300 ? " (first 300; narrow the filter)" : "") +
                             ". Wear = try on (tops bring their hands).");
             _scroll2 = GUILayout.BeginScrollView(_scroll2);
-            bool canWear = Game.MainPlayer() != null && !Wearer.Busy;
+            bool canWear = CanWear();
             foreach (var o in _shown.Take(300))
             {
                 GUILayout.BeginHorizontal();
@@ -606,6 +617,16 @@ namespace COD2EFTInspector
             GUILayout.EndHorizontal();
             _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f);
             if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Pose:", GUILayout.Width(40));
+            foreach (var pn in Poses.Names)
+            {
+                GUI.enabled = _pose != pn;
+                if (GUILayout.Button(pn)) SetPose(pn);
+                GUI.enabled = true;
+            }
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("Pose turntables: 4 angles in each pose (clipping check)")) { if (!_capturing && !Wearer.Busy) StartCoroutine(PoseTurntables()); }
             var newest = GetCatalog().ModSets().FirstOrDefault();
             if (newest != null && GUILayout.Button($"A/B: turntable every outfit of [{newest.Source}] + your own outfit"))
                 { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
@@ -620,16 +641,43 @@ namespace COD2EFTInspector
             return v;
         }
 
-        IEnumerator Turntable()
+        IEnumerator Turntable() { return Turntable(""); }
+
+        IEnumerator Turntable(string tag)
         {
             float yaw = _photo.Yaw;
             foreach (var a in new[] { ("front", 0f), ("left", 90f), ("back", 180f), ("right", 270f) })
             {
                 _photo.Yaw = a.Item2;
                 for (int i = 0; i < 3; i++) yield return null;
-                yield return StartCoroutine(Capture("_" + a.Item1));
+                yield return StartCoroutine(Capture(tag + "_" + a.Item1));
             }
             _photo.Yaw = yaw;
+        }
+
+        string _pose = "Stand";
+
+        void SetPose(string pose)
+        {
+            var err = Poses.Apply(Game.MainPlayer(), pose);
+            _pose = pose;
+            // prone: aim the camera lower so the body stays in frame
+            if (pose == "Prone") { _photo.Height = 0.35f; _photo.Pitch = Mathf.Max(_photo.Pitch, 20f); }
+            else if (_photo.Height < 0.5f) _photo.Height = 1.0f;
+            _status = err == null ? "Pose: " + pose : "Pose " + pose + ": " + err;
+        }
+
+        /// <summary>Clipping check: a turntable in each pose (the game's own animations).</summary>
+        IEnumerator PoseTurntables()
+        {
+            foreach (var pose in new[] { "Stand", "Crouch", "Low crouch", "Prone", "Aim" })
+            {
+                SetPose(pose);
+                yield return new WaitForSecondsRealtime(pose == "Prone" ? 2.5f : 1.2f);   // let the transition animation finish
+                yield return StartCoroutine(Turntable("_" + pose.ToLowerInvariant().Replace(' ', '-')));
+            }
+            SetPose("Stand");
+            _status = "Pose turntables done (5 poses x 4 angles)";
         }
 
         void TakeScreenshot()

@@ -38,6 +38,10 @@ newest mod's outfit is at the top → *Wear* → Photo tab. Option *Auto-wear ne
 click. *Save this head to my profile* keeps a head after restart when the WTT HeadVoiceSelector server mod is installed.
 Tops / pants are not saved: SPT only lets a profile wear suits it owns (the trader), so saving them is a separate question.
 
+**Menu try-on and poses (0.6.0):** *Wear* also works on the main menu's Character / Inventory preview (re-shows the
+game's own preview call with the try-on ids). The Photo tab has pose buttons (stand, crouch, low crouch, prone, aim; the
+game's animations) and *Pose turntables* (5 poses x 4 angles) for clipping checks.
+
 **A/B (0.5.0, Photo tab):** one click wears every outfit of the newest mod in turn and takes a turntable of each, then
 one of your own outfit as the reference: same camera, same lights. The material report's *Checks* section flags
 shader / stencil / texture-slot problems automatically.

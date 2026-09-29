@@ -56,7 +56,7 @@ namespace COD2EFTInspector
         }
 
         /// <summary>Converts an id string to the dictionary's value type (MongoID in EFT: constructor(string)).</summary>
-        static object MakeId(Type t, string id)
+        internal static object MakeId(Type t, string id)
         {
             if (t == null || t == typeof(string) || t == typeof(object)) return id;
             var c = t.GetConstructor(new[] { typeof(string) });
@@ -66,7 +66,7 @@ namespace COD2EFTInspector
             throw new InvalidOperationException("can't make a " + t.FullName + " from a string");
         }
 
-        static Type ValueType(IDictionary d)
+        internal static Type ValueType(IDictionary d)
         {
             var t = d.GetType();
             for (; t != null; t = t.BaseType)
