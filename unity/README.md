@@ -88,7 +88,7 @@ Evidence comes from the SPT 4.1 game files (273 character prefab bundles, 108 ha
 
 **COD2EFT 2.6+ `enc=3` textures** (tag `COD2EFT enc=3`): the look is baked into the pixels per COD material, so the values are EFT's **neutral** clothing values, the same for every part: `_Glossness` 1, `_Specularness` 1, and the vanilla preset's `_SpecVals` / `_DefVals` / `_ReflectColor` for the part (as all 12 measured vanilla clothing materials do). Heads use the vanilla head preset (`_SpecVals` 1.0, 3) with G = S = 1 too; vanilla heads are hand-tuned (USEC G 3.0 / S 4.37, Wild G 2.39 / S 1.5), so COD2EFT bakes head skin to the measured vanilla head smoothness instead. Switching a material between enc=2 and enc=3 textures re-applies the values (material tag `COD2EFT_enc`). A tag with ` n=dx` marks a DirectX normal map, which gets Flip Green Channel.
 
-- The full contract is in `docs/MATERIALS_PLAN.md` ("enc=3 contract"); `COD2EFT_TEXTURE_SPEC.md` is not in the repo.
+- The full contract is in `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md` (section *Encoding 3*), with the measurements in `docs/MATERIALS_PLAN.md`.
 - Still open: an in-game side-by-side against a vanilla head.
 
 **Other textures (generic path):**

@@ -82,7 +82,7 @@ Every class, and every material's class, is printed in the report. A per-materia
 
 ### Contract change
 - `enc=3` is a new tag. `enc=2` files keep working exactly as now.
-- The spec gains an "enc=3" section with G₀ and the fixed numbers.
+- The spec gains an "enc=3" section with G₀ and the fixed numbers (done: *Encoding 3* in `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md`).
 - Unity gains one branch: `enc=3` → neutral values.
 - 8-bit precision: with G₀ = 2 a dielectric's `_d.a` lands around 0.04–0.05, about 11–13 steps of 8 bits. That's fine for a mask that EFT stores in 8 bits itself. To check on skin for banding.
 

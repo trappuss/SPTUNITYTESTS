@@ -23,7 +23,7 @@ Per part (`Head`, `Upper`, `Lower`, `Hands`):
 | File | Contents |
 |---|---|
 | `<name>_<Part>_d.png` | RGB = colour (sRGB, COD's occlusion multiplied in). **A = specular reflectance**, see below. |
-| `<name>_<Part>_n.png` | Normal map, **OpenGL / Unity convention (green up)**, already converted from COD's DirectX maps. Import as *Normal map*, no green flip. |
+| `<name>_<Part>_n.png` | Normal map, **OpenGL / Unity convention (green up)**, already converted from COD's DirectX maps. Import as *Normal map*, no green flip. Exception (2.6.0+): with COD2EFT's *Normal maps: DirectX* option the tag ends in ` n=dx`, and then Flip Green Channel is on. |
 | `<name>_<Part>_g.png` | COD gloss, greyscale, white = glossy (linear data). |
 | `<name>_<Part>_alpha_d/_n/_g.png` | Cut-out set (hair, lashes, brows, beards, fringe, decals): `_d` **A = opacity** (1 = drawn), cut at 0.5. The model uses a separate material slot `<name>_<Part>_alpha` for these faces. |
 
@@ -49,6 +49,14 @@ Slot name = `<name>_<Part>[_<class>]`. `<name>` can contain underscores, so read
 - `Testing\WARZONE 2 - MW2 Female\EFT_Converted\kleo_empty_.fbx` is a hand-edited export: its `kleo_empty_arms` object uses `mp_kleo_iw9_3_1_Upper` with UVs in the Upper atlas, and COD2EFT's `mp_kleo_iw9_3_1_Hands` object isn't in the file. Converting again with *First-person hands* on gives the right one.
 
 **Tag:** every PNG carries a PNG `tEXt` chunk `Software` = `COD2EFT enc=2`, right after the header (first 4 KB of the file). No tag = older COD2EFT (≤ 2.3.x), whose `_d` alpha means something else (see *Changes*).
+Since 2.6.0 the tag is `COD2EFT enc=<N>[ n=dx]`: `enc=3` with *Materials: enc=3* (see *Encoding 3*), and ` n=dx` when the normal map is DirectX style (no `n=` = OpenGL). Unity 1.7.0 reads both parts; older Unity reads a tag with ` n=dx` as untagged.
+
+### Encoding 3 (COD2EFT 2.6.0 ↔ EFT Tools 1.7.0)
+The look is baked into the pixels per COD material, so Unity uses one neutral set of values. Full details and the measurements behind it are in `docs/MATERIALS_PLAN.md`, "enc=3 contract".
+- `_d` A = COD F0 / (`_SpecVals.x` / 2), i.e. ÷ 0.55, or ÷ 0.5 on the head, cut at 1. The G-buffer specular at F=0 then equals COD's F0.
+- `_g` = target EFT smoothness: COD gloss through the quantile curve of the material's class (cloth / skin / leather-rubber-plastic / metal / glass), blended per pixel towards the metal curve by the metal share. Cut-out sets are unchanged.
+- **Unity values, every part:** `_Glossness` 1, `_Specularness` 1, plus the vanilla preset's `_SpecVals`, `_DefVals`, `_ReflectColor` for the part (`EFTMaterialCore.Cod2EftNeutralPreset`, the same numbers as `EFT_NEUTRAL` in `cod2eft_textures.py`). Heads use the vanilla head preset with G = S = 1: vanilla heads are hand-tuned, so the head's skin is baked to the measured vanilla head smoothness instead.
+- Unity marks a material set up for enc=3 with the material tag `COD2EFT_enc` = `3`. Switching the textures between enc=2 and enc=3 re-applies the values.
 
 ### `_d` alpha (encoding 2) — what the value is
 
@@ -118,6 +126,7 @@ Vanilla targets were measured over 393 vanilla SMap/SMap_Decal materials, counti
 
 ## Changes
 
+- 2026-09-29 COD2EFT 2.6.0 / EFT Tools 1.7.0: **encoding 3** (optional, default still enc=2 until the in-game A/B), see *Encoding 3*. The tag gains ` n=dx` for DirectX normal maps; Unity 1.7.0 flips those. This fixes the audit's double flip. enc=2 output is unchanged (byte-identical PNGs on the 4 test characters).
 - 2026-09-27 COD2EFT: slot naming with surface classes agreed (Auto Prefabber's proposal, *Material slots and surface classes*). COD2EFT produces `_skin` from 2.5.0; `_metal` and `_emissive` are reserved, not produced.
 - 2026-09-27 COD2EFT 2.4.3: PNGs unchanged. The Blender preview now uses the table's values and the deferred maths above (approximate: Blender lights in linear space). Windows paths of 260+ characters no longer lose textures. **COD hand-skin gloss measured** (median over UV-covered texels, as written to `_g`): MW2 Kleo first-person 0.56, BO5 esports female hands 0.49, Park 24_1 (Cold War) first-person 0.35. Vanilla hands smoothness 0.27 ÷ these = 0.48 / 0.55 / 0.77, so `_Specularness` ≈ 0.55 fits the middle one; 0.8 fits only the Park one. Only 3 characters had a hand-skin gloss map, so treat it as a first estimate. Gloves on the same hands span 0.21–0.94.
 - 2026-09-27 Auto Prefabber: reads tagged enc=2 sets as described in *Unity side*. `_d` is used as stored, `_n` is taken as OpenGL, cut-out comes from the `_alpha` slot, Max Size is at least the file size, and `_Hands` materials are set up directly. Chosen values are in the table above. Deferred lighting was checked (GGX, gamma), see *Open*.

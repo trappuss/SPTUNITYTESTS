@@ -44,13 +44,15 @@ at it and at `docs/PROJECT_CONTEXT.md`. If Cowork edits the deployed copies dire
 ```
 blender/COD2EFT/        the add-on source folder, exactly as on the PC (bats, build/install scripts, docs)
   vendor/cod2eft_cast/  bundled Cast importer (MIT); was only inside the zip, now restored
-  unity/                where COD2EFT_TEXTURE_SPEC.md (the contract) belongs; still missing
+  unity/COD2EFT_TEXTURE_SPEC.md   the contract between the two halves
 unity/EFTAutoPrefabber/ the Unity editor scripts (+ .meta files), exactly as in Assets\Editor
 unity/README.md         what the Unity tools do (materials, prefabs, bundles, caches, SPT rules)
-unity/NEXT_SESSION.md   Unity-side handoff (2026-09-27)
-docs/PROJECT_CONTEXT.md combined context + audit
+CLAUDE.md               rules + setup for every Claude / Cowork session (read automatically)
+docs/PROJECT_CONTEXT.md the handoff: state, contract summary, work queue, compatibility, audit
+docs/MATERIALS_PLAN.md  material accuracy plan + measurements
 docs/previews/          Blender preview renders
-docs/archive/           the two original context dumps, unchanged
+docs/archive/           old context dumps and per-side handoffs (history only)
+tools/                  measurement scripts (vanilla bundles, COD material survey)
 pc/                     scripts behind the .bat files
 from_pc/                what SEND_RESULTS_TO_CLAUDE.bat uploads
 ```
