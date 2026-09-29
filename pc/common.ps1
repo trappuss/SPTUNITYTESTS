@@ -48,6 +48,7 @@ function Invoke-Git([string[]]$argv) {
 function Repair-Repo {
     $ErrorActionPreference = 'Continue'   # (PS 5.1 turns redirected git stderr into terminating errors under Stop)
     & git -C $Repo config core.autocrlf false
+    & git -C $Repo config core.longpaths true      # COD exports have 260+ character paths
     $gitDir = (& git -C $Repo rev-parse --git-dir).Trim()
     if (-not [IO.Path]::IsPathRooted($gitDir)) { $gitDir = Join-Path $Repo $gitDir }
     if ((Test-Path (Join-Path $gitDir 'rebase-merge')) -or (Test-Path (Join-Path $gitDir 'rebase-apply'))) {
@@ -68,6 +69,24 @@ function Repair-Repo {
         if (-not (& git -C $Repo diff --ignore-cr-at-eol --name-only HEAD -- $f)) { Invoke-Git @('checkout', '-q', 'HEAD', '--', $f) }
     }
     @(& git -C $Repo diff --name-only HEAD)
+}
+
+# True when the PC file is an EARLIER version of the repo file (the PC just hasn't synced yet),
+# as opposed to a file edited on the PC. Compared byte-exact, ignoring CR (line endings).
+function Is-OldVersion($repoFile, $pcFile) {
+    $ErrorActionPreference = 'Continue'
+    $gp = $repoFile.Substring($Repo.Length).TrimStart('\', '/') -replace '\\', '/'
+    $l1 = [Text.Encoding]::GetEncoding(28591)            # Latin-1: one char per byte, nothing altered
+    $want = [IO.File]::ReadAllText($pcFile, $l1).Replace("`r", '')
+    $tmp = [IO.Path]::GetTempFileName()
+    try {
+        foreach ($c in @(& git -C $Repo log -n 40 --format=%H -- $gp)) {
+            cmd /c "git -C `"$Repo`" show `"$($c):$gp`" > `"$tmp`" 2>nul"
+            if ($LASTEXITCODE -ne 0) { continue }
+            if ([IO.File]::ReadAllText($tmp, $l1).Replace("`r", '') -ceq $want) { return $true }
+        }
+    } finally { Remove-Item $tmp -ErrorAction SilentlyContinue }
+    $false
 }
 
 # Pairs of (repo source folder, PC destination folder) that the sync deploys.

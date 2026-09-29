@@ -36,6 +36,7 @@ try {
             $src = Join-Path $t.Src $rel; $dst = Join-Path $t.Dst $rel
             if (-not (Test-Path $dst)) { $info += "MISSING on PC  [$($t.Label)] $rel"; continue }
             if (Same-File $src $dst) { continue }
+            if (Is-OldVersion $src $dst) { $info += "OLDER on PC    [$($t.Label)] $rel  (not synced yet - run SYNC_TO_MY_PC.bat)"; continue }
             $info += "DIFFERS on PC  [$($t.Label)] $rel  (PC copy modified $((Get-Item $dst).LastWriteTime.ToString('s')))"
             $c = Join-Path $pcDir (Join-Path ($t.Label -replace '[^A-Za-z0-9]', '_') $rel)
             New-Item -ItemType Directory -Force (Split-Path $c) | Out-Null
