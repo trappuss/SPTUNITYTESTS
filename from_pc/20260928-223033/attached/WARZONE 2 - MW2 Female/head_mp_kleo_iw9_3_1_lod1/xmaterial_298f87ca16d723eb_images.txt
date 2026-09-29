@@ -1,0 +1,6 @@
+semantic,image_name
+unk_semantic_0x0,ximage_58e8e491c8206e1d
+unk_semantic_0x4,ximage_d29def7866c04f2
+unk_semantic_0x1B,ximage_4ce9ccdb14b08173
+unk_semantic_0x1D,ximage_391b633c531d37a8
+unk_semantic_0x32,ximage_4a882744bc523875

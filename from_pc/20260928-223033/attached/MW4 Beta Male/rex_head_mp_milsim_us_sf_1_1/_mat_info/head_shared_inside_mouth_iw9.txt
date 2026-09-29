@@ -1,0 +1,25 @@
+Name: m/head_shared_inside_mouth_iw9
+
+Techset: techset_8b844086d7b8893
+
+semantic,image_name
+unk_semantic_3,$black
+unk_semantic_4,$black
+unk_semantic_5,head_shared_inside_mouth_iw9_thermalmap
+unk_semantic_a,$white
+unk_semantic_12,$black
+unk_semantic_3f,$black
+unk_semantic_40,$black
+unk_semantic_41,$black
+unk_semantic_42,$black
+unk_semantic_47,image_15d621427324b07c
+unk_semantic_48,image_20c29983b2b82a9
+unk_semantic_49,$black
+unk_semantic_4a,$white
+unk_semantic_4b,$black
+unk_semantic_4c,$white
+unk_semantic_4d,$white
+unk_semantic_4e,image_7929282ac70f4aa7
+unk_semantic_51,$white
+unk_semantic_52,$white
+unk_semantic_55,$white

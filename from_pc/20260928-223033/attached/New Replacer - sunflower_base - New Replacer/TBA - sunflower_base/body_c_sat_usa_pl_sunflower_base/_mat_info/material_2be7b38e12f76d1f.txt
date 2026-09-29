@@ -1,0 +1,23 @@
+semantic,image_name
+unk_semantic_3,$black
+unk_semantic_4,$black
+unk_semantic_5,image_649d5255e5e1f8d1
+unk_semantic_a,$white
+unk_semantic_12,$black
+unk_semantic_3e,$black
+unk_semantic_3f,$black
+unk_semantic_40,$black
+unk_semantic_41,$black
+unk_semantic_46,image_45396999bd3a2d19
+unk_semantic_47,image_1c1f6e1d88d3d900
+unk_semantic_48,$black
+unk_semantic_49,$white
+unk_semantic_4a,$black
+unk_semantic_4b,$white
+unk_semantic_4c,$white
+unk_semantic_4d,image_5c3f2aa675c7b2d2
+unk_semantic_50,$white
+unk_semantic_51,$white
+unk_semantic_54,$white
+
+Techset: techset_38589b4fe613eb9

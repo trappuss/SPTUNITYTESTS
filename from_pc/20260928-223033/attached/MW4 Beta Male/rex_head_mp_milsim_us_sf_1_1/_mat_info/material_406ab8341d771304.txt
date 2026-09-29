@@ -1,0 +1,36 @@
+Name: material_406ab8341d771304
+
+Techset: techset_8b844086d7b8893
+
+semantic,image_name
+unk_semantic_3,$black
+unk_semantic_4,$black
+unk_semantic_5,image_743bf5951f4f65d5
+unk_semantic_a,$white
+unk_semantic_12,$black
+unk_semantic_3f,$black
+unk_semantic_40,$black
+unk_semantic_41,$black
+unk_semantic_42,$black
+unk_semantic_47,image_990c7b40eea127a
+unk_semantic_48,image_518e3f54f70e59a5
+unk_semantic_49,$black
+unk_semantic_4a,$white
+unk_semantic_4b,$black
+unk_semantic_4c,$white
+unk_semantic_4d,$white
+unk_semantic_4e,image_2309b6370b46c301
+unk_semantic_51,$white
+unk_semantic_52,$white
+unk_semantic_55,$white
+unk_semantic_57,image_53ff1de615c198c7
+unk_semantic_58,image_34b61c743f623f7b
+unk_semantic_59,$black
+unk_semantic_5a,image_76684eb2f47ff20a
+unk_semantic_5b,$black
+unk_semantic_5c,$white
+unk_semantic_5d,$white
+unk_semantic_5e,image_35e8904602794dd
+unk_semantic_61,image_338656eabfe0c1fd
+unk_semantic_62,$white
+unk_semantic_65,$white

@@ -1,0 +1,15 @@
+﻿Sent: 2026-09-28T22:30:33
+Repo commit: 360916d PC results 20260928-222836
+Repo versions: COD2EFT v2.5.0, EFT Tools v1.6.2
+
+Unity last loaded: [EFT Tools] v1.6.1 (2026-09-29) loaded
+DIFFERS on PC  [COD2EFT (Blender)] addon_init.py  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [COD2EFT (Blender)] CHANGELOG.md  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [COD2EFT (Blender)] cod2eft_porter.py  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [COD2EFT (Blender)] cod2eft_tools.py  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [COD2EFT (Blender)] cod2eft_ui.py  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [COD2EFT (Blender)] README.md  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [EFT Tools (Unity)] CHANGELOG.md  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [EFT Tools (Unity)] EFTAutoPrefabCore.cs  (PC copy modified 2026-09-28T21:05:05)
+DIFFERS on PC  [EFT Tools (Unity)] EFTToolsVersion.cs  (PC copy modified 2026-09-28T21:05:05)
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe

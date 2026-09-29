@@ -1,0 +1,6 @@
+newmtl xmaterial_298f87ca16d723eb
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Ks 0.50 0.50 0.50
+map_Kd _images\\xmaterial_298f87ca16d723eb\\ximage_58e8e491c8206e1d.dds

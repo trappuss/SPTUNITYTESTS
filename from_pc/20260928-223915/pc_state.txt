@@ -1,0 +1,6 @@
+﻿Sent: 2026-09-28T22:39:15
+Repo commit: 16673f5 Vanilla EFT material measurements (15 bundles): clothing uses neutral Glossness 1 / Specularness 1
+Repo versions: COD2EFT v2.5.0, EFT Tools v1.6.2
+
+Unity last loaded: [EFT Tools] v1.6.2 (2026-09-29) loaded
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe
