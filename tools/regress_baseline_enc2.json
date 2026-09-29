@@ -1,0 +1,299 @@
+{
+ "kleo": {
+  "pngs": {
+   "mp_kleo_iw9_3_1_Hands_d.png": {
+    "sha256": "c63b7128a3a88441",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Hands_g.png": {
+    "sha256": "4984393d5e23aaef",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Hands_n.png": {
+    "sha256": "c629b3a3a2c4f5ca",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_alpha_d.png": {
+    "sha256": "b0e6cab9b69dad55",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_alpha_g.png": {
+    "sha256": "4ff019ddeed40df1",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_alpha_n.png": {
+    "sha256": "75a0facf513b7178",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_d.png": {
+    "sha256": "e160001c21738b1c",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_g.png": {
+    "sha256": "fb6d9eef0b4a6e7b",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Head_n.png": {
+    "sha256": "9e7858de9fb93c11",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Lower_d.png": {
+    "sha256": "21f90e9f957ce6fa",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Lower_g.png": {
+    "sha256": "c76001ba9c30c478",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Lower_n.png": {
+    "sha256": "be8ae1f10e90372d",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Upper_d.png": {
+    "sha256": "36a9df6780dc76ec",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Upper_g.png": {
+    "sha256": "2e74af22f40b0f63",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_kleo_iw9_3_1_Upper_n.png": {
+    "sha256": "ff7deebe316cab68",
+    "tag": "COD2EFT enc=2"
+   }
+  },
+  "report": [
+   "Body volume: COD section centre vs joint (fwd cm) -> EFT: pelvis +1.0->+2.4, spine2 +4.2->+6.7, spine3 +3.2->+8.3, knee_L +1.1->-2.4, shin_L -0.6->+0.5, thigh_L +2.3->+0.2, upperarm_L -0.0->-0.4, knee_R +1.1->-2.4, shin_R -0.6->+0.5, thigh_R +2.3->+0.2, upperarm_R -0.0->-0.4",
+   "Body match after fit (COD - EFT section centre, forward cm): pelvis -0.2, spine2 +0.5, spine3 +0.7, knee_L -0.1, shin_L -1.1, thigh_L +0.3, upperarm_L +0.5, knee_R -0.1, shin_R -1.1, thigh_R +0.3, upperarm_R +0.5"
+  ]
+ },
+ "sunflower": {
+  "pngs": {
+   "c_sat_usa_pl_sunflower_base_Hands_d.png": {
+    "sha256": "fee577250424ac7c",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Hands_g.png": {
+    "sha256": "0e8cabecacf38ed8",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Hands_n.png": {
+    "sha256": "308061ce0e141c9b",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_alpha_d.png": {
+    "sha256": "14e3827ee62c9c17",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_alpha_g.png": {
+    "sha256": "fb71875dd8a1f65f",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_alpha_n.png": {
+    "sha256": "6838a5fbbff45afc",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_d.png": {
+    "sha256": "de7c7d18472e98f3",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_g.png": {
+    "sha256": "aa6875f8bfc57b01",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Head_n.png": {
+    "sha256": "a033cde70a5553f3",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Lower_d.png": {
+    "sha256": "281c12283a0f0de3",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Lower_g.png": {
+    "sha256": "dec364a2ad35dcba",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Lower_n.png": {
+    "sha256": "bac63d8cd9c88962",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Upper_d.png": {
+    "sha256": "892321970aa298fb",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Upper_g.png": {
+    "sha256": "62549f7ae0a934b1",
+    "tag": "COD2EFT enc=2"
+   },
+   "c_sat_usa_pl_sunflower_base_Upper_n.png": {
+    "sha256": "eeaf9dccb1b9bd35",
+    "tag": "COD2EFT enc=2"
+   }
+  },
+  "report": [
+   "Body volume: COD section centre vs joint (fwd cm) -> EFT: pelvis +4.9->+2.4, spine2 +5.5->+6.7, spine3 +2.9->+8.3, knee_L +2.0->-2.4, shin_L +1.3->+0.5, thigh_L +3.5->+0.2, upperarm_L -1.3->-0.4, knee_R +2.0->-2.4, shin_R +1.3->+0.5, thigh_R +3.5->+0.2, upperarm_R -1.3->-0.4",
+   "Body match after fit (COD - EFT section centre, forward cm): pelvis -2.5, spine2 +0.5, spine3 +0.6, knee_L +0.2, shin_L +0.2, thigh_L -0.4, upperarm_L -0.2, knee_R +0.2, shin_R +0.2, thigh_R -0.4, upperarm_R -0.2"
+  ]
+ },
+ "mw4_male": {
+  "pngs": {
+   "mp_milsim_us_sf_1_1_Hands_d.png": {
+    "sha256": "7195ce0070481f8f",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Hands_g.png": {
+    "sha256": "d17ed5e809fde785",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Hands_n.png": {
+    "sha256": "23b43597561cc1e5",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_alpha_d.png": {
+    "sha256": "91d9d3a7d8e9d60c",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_alpha_g.png": {
+    "sha256": "361c445dc072fd81",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_alpha_n.png": {
+    "sha256": "ebedb6c32c91bad0",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_d.png": {
+    "sha256": "b5af5738c8d3d3c5",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_g.png": {
+    "sha256": "ff91f7926e2075cf",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Head_n.png": {
+    "sha256": "32402ec5e1ec77ca",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Lower_d.png": {
+    "sha256": "6587a46ee760f8ed",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Lower_g.png": {
+    "sha256": "1a019b19e1c273e7",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Lower_n.png": {
+    "sha256": "b6dc75fdd1ccb7b8",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_alpha_d.png": {
+    "sha256": "341e324437d13ea3",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_alpha_g.png": {
+    "sha256": "32d3098b2b2803c2",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_alpha_n.png": {
+    "sha256": "6806aa6a70508fe6",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_d.png": {
+    "sha256": "e27705a6033501b9",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_g.png": {
+    "sha256": "5cb80e49a0bb403a",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_milsim_us_sf_1_1_Upper_n.png": {
+    "sha256": "e24b9a554f9b2af8",
+    "tag": "COD2EFT enc=2"
+   }
+  },
+  "report": [
+   "Body volume: COD section centre vs joint (fwd cm) -> EFT: pelvis -3.3->+2.4, spine2 -0.2->+6.7, spine3 +1.1->+8.3, knee_L -0.5->-2.4, shin_L -2.2->+0.5, thigh_L -2.5->+0.2, upperarm_L -0.2->-0.4, knee_R -0.5->-2.4, shin_R -2.2->+0.5, thigh_R -2.5->+0.2, upperarm_R -0.2->-0.4",
+   "Body match after fit (COD - EFT section centre, forward cm): pelvis -0.3, spine2 +1.8, spine3 +1.5, knee_L +0.1, shin_L -1.0, thigh_L -0.7, upperarm_L +0.5, knee_R +0.1, shin_R -1.0, thigh_R -0.7, upperarm_R +0.5"
+  ]
+ },
+ "mw4_female": {
+  "pngs": {
+   "mp_valeria_2_1_Hands_d.png": {
+    "sha256": "03989ec2b3d80563",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Hands_g.png": {
+    "sha256": "7d0b4ee671a1ede4",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Hands_n.png": {
+    "sha256": "79e4c3a427ed0f6b",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_alpha_d.png": {
+    "sha256": "8ff8b150f4d64a63",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_alpha_g.png": {
+    "sha256": "70a2e8487af6e3b3",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_alpha_n.png": {
+    "sha256": "4062df24d4cf5ff7",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_d.png": {
+    "sha256": "da13785efedfaf4b",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_g.png": {
+    "sha256": "644459d3579ad0b5",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Head_n.png": {
+    "sha256": "d8d691f0db185e51",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Lower_d.png": {
+    "sha256": "61f1231c89b3d02b",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Lower_g.png": {
+    "sha256": "e29db10d1ec5b5d7",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Lower_n.png": {
+    "sha256": "7545cc77c157e436",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_alpha_d.png": {
+    "sha256": "1bbb56dcdc5716d4",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_alpha_g.png": {
+    "sha256": "faa4c20ad6fd604a",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_alpha_n.png": {
+    "sha256": "864418439d3e811e",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_d.png": {
+    "sha256": "09f394f8b9f3933e",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_g.png": {
+    "sha256": "233c16c1e121f62a",
+    "tag": "COD2EFT enc=2"
+   },
+   "mp_valeria_2_1_Upper_n.png": {
+    "sha256": "186a5a0eff372d04",
+    "tag": "COD2EFT enc=2"
+   }
+  },
+  "report": [
+   "Body volume: COD section centre vs joint (fwd cm) -> EFT: pelvis -7.1->+2.4, spine2 +5.2->+6.7, spine3 +6.0->+8.3, knee_L -1.7->-2.4, shin_L -3.1->+0.5, thigh_L -0.8->+0.2, upperarm_L -0.6->-0.4, knee_R -1.7->-2.4, shin_R -3.1->+0.5, thigh_R -0.8->+0.2, upperarm_R -0.6->-0.4",
+   "limited unusual section centres (gear on the torso/legs?): pelvis (-4.5 cm), spine3 (+1.5 cm), shin_L (-1.1 cm), shin_R (-1.1 cm), pelvis vs waist (-2.5 cm, hip shape)",
+   "Body match after fit (COD - EFT section centre, forward cm): pelvis -3.1, spine2 +0.4, spine3 +0.0, knee_L -0.2, shin_L -0.7, thigh_L -2.2, upperarm_L +0.5, knee_R -0.2, shin_R -0.7, thigh_R -2.2, upperarm_R +0.5"
+  ]
+ }
+}

@@ -2,6 +2,10 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.2 — 2026-09-29
+- Mod Builder: a mod folder that already has files but no `modbuilder.json` (so this builder didn't make it) is refused. Before, only a foreign DLL was caught, so an asset-only mod's `bundles.json`, `modinfo.json` and `db` files would have been overwritten. (Audit item.) Your own mod folders have `modbuilder.json` and are not affected.
+- Not compiled here; checked by reading.
+
 ## 1.7.1 — 2026-09-29
 - **Fix: two models with the same material names shared one set of materials.** This happened when both were set up in one run, e.g. the same character converted as enc=2 and enc=3. The extracted materials were remembered by name only, so both prefabs used the first model's materials. This is why the enc=2/enc=3 A/B looked identical: the enc=3 bundle had the enc=2 materials. They are now keyed by model file + material name.
 - If a material still points at a same-named texture in another folder, the texture next to its own model now wins.

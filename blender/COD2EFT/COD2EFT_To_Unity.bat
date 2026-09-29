@@ -4,7 +4,7 @@ title COD2EFT - copy a converted character into the WTT-SDK Unity project
 rem =====================================================================================
 rem  Drag a converted <name>_EFT.fbx (from an EFT_Converted folder) onto this file.
 rem  It copies into your WTT-SDK Unity project:
-rem     <name>_EFT.fbx and <name>_*.png   ->  Assets\COD2EFT\<name>\
+rem     <name>_EFT.fbx and <name>_<Part>_*.png   ->  Assets\COD2EFT\<name>\
 rem  Materials, prefabs and bundles are then made by the EFT Auto Prefabber in the SDK (it owns
 rem  the Unity side - see unity\COD2EFT_TEXTURE_SPEC.md).  The project folder is remembered in
 rem  wtt_path.txt.
@@ -41,7 +41,8 @@ set "DST=%WTT%\Assets\COD2EFT\%NAME%"
 if not exist "%DST%" mkdir "%DST%"
 copy /Y "%FBX%" "%DST%\" >nul || goto :fail
 set "N=0"
-for %%P in ("%SRC%%NAME%_*.png") do (
+rem only COD2EFT's own sets (<name>_<Part>_d/_n/_g, <name>_<Part>_alpha_*): "<name>_*" also caught e.g. <name>_Alt_*
+for %%T in (Head Upper Lower Hands) do for %%P in ("%SRC%%NAME%_%%T_*.png") do (
     copy /Y "%%~fP" "%DST%\" >nul
     set /a N+=1
 )

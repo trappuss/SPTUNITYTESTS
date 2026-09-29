@@ -30,8 +30,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.6.1** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
-| EFT Tools | **1.7.1** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
+| COD2EFT | **2.6.2** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| EFT Tools | **1.7.2** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -84,9 +84,9 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 
 **Queue, in order.** Each is a separate step. (The material session has pushed: 2.6.0 / 1.7.0.)
 1. **Unify the contract.** Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
-2. **One source for the per-part material numbers.** Today they are hard-coded twice: `EFT_PART` in `cod2eft_textures.py` (Blender preview) and `EFTMaterialCore.cs` (Unity). Either a shared JSON that both read, or a `tools/` check that fails when they differ. enc=3 added a second set (`EFT_NEUTRAL` vs `Cod2EftNeutralPreset`) that must be covered too.
+2. ✅ **One source for the per-part material numbers** (2026-09-29: `tools/check_contract.py` fails when Blender's `EFT_PART` / `EFT_NEUTRAL` / `CUTOFF` and Unity's presets / `DefaultCutoff` differ; run it after touching either). Today they are hard-coded twice: `EFT_PART` in `cod2eft_textures.py` (Blender preview) and `EFTMaterialCore.cs` (Unity). Either a shared JSON that both read, or a `tools/` check that fails when they differ. enc=3 added a second set (`EFT_NEUTRAL` vs `Cod2EftNeutralPreset`) that must be covered too.
 3. **`_EFT` name suffix.** Batch export writes `<name>_EFT.fbx`, so Unity names bundles `…_eft_top`. The panel export for Park gave `…_top`. Pick one: Unity strips a trailing `_EFT`, or Blender stops adding it. Changing bundle keys breaks existing mods, so ask the user first.
-4. **Regression harness in `tools/`.** Batch-convert every test character and compare against a stored baseline (fit numbers from the reports, PNG hashes, material survey). The old `_dev` harness never reached the repo.
+4. ✅ **Regression harness in `tools/`** (2026-09-29: `tools/regress.py run|save|check`, baselines `tools/regress_baseline_enc2.json` / `_enc3.json`; the survey stays `tools/cod_survey.py`). Batch-convert every test character and compare against a stored baseline (fit numbers from the reports, PNG hashes, material survey). The old `_dev` harness never reached the repo.
 5. **Test data out of git.** `from_pc/` holds GBs of COD exports and bundles, and every clone downloads them. Options: a separate data repo, Git LFS, or a send script that uploads big folders elsewhere. Rewriting history to drop what's already committed needs the user's OK.
 6. **Mod Builder:** default hands for tops without their own. Pick a game hands bundle automatically; the user got stuck on this with Park.
 7. **Mod Builder:** show "has not been built" before the first build as a note, not an error.
@@ -105,7 +105,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
     - drop `COD_original_UV` from the FBX;
     - calibration heads A/B/C against a vanilla head;
     - Park 24_1's head wasn't paired with its body (no `head_…` found);
-    - audit leftovers: the Mod Builder overwrite guard only checks DLLs; the `install_addon.py` template path encoding; `COD2EFT_To_Unity.bat` copies `<name>_*.png` too broadly.
+    - ✅ audit leftovers fixed (2.6.2 / 1.7.2): Mod Builder overwrite guard, `install_addon.py` template path encoding, `COD2EFT_To_Unity.bat` PNG glob.
 
 **Superseded:** the `_skin` slot plan (Blender 2.5.0 / Unity 1.7.0 per-class values) is replaced by the enc=3 plan. The version numbers 2.5.x went to other fixes.
 
@@ -175,7 +175,7 @@ Sub-mesh names `<name>_<Part>_<label>` (Separate by COD material / Join parts of
   - Fix: agree on a piece-naming scheme (e.g. `<piece>_<name>_Upper`, which the parser already groups).
 
 **Open: Unity**
-- ⚠ **The "don't overwrite another mod" guard only looks for DLLs** in the mod folder's top level. Pointing the builder at an existing asset-only mod would overwrite its `bundles.json`, `modinfo.json` and `db/*`. It never deletes anything.
+- ✅ (1.7.2) **The "don't overwrite another mod" guard only looked for DLLs** in the mod folder's top level. Pointing the builder at an existing asset-only mod would overwrite its `bundles.json`, `modinfo.json` and `db/*`. It never deletes anything.
 - ✅ **Corrupt PNG hang.** A chunk length ≥ 2³¹ made the tag reader loop forever. Fixed in 1.7.0 (a length past the bytes read ends the scan).
 - **Batch mode blockers:**
   - `Scan`/`BuildAll` are private window methods that read `Selection`.
@@ -186,8 +186,8 @@ Sub-mesh names `<name>_<Part>_<label>` (Separate by COD material / Join parts of
   - Reusable static pieces: `EFTMaterialFixer.Fix`, `EFTBundleBuilder.Build`, `EFTModBuilderCore.*`.
 
 **Open: Blender**
-- ⚠ **Non-ASCII template path.** `COD2EFT_Convert.bat` writes `template_path.txt` in the console code page, and `install_addon.py` reads it as UTF-8. A path with e.g. `Ü` aborts the install.
-- `COD2EFT_To_Unity.bat` copies `<name>_*.png`, so copying `Kleo` also picks up `Kleo_Alt_*` textures. Low.
+- ✅ (2.6.2) **Non-ASCII template path.** `COD2EFT_Convert.bat` writes `template_path.txt` in the console code page, and `install_addon.py` reads it as UTF-8. A path with e.g. `Ü` aborts the install.
+- ✅ (2.6.2) `COD2EFT_To_Unity.bat` copied `<name>_*.png`, so copying `Kleo` also picks up `Kleo_Alt_*` textures. Low.
 - Minor points in rarely used paths:
   - the `mklink` fallback doesn't quote a path with `&`;
   - UNC (`\\server\…`) folders skip the long-path check;

@@ -399,6 +399,10 @@ namespace EFTAutoPrefab
             // never overwrite somebody else's mod
             if (!string.IsNullOrEmpty(ModFolder) && Directory.Exists(ModFolder))
             {
+                // 1.7.2: a folder with files but without this builder's project file was not made by it (an asset-only mod
+                // would have had its bundles.json / modinfo.json / db files overwritten - the DLL check below missed it)
+                if (!File.Exists(Path.Combine(ModFolder, ProjectFile)) && Directory.EnumerateFileSystemEntries(ModFolder).Any())
+                    _errors.Add($"'{ModFolder}' already has files and was not made by this builder (no {ProjectFile}) - it may be another mod. Use a new mod folder name.");
                 var ours = new HashSet<string>(_p.generatedFiles.Select(Norm));
                 foreach (var dll in Directory.GetFiles(ModFolder, "*.dll", SearchOption.TopDirectoryOnly))
                     if (!ours.Contains(Norm(Path.GetFileName(dll))))

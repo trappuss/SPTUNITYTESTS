@@ -64,8 +64,16 @@ prefs.data_dir = HERE
 tp = ""
 txt = os.path.join(HERE, "template_path.txt")
 if os.path.isfile(txt):
-    with open(txt, "r", encoding="utf-8") as fh:
-        tp = fh.read().strip().strip('"')
+    # COD2EFT_Convert.bat writes this file with "echo", i.e. in the console code page (cp850 / cp437 ...), not UTF-8:
+    # a path with e.g. "\u00dc" used to abort the install here (2.6.2).  Try UTF-8 first, then the console / ANSI pages.
+    with open(txt, "rb") as fh:
+        raw = fh.read()
+    for enc in ("utf-8-sig", "oem", "mbcs", "cp850", "cp1252"):
+        try:
+            tp = raw.decode(enc).strip().strip('"')
+            break
+        except (UnicodeDecodeError, LookupError):
+            continue
 if not (tp and os.path.isfile(tp)):
     tp = os.path.normpath(os.path.join(HERE, "..", "Testing", "CUSTOM", "EFT BASIC [Template].blend"))
 if os.path.isfile(tp):

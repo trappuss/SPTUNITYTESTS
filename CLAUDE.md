@@ -44,6 +44,8 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
   - Vanilla EFT bundles: `from_pc/20260928-222836/attached/`.
   - Park 24_1 output that worked in game: `from_pc/20260928-221326/attached/`.
 - **Regression:** convert the test characters before and after a change. Compare the report lines ("Body volume", "Body match after fit") and the PNG hashes. `tools/cod_survey.py` re-measures every COD material. Report exactly what changed.
+  - `python tools/regress.py run OUT --mode enc2` (then `--mode enc3`) converts all 4 test characters (about 7 minutes each mode); `python tools/regress.py check OUT --mode enc2` compares with `tools/regress_baseline_enc2.json`. After an intended change, `save` a new baseline and say so in the commit.
+  - `python tools/check_contract.py` (no bpy) checks that the Blender preview's material numbers and cutoff match Unity's.
 - **C#:** there is no compiler, so check by reading. Mirror regexes and maths in Python where useful. Say it is uncompiled.
 - **PowerShell** (`pc/*.ps1`): must run on Windows PowerShell 5.1. Parse-check with pwsh if available. Under `$ErrorActionPreference = 'Stop'`, don't redirect native stderr (`2>$null`).
 

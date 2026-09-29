@@ -2,6 +2,11 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.2 — 2026-09-29
+- `Install_COD2EFT_Addon.bat`: a template path with non-ASCII characters (e.g. `Ü`) no longer aborts the install. `COD2EFT_Convert.bat` writes `template_path.txt` in the console code page, and `install_addon.py` now reads UTF-8 first, then the console / ANSI code pages. (Audit item. Checked in Python with a cp850 file; not run on Windows.)
+- `COD2EFT_To_Unity.bat` copies only COD2EFT's own sets, `<name>_<Head|Upper|Lower|Hands>_*.png`. Before, copying `Kleo` also picked up `Kleo_Alt_*` textures. (Audit item.)
+- No change to conversions: the regression harness (`tools/regress.py`) gives the same PNGs as 2.5.2 for enc=2 and 2.6.0 for enc=3 on all 4 test characters.
+
 ## 2.6.1 — 2026-09-29
 - Hair / cut-out preview cutoff 0.5 → **0.3**, to match EFT Tools 1.7.1. You found 0.25–0.35 best: at 0.5, fine hair and fringe details vanished (on valeria, 0.5 hides 7–11 % of the texels with alpha ≥ 0.25; 0.3 hides about 2 %). The test that decides which materials are cut-outs still uses 0.5, so the PNGs are unchanged.
 
