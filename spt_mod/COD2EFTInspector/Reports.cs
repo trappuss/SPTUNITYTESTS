@@ -108,12 +108,66 @@ namespace COD2EFTInspector
             return sb.ToString();
         }
 
+        /// <summary>Every renderer / material slot of the scan as plain data for MaterialCheck.</summary>
+        public static List<MatInfo> Collect(Scan scan)
+        {
+            var list = new List<MatInfo>();
+            if (scan == null) return list;
+            foreach (var g in scan.Groups)
+            {
+                string part = g.Kind == "body" ? Catalog.PartOfBodyKey(g.Part) : "";
+                foreach (var e in g.Entries)
+                {
+                    var r = e.R;
+                    if (r == null) continue;
+                    var smr = r as SkinnedMeshRenderer;
+                    var mf = smr == null ? r.GetComponent<MeshFilter>() : null;
+                    bool noMesh = smr != null ? smr.sharedMesh == null : mf != null && mf.sharedMesh == null;
+                    var mats = r.sharedMaterials;
+                    if (mats.Length == 0) list.Add(new MatInfo { Part = part, Renderer = e.Path, NoMaterial = true, NoMesh = noMesh });
+                    foreach (var m in mats)
+                    {
+                        var mi = new MatInfo { Part = part, Renderer = e.Path, NoMesh = noMesh, Skinned = smr != null, Bones = smr?.bones?.Length ?? 0 };
+                        if (m == null) { mi.NoMaterial = true; list.Add(mi); continue; }
+                        mi.Material = m.name;
+                        var sh = m.shader;
+                        mi.Shader = sh != null ? sh.name : "";
+                        if (sh != null)
+                            for (int k = 0; k < sh.GetPropertyCount(); k++)
+                            {
+                                string pn = sh.GetPropertyName(k);
+                                try
+                                {
+                                    var pt = sh.GetPropertyType(k);
+                                    if (pt == ShaderPropertyType.Texture)
+                                    {
+                                        var t = m.GetTexture(pn);
+                                        mi.Textures[pn] = t == null ? null : new TexInfo { Name = t.name, W = t.width, H = t.height };
+                                    }
+                                    else if (pt == ShaderPropertyType.Float || pt == ShaderPropertyType.Range) mi.Floats[pn] = m.GetFloat(pn);
+                                }
+                                catch { }
+                            }
+                        list.Add(mi);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public static List<string> Check(Scan scan) => MaterialCheck.Run(Collect(scan));
+
         public static string Materials(Scan scan)
         {
             var sb = new StringBuilder();
             Header(sb, "material report", scan);
             Outfit(sb, scan);
             if (scan == null) return sb.ToString();
+            var problems = Check(scan);
+            sb.AppendLine("Checks (shader, stencil, texture slots and sizes; values are not judged):");
+            if (problems.Count == 0) sb.AppendLine("  all fine");
+            foreach (var pr in problems) sb.AppendLine("  " + pr);
+            sb.AppendLine();
             var seenMats = new HashSet<Material>();
             foreach (var g in scan.Groups)
             {

@@ -7,7 +7,7 @@ work as possible. It has two halves, and this repo is the one place both live:
 |---|---|---|---|
 | **COD2EFT**, a Blender add-on: fits COD models onto the EFT skeleton, converts weights and textures, exports FBX + PNG | `blender/COD2EFT/` | `C:\Users\notso\Downloads\Claude Current\SPTModdingTools\COD2EFT` (live install: Blender loads its code from there) | 2.6.2 |
 | **EFT Tools**, Unity editor scripts (EFT Auto Prefabber + Mod Builder): materials, prefabs, bundles, SPT mod | `unity/EFTAutoPrefabber/` | `...\WTT-SDK-2022\Assets\Editor\EFTAutoPrefabber` | 1.7.2 |
-| **COD2EFT Inspector**, an SPT client plugin (BepInEx): in-game show/hide per mesh, screenshots, photo mode (orbit camera + studio lights), material report, outfit list with live try-on. Built on the PC by `BUILD_SPT_INSPECTOR.bat` | `spt_mod/COD2EFTInspector/` | `<SPT game>\BepInEx\plugins\COD2EFTInspector` (compiled on the PC, not synced) | 0.4.0 |
+| **COD2EFT Inspector**, an SPT client plugin (BepInEx): in-game show/hide per mesh, screenshots, photo mode (orbit camera + studio lights), material report, outfit list with live try-on. Built on the PC by `BUILD_SPT_INSPECTOR.bat` | `spt_mod/COD2EFTInspector/` | `<SPT game>\BepInEx\plugins\COD2EFTInspector` (compiled on the PC, not synced) | 0.5.0 |
 
 **Start here:** [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md) has the combined state, the
 contract between the two halves, open work and the audit.
@@ -26,7 +26,7 @@ Git talks to GitHub, it may open a browser for you to sign in.
 | Double-click | What it does |
 |---|---|
 | `SYNC_TO_MY_PC.bat` | Pulls the latest from GitHub and copies changed files into your COD2EFT folder and Unity project. Every file it replaces is first backed up to `pc\_backup\<time>\`; it never deletes anything. It checks every file by SHA-256 afterwards and re-installs the Blender add-on if the add-on itself changed. It then watches Unity's Editor.log until you click into Unity: it reports either `EFT Tools vX loaded` or the compile errors. |
-| `SEND_RESULTS_TO_CLAUDE.bat` | Double-click it, or **drag reports, screenshots or folders onto it**. It collects the Unity Editor.log (tail + errors), the installed versions, any tool files that were changed on the PC (e.g. by a Cowork session) and your files. It also asks for an optional message. Everything goes to `from_pc\<time>\` and is pushed to GitHub. Then tell Claude "check from_pc". |
+| `SEND_RESULTS_TO_CLAUDE.bat` | Double-click it, or **drag reports, screenshots or folders onto it**. It collects the Unity Editor.log (tail + errors), the installed versions, any tool files that were changed on the PC (e.g. by a Cowork session) and your files. It also asks for an optional message. With the SPT game folder known, it also sends the BepInEx log and new Inspector screenshots (big ones as JPEG copies). Everything goes to `from_pc\<time>\` and is pushed to GitHub. Then tell Claude "check from_pc". |
 | `BUILD_SPT_INSPECTOR.bat` | Builds the COD2EFT Inspector plugin against your own SPT game DLLs (installs the .NET SDK with winget if needed) and copies it to `BepInEx\plugins\COD2EFTInspector\`. Run it after a sync that changed `spt_mod/`. Details: [`docs/SPT_INSPECTOR.md`](docs/SPT_INSPECTOR.md). |
 
 Both scripts repair the repo folder themselves if an earlier run failed half-way. If Claude

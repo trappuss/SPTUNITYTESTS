@@ -89,6 +89,7 @@ static class CatalogTest
         Check(Catalog.Load(Path.Combine(root, "nope"), game).Notes.Any(n => n.Contains("Configured server folder")), "bad configured folder reported, falls back to search");
         Console.WriteLine(c.Report().Split('\n').Length > 5 ? "ok   report text" : "FAIL report text");
         Directory.Delete(root, true);
+        fails += MaterialCheckTest.Run();
         Console.WriteLine(fails == 0 ? "ALL PASSED" : fails + " FAILED");
         return fails == 0 ? 0 : 1;
     }

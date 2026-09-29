@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.4.0";
+        public const string Version = "0.5.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -232,6 +232,13 @@ namespace COD2EFTInspector
 
         void ShowAll() { foreach (var r in _hidden.Keys.ToList()) SetHidden(r, false); _hidden.Clear(); }
 
+        /// <summary>Hides every mesh of the character except this one (Show all brings them back).</summary>
+        void Solo(Renderer keep)
+        {
+            if (_scan == null) return;
+            foreach (var g in _scan.Groups) foreach (var e in g.Entries) SetHidden(e.R, e.R != keep);
+        }
+
         void HideGear()
         {
             if (_scan == null) return;
@@ -318,6 +325,7 @@ namespace COD2EFTInspector
                                        (e.R.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly ? "  [shadow only]" : "");
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(30);
+                        if (GUILayout.Button("solo", GUILayout.Width(40))) Solo(e.R);
                         bool n2 = GUILayout.Toggle(shown, " " + e.Path + flags);
                         if (n2 != shown) SetHidden(e.R, !n2);
                         GUILayout.EndHorizontal();
@@ -362,13 +370,53 @@ namespace COD2EFTInspector
         bool IsWorn(Outfit o) => _worn.Contains(o.Id ?? "") ||
             (o.Bundle != null && _worn.Contains(Path.GetFileNameWithoutExtension(o.Bundle.Replace('\\', '/').Split('/').Last())));
 
-        void WearItems(List<Outfit> items)
+        List<Outfit> WithHands(List<Outfit> items)
         {
-            if (Wearer.Busy || items == null || items.Count == 0) return;
             var cat = GetCatalog();
             var all = new List<Outfit>(items);
             foreach (var top in items.Where(o => o.Part == "Top").ToList())
                 if (!all.Any(o => o.Part == "Hands")) { var h = cat.HandsFor(top); if (h != null) all.Add(h); }
+            return all;
+        }
+
+        /// <summary>A/B in one click: a turntable of every outfit of the newest mod, then of your own outfit as reference.</summary>
+        IEnumerator CompareBatch()
+        {
+            var cat = GetCatalog();
+            var newest = cat.ModSets().FirstOrDefault();
+            if (newest == null) { _status = "A/B: no mod outfit in the catalog"; yield break; }
+            if (!_photo.Active) TogglePhoto();
+            if (!_photo.Active) yield break;
+            var sets = cat.ModSets().Where(x => x.Source == newest.Source).ToList();
+            var runs = sets.Select(x => new KeyValuePair<string, List<Outfit>>(x.Name, WithHands(x.Pieces))).ToList();
+            var player = Game.MainPlayer();
+            // your own outfit last, as the reference (known once something was worn)
+            Log.LogInfo($"A/B: {runs.Count} outfit(s) of [{newest.Source}] + your own outfit");
+            int done = 0;
+            for (int i = 0; i <= runs.Count; i++)
+            {
+                List<Outfit> items;
+                string label;
+                if (i < runs.Count) { items = runs[i].Value; label = runs[i].Key; }
+                else { items = Wearer.OriginalOutfit(cat); label = "your own outfit (reference)"; }
+                if (items.Count == 0) continue;
+                _status = $"A/B {i + 1}/{runs.Count + 1}: {label}";
+                string msg = null;
+                yield return StartCoroutine(Wearer.Wear(player, items, m => msg = m));
+                if (msg == null || msg.StartsWith("Try-on failed")) { Log.LogWarning($"A/B: skipped '{label}': {msg}"); continue; }
+                yield return new WaitForSecondsRealtime(1.5f);   // textures stream in
+                Refresh(true);
+                yield return StartCoroutine(Turntable());
+                done++;
+            }
+            _status = $"A/B done: {done} turntable(s) of 4 screenshots in {_outDir}";
+            Log.LogInfo(_status);
+        }
+
+        void WearItems(List<Outfit> items)
+        {
+            if (Wearer.Busy || items == null || items.Count == 0) return;
+            var all = WithHands(items);
             _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
             StartCoroutine(Wearer.Wear(Game.MainPlayer(), all, msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } }));
         }
@@ -507,7 +555,10 @@ namespace COD2EFTInspector
                 var f = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}_materials.txt");
                 GetCatalog();
                 File.WriteAllText(f, Reports.Materials(_scan));
-                _status = "Material report: " + Path.GetFileName(f);
+                var problems = Reports.Check(_scan);
+                _status = $"Material report: {Path.GetFileName(f)} - " +
+                          (problems.Count == 0 ? "checks all fine" : $"{problems.Count(x => x.StartsWith("ERROR"))} error(s), {problems.Count(x => x.StartsWith("WARN"))} warning(s): " + problems[0]);
+                foreach (var pr in problems) Log.LogWarning("Check: " + pr);
                 Log.LogInfo("Material report written: " + f);
             }
             catch (Exception e) { _status = "Material report failed: " + e.Message; Log.LogError("Material report failed: " + e); }
@@ -548,6 +599,9 @@ namespace COD2EFTInspector
             GUILayout.EndHorizontal();
             _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f);
             if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
+            var newest = GetCatalog().ModSets().FirstOrDefault();
+            if (newest != null && GUILayout.Button($"A/B: turntable every outfit of [{newest.Source}] + your own outfit"))
+                { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
         }
 
         static float Slider(string label, float v, float min, float max)

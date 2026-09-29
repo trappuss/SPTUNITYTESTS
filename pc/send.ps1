@@ -6,6 +6,31 @@
 #  - SPT (if SPT_GAME is known): BepInEx LogOutput.log, the Inspector build log, and every file in
 #    <SPT game>\COD2EFT_Screenshots that is new since the last send
 $Extra = $args   # files / folders dragged onto the .bat
+
+# JPEG copy of a big PNG, at most 2560 px wide (System.Drawing, part of Windows PowerShell 5.1). $false if it can't.
+function Save-JpegCopy($src, $dst) {
+    try {
+        Add-Type -AssemblyName System.Drawing
+        $img = [System.Drawing.Image]::FromFile($src)
+        try {
+            $w = [Math]::Min(2560, $img.Width); $h = [int][Math]::Round($img.Height * $w / $img.Width)
+            $bmp = New-Object System.Drawing.Bitmap($w, $h)
+            $g = [System.Drawing.Graphics]::FromImage($bmp)
+            $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+            $g.DrawImage($img, 0, 0, $w, $h)
+            $g.Dispose()
+            $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
+            $ep = New-Object System.Drawing.Imaging.EncoderParameters(1)
+            $ep.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter([System.Drawing.Imaging.Encoder]::Quality, [long]90)
+            $bmp.Save($dst, $codec, $ep)
+            $bmp.Dispose()
+        } finally { $img.Dispose() }
+        return $true
+    } catch {
+        Say "   (JPEG copy failed for $(Split-Path $src -Leaf): $($_.Exception.Message); sending the PNG)" Yellow
+        return $false
+    }
+}
 . (Join-Path $PSScriptRoot 'common.ps1')
 $MaxBytes = 90MB
 
@@ -56,11 +81,15 @@ try {
             $since = if (Test-Path $marker) { [datetime]::Parse((Get-Content $marker -TotalCount 1).Trim(), [Globalization.CultureInfo]::InvariantCulture) } else { [datetime]::MinValue }
             $new = @(Get-ChildItem $shots -File | Where-Object { $_.LastWriteTime -gt $since })
             $dstS = Join-Path $out 'COD2EFT_Screenshots'
+            $jpgs = 0
             foreach ($f in $new) {
-                if ($f.Length -gt $MaxBytes) { $info += "SKIPPED (over 90 MB, use a lower supersize): $($f.Name)"; continue }
                 New-Item -ItemType Directory -Force $dstS | Out-Null
+                # big screenshots go up as a JPEG copy (<= 2560 px wide): keeps the repo small; the PNG stays on this PC
+                if ($f.Extension -eq '.png' -and $f.Length -gt 4MB -and (Save-JpegCopy $f.FullName (Join-Path $dstS ($f.BaseName + '.jpg')))) { $jpgs++; continue }
+                if ($f.Length -gt $MaxBytes) { $info += "SKIPPED (over 90 MB, use a lower supersize): $($f.Name)"; continue }
                 Copy-Item -LiteralPath $f.FullName $dstS
             }
+            if ($jpgs) { $info += "$jpgs screenshot(s) sent as JPEG copies (max 2560 px wide, quality 90); the PNGs stay in $shots" }
             $info += "COD2EFT_Screenshots: $($new.Count) new file(s) since $(if ($since -eq [datetime]::MinValue) { 'ever' } else { $since.ToString('s') })"
             Say "   $($new.Count) new screenshot / report file(s)"
         }

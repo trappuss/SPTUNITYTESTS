@@ -38,6 +38,10 @@ newest mod's outfit is at the top → *Wear* → Photo tab. Option *Auto-wear ne
 click. *Save this head to my profile* keeps a head after restart when the WTT HeadVoiceSelector server mod is installed.
 Tops / pants are not saved: SPT only lets a profile wear suits it owns (the trader), so saving them is a separate question.
 
+**A/B (0.5.0, Photo tab):** one click wears every outfit of the newest mod in turn and takes a turntable of each, then
+one of your own outfit as the reference: same camera, same lights. The material report's *Checks* section flags
+shader / stencil / texture-slot problems automatically.
+
 **Photo mode (0.3.0, Photo tab or F12 → *0. Inspector*):** in raid or the hideout the camera orbits your own character
 (third person, the character takes no input, HUD hidden). Angle and framing presets, sliders, right-mouse drag / wheel,
 studio lights (key / fill / rim; follow the camera or stay fixed to the character), and *Turntable* (4 screenshots).

@@ -3,6 +3,18 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.5.0 (2026-09-29)
+- **Material checks**: the material report starts with a *Checks* section and the panel shows the count. Flags a missing
+  shader (pink), a non-EFT shader (e.g. Standard left in), the wrong shader / `_StencilType` for body parts (SMap_Decal, 1)
+  and first-person hands (SMap, 2), empty `_MainTex` / `_BumpMap` / `_SpecMap`, Unity default textures, non power-of-two
+  or over-4096 textures, empty material slots, skinned meshes with 0 bones. Values like `_Glossness` are not judged
+  (they depend on enc=2 / enc=3). Unit-tested with mono against the shapes of the real valeria report.
+- **A/B in one click** (Photo tab): a turntable (4 screenshots) of every outfit of the newest mod (e.g. valeria enc=2 and
+  enc=3), then of your own outfit as the reference, all with the same camera and lights.
+- **solo** button per mesh: hides every other mesh of the character (*Show all* brings them back).
+- `SEND_RESULTS_TO_CLAUDE.bat`: screenshots over 4 MB are sent as JPEG copies (max 2560 px wide, quality 90); the PNGs
+  stay on the PC. A 5K PNG is ~20 MB, a turntable 80 MB, so the repo would otherwise grow fast.
+
 ## 0.4.0 (2026-09-29)
 - **Try on** (Outfits / try on tab, now the tab the panel opens on): in the hideout or a raid, *Wear* puts any top, pants
   or head from the catalog on your own character, live and client-side only (nothing saved; a reload shows your real
