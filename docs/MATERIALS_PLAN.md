@@ -40,6 +40,16 @@ The skin-tone split inside tops and pants is unreliable: tan or brown fabric pas
 
 **Consequence for `enc=3`:** use EFT's own clothing numbers, not G₀ = 2. That means `_Glossness` 1.0, `_Specularness` 1.0, `_SpecVals` (1.1, 2), and `_DefVals` / `_ReflectColor` at the vanilla medians. A dielectric's `_d.a` is then 0.04 / 0.55 ≈ 0.073, about 19 steps of 8 bits. That's more precision than the G₀ = 2 estimate below.
 
+## Measured: the COD side (174 materials, 11 models: Kleo MW2, sunflower_base BO7, MW4 beta male)
+Data: `docs/cod_material_survey.json`. Script: `tools/cod_survey.py`. Values are what COD2EFT writes today, sampled on the faces that use each material.
+
+- **Specular is already fine:** almost every non-metal comes out at F0 ≈ 0.04. At neutral `_Glossness` 1 that gives an effective specular of 0.022. Vanilla cloth median is 0.03–0.045, so it's close.
+- **Gloss is the real gap.** COD gloss has an area-weighted median of **0.37**, and **0.48** on skin-coloured materials. Vanilla smoothness median is **0.16–0.17** for cloth and 0.26–0.37 for heads. So COD is about 2× glossier, and it varies strongly per material: 0.08 up to 0.98.
+
+That's why a single per-part `_Specularness` in Unity can't fix it. The gloss has to be remapped per material in Blender, with a quantile map from each class's COD distribution to the vanilla one.
+
+Bugs found by this survey and fixed in 2.5.1: `m_…` materials losing their normal/gloss maps, and Kleo's first-person sleeves coming out chrome.
+
 ## The fix: bake the look into the pixels, keep Unity's numbers fixed
 The per-part numbers are only gains, so the same result can be written straight into the textures, per pixel and per COD material:
 
