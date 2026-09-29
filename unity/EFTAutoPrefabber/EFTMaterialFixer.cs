@@ -34,7 +34,7 @@ namespace EFTAutoPrefab
         public NormalMode Normals = NormalMode.AutoDetect;
         public bool UseGloss = true;
         public string CutoutKeywords = EFTMaterialCore.DefaultCutoutKeywords;
-        public float Cutoff = 0.5f;
+        public float Cutoff = EFTMaterialCore.DefaultCutoff;
         public Dictionary<TexRole, string> Suffixes = new Dictionary<TexRole, string>(EFTMaterialCore.DefaultSuffixes);
     }
 
@@ -50,10 +50,12 @@ namespace EFTAutoPrefab
             // ---------------------------------------------------------------- 1. extract embedded materials
             if (o.Extract)
             {
-                // remember scene renderers' slots by material name: their references die when the model reimports
+                // remember scene renderers' slots by model + material name: their references die when the model reimports.
+                // (1.7.1: the key includes the model file. By name alone, two models with the same material names - e.g. the
+                // same character converted twice, enc=2 and enc=3 - all ended up on the first model's extracted materials.)
                 var sceneSlots = renderers.Where(r => !EditorUtility.IsPersistent(r))
-                    .ToDictionary(r => r, r => r.sharedMaterials.Select(m => m != null ? m.name : null).ToArray());
-                var extracted = new Dictionary<string, Material>();   // material name -> external material
+                    .ToDictionary(r => r, r => r.sharedMaterials.Select(m => m != null ? SlotKey(m) : null).ToArray());
+                var extracted = new Dictionary<string, Material>();   // model path | material name -> external material
                 var touchedModels = new HashSet<string>();
 
                 foreach (var mat in renderers.SelectMany(r => r.sharedMaterials).Where(m => m != null).Distinct())
@@ -78,7 +80,7 @@ namespace EFTAutoPrefab
                         log.Add($"Materials: extracted '{mat.name}' -> {dest}");
                     }
                     touchedModels.Add(modelPath);
-                    extracted[mat.name] = null; // filled after reimport
+                    extracted[SlotKey(mat)] = null; // filled after reimport
                 }
 
                 foreach (var mp in touchedModels)
@@ -89,12 +91,12 @@ namespace EFTAutoPrefab
 
                 if (touchedModels.Count > 0)
                 {
-                    foreach (var name in extracted.Keys.ToList())
+                    foreach (var key in extracted.Keys.ToList())
                     {
-                        var m = touchedModels.Select(mp => AssetDatabase.LoadAssetAtPath<Material>(
-                                    (Path.GetDirectoryName(mp) ?? "Assets").Replace('\\', '/') + "/Materials/" + SafeFile(name) + ".mat"))
-                                .FirstOrDefault(x => x != null);
-                        extracted[name] = m;
+                        int bar = key.LastIndexOf('|');
+                        string mp = key.Substring(0, bar), name = key.Substring(bar + 1);
+                        extracted[key] = AssetDatabase.LoadAssetAtPath<Material>(
+                            (Path.GetDirectoryName(mp) ?? "Assets").Replace('\\', '/') + "/Materials/" + SafeFile(name) + ".mat");
                     }
                     // re-point scene renderers (unpacked instances keep stale references otherwise)
                     foreach (var kv in sceneSlots)
@@ -178,7 +180,16 @@ namespace EFTAutoPrefab
                         {
                             if (!mat.HasProperty(prop)) continue;
                             var t = mat.GetTexture(prop);
-                            if (t != null && AssetDatabase.Contains(t)) texPaths[t.name] = AssetDatabase.GetAssetPath(t);
+                            if (t == null || !AssetDatabase.Contains(t)) continue;
+                            string tp = AssetDatabase.GetAssetPath(t);
+                            // 1.7.1: a same-named texture next to this material's model wins over one elsewhere (two
+                            // conversions of one character, e.g. enc=2 and enc=3 folders, use the same texture names)
+                            if (texPaths.TryGetValue(t.name, out var near) && near != tp)
+                            {
+                                string nd = (Path.GetDirectoryName(near) ?? "").Replace('\\', '/');
+                                if (nd == matDir || nd == parentDir) continue;
+                            }
+                            texPaths[t.name] = tp;
                         }
 
                         // a packed <albedo>_eft texture from an earlier run stands for its source albedo
@@ -200,6 +211,11 @@ namespace EFTAutoPrefab
                         {
                             mainTex = AssetDatabase.LoadAssetAtPath<Texture2D>(albPath);
                             notes.Add("albedo " + albName);
+                        }
+                        else if (mainTex != null && albPath != null && AssetDatabase.GetAssetPath(mainTex) != albPath)
+                        {
+                            mainTex = AssetDatabase.LoadAssetAtPath<Texture2D>(albPath);
+                            notes.Add("albedo " + albPath + " (the one next to the model)");
                         }
                         // COD2EFT 2.4+ texture sets (tagged PNGs): data used as stored, cut-out = the "_alpha" material slot
                         int codEnc = Cod2EftEnc(albPath);
@@ -482,6 +498,10 @@ namespace EFTAutoPrefab
             if (cutout)
             {
                 if (mainTex != null) mat.SetTexture("_MainTex", mainTex);
+                // 1.7.1: a cut-out still at the old default 0.5 (never changed by hand) takes the current setting
+                if (!applyValues && mat.HasProperty("_Cutoff") && Mathf.Abs(mat.GetFloat("_Cutoff") - 0.5f) < 1e-4f &&
+                    Mathf.Abs(o.Cutoff - 0.5f) > 1e-4f)
+                { mat.SetFloat("_Cutoff", o.Cutoff); notes.Add("cutoff 0.5 (old default) -> " + o.Cutoff.ToString("0.##")); }
                 SetAlphaIsTransparency(albPath, true);
                 SetCoverage(albPath, mat.HasProperty("_Cutoff") ? mat.GetFloat("_Cutoff") : o.Cutoff);
                 notes.Add($"Cutout {mat.GetFloat("_Cutoff"):0.##} (albedo alpha = opacity)");
@@ -747,6 +767,9 @@ namespace EFTAutoPrefab
         }
 
         // ================================================================== shared helpers
+
+        /// <summary>"model path|material name" of a model's embedded material (an extracted one keys by its .mat path).</summary>
+        static string SlotKey(Material m) => AssetDatabase.GetAssetPath(m) + "|" + m.name;
 
         static readonly Dictionary<string, (long len, long ticks, int enc, bool dx)> _encCache = new Dictionary<string, (long, long, int, bool)>();
 

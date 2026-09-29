@@ -2,6 +2,9 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.1 — 2026-09-29
+- Hair / cut-out preview cutoff 0.5 → **0.3**, to match EFT Tools 1.7.1. You found 0.25–0.35 best: at 0.5, fine hair and fringe details vanished (on valeria, 0.5 hides 7–11 % of the texels with alpha ≥ 0.25; 0.3 hides about 2 %). The test that decides which materials are cut-outs still uses 0.5, so the PNGs are unchanged.
+
 ## 2.6.0 — 2026-09-29
 - **New setting, Materials: enc=3** (panel: Textures; batch: `--material-mode enc3`). The default stays **enc=2** (unchanged output) until the in-game A/B.
   - Each COD material is classified: cloth / skin / leather-rubber-plastic / metal / glass / hair (cut-out). The class comes from name words, the metal share, a skin-tone colour, the gloss level and the cut-out test.

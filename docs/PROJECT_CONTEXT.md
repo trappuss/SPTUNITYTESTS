@@ -30,8 +30,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.6.0** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
-| EFT Tools | **1.7.0** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
+| COD2EFT | **2.6.1** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| EFT Tools | **1.7.1** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -79,7 +79,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 
 **Waiting on the user (PC):**
 1. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
-2. **Material A/B (ready, 2.6.0 / 1.7.0):** convert one character with *Materials* enc=2 and with enc=3 (two output folders or names), run the Unity one-click build for both, and take in-game screenshots next to vanilla. Look at skin first (see the known limits in `docs/MATERIALS_PLAN.md`).
+2. **Material A/B (redo with 1.7.1):** the first try (from_pc/20260929-002831) showed no difference because of a Unity bug: both prefabs got the enc=2 materials (fixed in 1.7.1). Then convert one character with *Materials* enc=2 and with enc=3 (two output folders or names), run the Unity one-click build for both, and take in-game screenshots next to vanilla. Look at skin first (see the known limits in `docs/MATERIALS_PLAN.md`).
 3. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
 
 **Queue, in order.** Each is a separate step. (The material session has pushed: 2.6.0 / 1.7.0.)

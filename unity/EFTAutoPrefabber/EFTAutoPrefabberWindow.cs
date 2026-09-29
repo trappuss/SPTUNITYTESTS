@@ -125,7 +125,13 @@ namespace EFTAutoPrefab
             _mat.Normals = (NormalMode)EditorPrefs.GetInt(Pref + "mat.normals", (int)NormalMode.AutoDetect);
             _mat.UseGloss = EditorPrefs.GetBool(Pref + "mat.gloss", true);
             _mat.CutoutKeywords = EditorPrefs.GetString(Pref + "mat.cutoutKeys", EFTMaterialCore.DefaultCutoutKeywords);
-            _mat.Cutoff = EditorPrefs.GetFloat(Pref + "mat.cutoff", 0.5f);
+            _mat.Cutoff = EditorPrefs.GetFloat(Pref + "mat.cutoff", EFTMaterialCore.DefaultCutoff);
+            // 1.7.1: the default went 0.5 -> 0.3; a saved 0.5 is the old default, not a choice (once)
+            if (!EditorPrefs.GetBool(Pref + "mat.cutoff.171", false))
+            {
+                if (Mathf.Abs(_mat.Cutoff - 0.5f) < 1e-4f) _mat.Cutoff = EFTMaterialCore.DefaultCutoff;
+                EditorPrefs.SetBool(Pref + "mat.cutoff.171", true);
+            }
             foreach (var r in EFTMaterialCore.DefaultSuffixes.Keys.ToList())
                 _mat.Suffixes[r] = EditorPrefs.GetString(Pref + "mat.suffix." + r, EFTMaterialCore.DefaultSuffixes[r]);
         }
@@ -861,7 +867,7 @@ namespace EFTAutoPrefab
                     _mat.Mode = ShaderMode.EFT; _mat.ReapplyValues = false;
                     _mat.MaskSlope = EFTMaterialCore.DefaultMaskSlope; _mat.MaskOffset = EFTMaterialCore.DefaultMaskOffset;
                     _addHolster = true; _holsterLeft = false;
-                    _mat.CutoutKeywords = EFTMaterialCore.DefaultCutoutKeywords; _mat.Cutoff = 0.5f;
+                    _mat.CutoutKeywords = EFTMaterialCore.DefaultCutoutKeywords; _mat.Cutoff = EFTMaterialCore.DefaultCutoff;
                     foreach (var r in EFTMaterialCore.DefaultSuffixes.Keys.ToList()) _mat.Suffixes[r] = EFTMaterialCore.DefaultSuffixes[r];
                     GUI.FocusControl(null);
                 }

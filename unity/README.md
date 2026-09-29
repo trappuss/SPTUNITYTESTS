@@ -74,7 +74,7 @@ Evidence comes from the SPT 4.1 game files (273 character prefab bundles, 108 ha
 - `_d` is used as stored; its alpha is COD's specular.
 - `_n` is OpenGL; no auto-detection.
 - `_g` goes in `_SpecMap`.
-- Cut-out = material slot `*_alpha`, with Mip Maps Preserve Coverage and cutoff 0.5.
+- Cut-out = material slot `*_alpha`, with Mip Maps Preserve Coverage and cutoff 0.3 (the *Alpha cutoff* setting; was 0.5).
 - Max Size is at least the file size.
 - `<name>_Hands` materials are set up directly as hands materials.
 - Per-part values map COD's 0.04 dielectric and its gloss onto the vanilla medians:

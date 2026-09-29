@@ -260,6 +260,13 @@ namespace EFTAutoPrefab
 
         public const string DefaultCutoutKeywords = "alpha, hair, lash, brow, fur, cutout";
 
+        /// <summary>
+        /// Alpha cutoff for cut-out materials. 1.7.1: 0.3 (was 0.5). Vanilla hair uses 0.48 - 0.87, but COD's hair / fringe
+        /// opacity is softer: on valeria (MW4) 0.5 hid 7 - 11 % of the texels with alpha >= 0.25 and the user saw fine details
+        /// vanish in Unity and in game; 0.3 hides ~2 %. The user found 0.25 - 0.35 best.
+        /// </summary>
+        public const float DefaultCutoff = 0.3f;
+
         /// <summary>Minimum curl ratio before the detector trusts its answer.</summary>
         public const double MinConfidence = 1.15;
 

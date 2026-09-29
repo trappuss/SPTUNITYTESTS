@@ -2,6 +2,12 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.1 — 2026-09-29
+- **Fix: two models with the same material names shared one set of materials.** This happened when both were set up in one run, e.g. the same character converted as enc=2 and enc=3. The extracted materials were remembered by name only, so both prefabs used the first model's materials. This is why the enc=2/enc=3 A/B looked identical: the enc=3 bundle had the enc=2 materials. They are now keyed by model file + material name.
+- If a material still points at a same-named texture in another folder, the texture next to its own model now wins.
+- **Alpha cutoff default 0.5 → 0.3** (your in-game finding: 0.25–0.35). A saved 0.5 in the window is moved to 0.3 once. Existing cut-out materials still at exactly 0.5 take the current setting on the next Fix.
+- Not compiled here; checked by reading.
+
 ## 1.7.0 — 2026-09-29
 - **COD2EFT `enc=3` textures** (COD2EFT 2.6.0, *Materials: enc=3*) get EFT's neutral clothing values on every part: `_Glossness` 1, `_Specularness` 1, and the vanilla preset's `_SpecVals`, `_DefVals`, `_ReflectColor` for the part. There's no per-part calibration, because the look is baked into the textures per COD material.
   - Heads use the vanilla head preset with G = S = 1. Vanilla heads are hand-tuned (see `EFTMaterialCore.Cod2EftNeutralPreset`).

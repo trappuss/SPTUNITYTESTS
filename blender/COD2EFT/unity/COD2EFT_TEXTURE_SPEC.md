@@ -25,7 +25,7 @@ Per part (`Head`, `Upper`, `Lower`, `Hands`):
 | `<name>_<Part>_d.png` | RGB = colour (sRGB, COD's occlusion multiplied in). **A = specular reflectance**, see below. |
 | `<name>_<Part>_n.png` | Normal map, **OpenGL / Unity convention (green up)**, already converted from COD's DirectX maps. Import as *Normal map*, no green flip. Exception (2.6.0+): with COD2EFT's *Normal maps: DirectX* option the tag ends in ` n=dx`, and then Flip Green Channel is on. |
 | `<name>_<Part>_g.png` | COD gloss, greyscale, white = glossy (linear data). |
-| `<name>_<Part>_alpha_d/_n/_g.png` | Cut-out set (hair, lashes, brows, beards, fringe, decals): `_d` **A = opacity** (1 = drawn), cut at 0.5. The model uses a separate material slot `<name>_<Part>_alpha` for these faces. |
+| `<name>_<Part>_alpha_d/_n/_g.png` | Cut-out set (hair, lashes, brows, beards, fringe, decals): `_d` **A = opacity** (1 = drawn), cut at 0.3 (0.5 before 2.6.1 / 1.7.1). The model uses a separate material slot `<name>_<Part>_alpha` for these faces. |
 
 Material slots in the FBX are named exactly like the sets: `<name>_<Part>` and `<name>_<Part>_alpha`. With surface classes (below) a part can also have `<name>_<Part>_skin`, which uses the part's main set.
 
@@ -95,7 +95,7 @@ Applies to tagged PNGs (`COD2EFT enc=2`). Untagged files keep the Auto Prefabber
 - `_d` → `_MainTex` **as stored**: no rebuilt alpha and no `_eft.png`. Alpha Is Transparency is off.
 - `_n` → Normal map, Flip Green off. No auto-detection.
 - `_g` → `_SpecMap` as stored.
-- Cut-out = the material slot name ends in `_alpha`. Name keywords are not used for tagged sets. Shader `p0/Cutout/Bumped Diffuse`, `_Cutoff` 0.5. The `_alpha_d` import has Mip Maps Preserve Coverage on and Alpha Cutoff 0.5.
+- Cut-out = the material slot name ends in `_alpha`. Name keywords are not used for tagged sets. Shader `p0/Cutout/Bumped Diffuse`, `_Cutoff` 0.3 (the *Alpha cutoff* setting; 0.5 before 1.7.1: fine hair details vanished). The `_alpha_d` import has Mip Maps Preserve Coverage on, with the same cutoff.
 - Max Size is raised to at least the file's own size on `_d`, `_n` and `_g`.
 - A material used only by hands meshes (`<name>_Hands`) is set up directly as a hands material: `p0/Reflective/Bumped Specular SMap`, `_StencilType` 2. It is not a variant of Upper's material.
 
@@ -126,6 +126,7 @@ Vanilla targets were measured over 393 vanilla SMap/SMap_Decal materials, counti
 
 ## Changes
 
+- 2026-09-29 COD2EFT 2.6.1 / EFT Tools 1.7.1: cut-out `_Cutoff` 0.5 → 0.3 (user's in-game check: 0.25–0.35; 0.5 hid 7–11 % of valeria's hair texels with alpha ≥ 0.25). Which materials become cut-outs is unchanged. PNGs unchanged.
 - 2026-09-29 COD2EFT 2.6.0 / EFT Tools 1.7.0: **encoding 3** (optional, default still enc=2 until the in-game A/B), see *Encoding 3*. The tag gains ` n=dx` for DirectX normal maps; Unity 1.7.0 flips those. This fixes the audit's double flip. enc=2 output is unchanged (byte-identical PNGs on the 4 test characters).
 - 2026-09-27 COD2EFT: slot naming with surface classes agreed (Auto Prefabber's proposal, *Material slots and surface classes*). COD2EFT produces `_skin` from 2.5.0; `_metal` and `_emissive` are reserved, not produced.
 - 2026-09-27 COD2EFT 2.4.3: PNGs unchanged. The Blender preview now uses the table's values and the deferred maths above (approximate: Blender lights in linear space). Windows paths of 260+ characters no longer lose textures. **COD hand-skin gloss measured** (median over UV-covered texels, as written to `_g`): MW2 Kleo first-person 0.56, BO5 esports female hands 0.49, Park 24_1 (Cold War) first-person 0.35. Vanilla hands smoothness 0.27 ÷ these = 0.48 / 0.55 / 0.77, so `_Specularness` ≈ 0.55 fits the middle one; 0.8 fits only the Park one. Only 3 characters had a hand-skin gloss map, so treat it as a first estimate. Gloves on the same hands span 0.21–0.94.

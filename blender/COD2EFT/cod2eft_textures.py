@@ -88,7 +88,14 @@ ALPHA_WORDS = ("hair", "beard", "brow", "lash", "fur", "fuzz", "stubble", "card"
 OPACITY_NAMED = re.compile(r"^(alpha|opacity|transparency)(map)?$", re.I)
 OPACITY_SLOTS = {"unk_semantic_0xc", "unk_semantic_0x1b", "unk_semantic_0x1c",
                  "unk_semantic_49", "unk_semantic_4a"}
-CUTOFF = 0.5                       # EFT hair materials use 0.48 - 0.87
+# Alpha cutoff of the cut-out material (Unity's default, EFT Tools 1.7.1; the preview uses it).  EFT's
+# own hair uses 0.48 - 0.87, but COD's cards are softer: at 0.5 valeria (MW4) lost 7 - 11 % of the
+# texels with alpha >= 0.25 and fine hair / fringe details vanished in Unity and in game; the user
+# found 0.25 - 0.35 best.  (2.6.1; was 0.5)
+CUTOFF = 0.3
+# Threshold of the cut-out detection test (_pick_opacity) - kept at 0.5 so which materials become
+# cut-outs does not change with the render cutoff
+PICK_CUTOFF = 0.5
 SKIP_WORDS = ("thermal", "heat", "_lut", "sheen", "velvet", "reveal", "emissive", "wetness",
               "cube", "irradiance", "caustic_l")
 
@@ -992,7 +999,7 @@ def _pick_opacity(cands, color_path, faces_uv, faces_w, hair_name=False):
     """Choose the cut-out map of one material from its candidates, on the mesh itself.
     faces_uv (F, K, 2): sample points inside each face (UV 0..1), faces_w (F,): face areas.
     A map is used when it cuts the surface the way cards do:
-      share T of the surface below CUTOFF, and the share M of faces that have both clearly
+      share T of the surface below PICK_CUTOFF, and the share M of faces that have both clearly
       cut (< 0.25) and clearly kept (> 0.6) points inside them (strands / fringe drawn across
       the face).  Region masks (a face's detail mask) are whole faces on or off (M ~ 0).
       named alphaMap: T >= 0.02 | slot map: greyscale, same shape as the colour map,
@@ -1039,7 +1046,7 @@ def _pick_opacity(cands, color_path, faces_uv, faces_w, hair_name=False):
         x = np.clip((uv[:, 0] * w).astype(np.int64), 0, w - 1)
         y = np.clip((uv[:, 1] * h).astype(np.int64), 0, h - 1)
         v = a[y, x, ch].reshape(faces_uv.shape[0], faces_uv.shape[1])
-        T = float((faces_w * (v < CUTOFF).mean(1)).sum() / wsum)
+        T = float((faces_w * (v < PICK_CUTOFF).mean(1)).sum() / wsum)
         M = float((faces_w * ((v.min(1) < 0.25) & (v.max(1) > 0.6))).sum() / wsum)
         if kind in ("colour", "decal"):
             # (as before) the colour alpha of a hair / lash / brow material is its cut-out when
