@@ -10,3 +10,8 @@ cod2eft_pose_tweaks.json
 COD2EFT_Blender_Addon.zip
 __pycache__/
 *.blend1
+# COD2EFT Inspector build output and send state (BUILD_SPT_INSPECTOR.bat / send.ps1)
+pc/_build/
+pc/_state/
+spt_mod/**/bin/
+spt_mod/**/obj/

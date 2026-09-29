@@ -32,6 +32,7 @@ COD export (.fbx/.cast, Greyhound etc.)
 |---|---|---|
 | COD2EFT | **2.6.1** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
 | EFT Tools | **1.7.1** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
+| COD2EFT Inspector (SPT client plugin) | **0.1.0** (2026-09-29) | Stage 1: in-game show/hide per mesh, screenshots + outfit .txt, material report. Compiled here with mono against Unity 2021.3 reference modules + BepInEx 5.4.23; not yet built against SPT 4.1.6 or run in game. `docs/SPT_INSPECTOR.md` |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -92,10 +93,10 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 7. **Mod Builder:** show "has not been built" before the first build as a note, not an error.
 8. **Bundle check after build:** Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin.
 9. **Unity step in batch mode** (a `.bat`: COD model in, SPT mod out). Blockers are listed in the audit below. Best done once the materials settle.
-10. **SPT client mod: "COD2EFT Inspector"** (BepInEx plugin, user idea 2026-09-29). Build it after the material work lands, since it tests it. Stages:
+10. **SPT client mod: "COD2EFT Inspector"** (BepInEx plugin, user idea 2026-09-29). **Stage 1 built: v0.1.0** (show/hide meshes, screenshots, material report; `docs/SPT_INSPECTOR.md`). Next: the user runs `BUILD_SPT_INSPECTOR.bat`, tries it in raid / hideout / menu, and sends `SEND_RESULTS_TO_CLAUDE.bat`; fix from the log. The outfit browser (below, 1) is researched and planned in `docs/SPT_INSPECTOR.md`, not built. Remaining stages:
     1. an outfit/head browser: switch to and preview any top, pants or head in game, sorted and filtered by the mod it comes from vs vanilla;
     2. live material tweaking on the equipped outfit (sliders for `_Glossness` / `_Specularness` / `_ReflectColor` …, side by side with vanilla), with values exported to a JSON that `SEND_RESULTS_TO_CLAUDE.bat` picks up;
-    3. a material report per equipped outfit (shader and textures as the game actually loaded them);
+    3. ~~a material report per equipped outfit~~ (in 0.1.0);
     4. a fixed screenshot setup (same light, camera and angles, next to a vanilla outfit);
     5. pose tests (crouch, aim, sprint).
 
@@ -118,6 +119,8 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 | ` n=dx` suffix (*Normal maps: DirectX*) | ≥ 2.6.0 | ≥ 1.7.0 flips green; older treats the file as untagged (auto-detects the normal style) |
 
 Sub-mesh names `<name>_<Part>_<label>` (Separate by COD material / Join parts off) need EFT Tools ≥ 1.6.2.
+
+COD2EFT Inspector (`spt_mod/`) is independent of the texture tag: 0.1.0 reads whatever the game loaded. Built for SPT 4.1.6 (EFT client, BepInEx 5, netstandard2.1).
 
 ## Facts already established (don't re-derive)
 **Game and rendering**
