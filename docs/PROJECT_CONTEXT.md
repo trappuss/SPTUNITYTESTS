@@ -72,10 +72,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 ## Open work, in order
 **Current focus (user, 2026-09-29): material accuracy.** See `docs/MATERIALS_PLAN.md` (the `enc=3` bake-in-pixels plan).
 
-**Also open:** hips/waist/spine twist on female characters (MW4 Beta Female).
-- Needs that character's COD export to diagnose.
-- Hunch, not verified: body-volume matching reads the pelvis and spine section centres, and wide hips/glutes pull those centres back, so the fit over-corrects the pelvis.
-- Workaround until then: *Adjust by hand* (2.5.0).
+**Hips/waist twist on curvy characters:** fixed in 2.5.2 (the pelvis section is limited against the waist section). Valeria's waist went from −4.0 to +0.4 cm. Still to check on the PC and in game.
 
 1. ✅ **Long-path fix verified on real Windows** (2026-09-28, COD2EFT 2.4.4, from_pc/20260928-211853).
    - Park 24_1 (paths up to 269 characters) imported through the temp junction and packed 3 long-path images.

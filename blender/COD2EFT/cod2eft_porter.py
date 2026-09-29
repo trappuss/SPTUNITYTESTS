@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 5, 1)
+VERSION = (2, 5, 2)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -567,6 +567,8 @@ COD_SKIN_PRIOR = {
     "upperarm_R": (-0.0020, -0.0053),
 }
 SKIN_CLAMP = 0.03
+# most the pelvis section may sit further behind the waist (spine2) section than on EFT's body (m)
+PELVIS_WAIST_SLACK = float(os.environ.get("COD2EFT_PELVIS_SLACK", "0.01"))
 # EFT ground: bottom of EFT's shoe soles (m)
 EFT_FLOOR_Z = -0.0025
 
@@ -1332,6 +1334,21 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
             oJ[key] = fwd * sec["fw"] + lat * sec["lat_axis"]
             ef, el = EFT_SKIN[key]
             oE[key] = ef * fr[2] + el * fr[3]
+        # 2.5.2: a pelvis section far BEHIND the waist's is body shape (wide hips / glutes: MW4
+        # valeria's pelvis sits 12.3 cm behind her waist section, EFT's 4.3 cm, other test
+        # characters 0.6 - 3.2 cm), not where the pelvis is.  Matched as it was, it pushed the
+        # whole body forward and left the waist 4 cm behind EFT's: the swayback / twisted
+        # waist.  So the pelvis section may sit at most EFT's gap + PELVIS_WAIST_SLACK behind the
+        # waist section.
+        if "pelvis" in oJ and "spine2" in oJ and "pelvis" in body_sections and \
+                "spine2" in body_sections:
+            gap_e = EFT_SKIN["spine2"][0] - EFT_SKIN["pelvis"][0]
+            pf = float(oJ["pelvis"] @ body_sections["pelvis"]["fw"])
+            sf = float(oJ["spine2"] @ body_sections["spine2"]["fw"])
+            lo = sf - gap_e - PELVIS_WAIST_SLACK
+            if pf < lo:
+                oJ["pelvis"] = oJ["pelvis"] + (lo - pf) * body_sections["pelvis"]["fw"]
+                clamped.append(f"pelvis vs waist ({(pf - lo) * 100:+.1f} cm, hip shape)")
         if oJ:
             log("Body volume: COD section centre vs joint (fwd cm) -> EFT: " + ", ".join(
                 f"{k} {body_sections[k]['fwd'] * 100:+.1f}->{EFT_SKIN[k][0] * 100:+.1f}"

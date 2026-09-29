@@ -2,6 +2,15 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.5.2 — 2026-09-29
+- **Swayback / twisted waist on curvy characters fixed** (MW4 Beta Female valeria).
+  - Cause: the fit lines up the middle of the hip cross-section with EFT's. On a character with wide hips or glutes, that middle sits far back (valeria: 12.3 cm behind her waist section; EFT's own body: 4.3 cm; other test characters: 0.6–3.2 cm). The whole body got pushed 4.8 cm forward, and the waist ended up 4 cm behind EFT's, so the spine bent.
+  - Fix: the hip section may now sit at most EFT's gap + 1 cm behind the waist section. The report names it: "pelvis vs waist (…, hip shape)".
+  - Valeria after the fit: waist −4.0 → +0.4 cm, chest 0.0 cm, body moved 2.3 cm forward instead of 4.8. Hips −3.1 cm and upper thighs −2.2 cm: her shape behind EFT's, not the pose.
+  - Kleo, sunflower_base and the MW4 male are under the limit and unchanged.
+  - The slack can be changed with the environment variable `COD2EFT_PELVIS_SLACK` (metres, default 0.01).
+  - Tested headless in Blender 4.4, with a template rebuilt from `EFT BASIC [Template].fbx`, so not your exact .blend. Check it on the PC.
+
 ## 2.5.1 — 2026-09-29
 Two texture bugs, found by measuring every material of Kleo (MW2), sunflower_base (BO7) and the MW4 beta male: 174 materials, 11 models.
 - **BO6 / BO7 / MW4 `m_…` materials lost their normal and gloss maps.** These exports write the image list of material `m_<name>` as `_mat_info/<name>.txt`, with no Name line, and it wasn't found. The material then kept only its colour: no normal map, flat gloss 0.5. Affected on the test set: sunflower_base's first-person arm skin, teeth and eye moisture.
