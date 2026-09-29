@@ -5,7 +5,7 @@ work as possible. It has two halves, and this repo is the one place both live:
 
 | Half | Folder | Deployed on the PC to | Version |
 |---|---|---|---|
-| **COD2EFT**, a Blender add-on: fits COD models onto the EFT skeleton, converts weights and textures, exports FBX + PNG | `blender/COD2EFT/` | `C:\Users\notso\Downloads\Claude Current\SPTModdingTools\COD2EFT` (live install: Blender loads its code from there) | 2.5.0 |
+| **COD2EFT**, a Blender add-on: fits COD models onto the EFT skeleton, converts weights and textures, exports FBX + PNG | `blender/COD2EFT/` | `C:\Users\notso\Downloads\Claude Current\SPTModdingTools\COD2EFT` (live install: Blender loads its code from there) | 2.5.1 |
 | **EFT Tools**, Unity editor scripts (EFT Auto Prefabber + Mod Builder): materials, prefabs, bundles, SPT mod | `unity/EFTAutoPrefabber/` | `...\WTT-SDK-2022\Assets\Editor\EFTAutoPrefabber` | 1.6.2 |
 
 **Start here:** [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md) has the combined state, the

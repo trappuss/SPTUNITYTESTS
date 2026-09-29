@@ -1,0 +1,4994 @@
+[
+ {
+  "i": 0,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_5c0b2a55701ee9c2",
+  "faces": 8008,
+  "area": 14105.0642,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.344,
+   0.473,
+   0.513
+  ],
+  "rgb_mean": [
+   0.323,
+   0.3,
+   0.236
+  ],
+  "how": [
+   "color=image_9dc27ee081e68b1.png (material)",
+   "nog=image_57a1a5ffa1c45699.png (content)",
+   "colour alpha: not a metal mask (level 0.22 over 91% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 1,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_4ddf748b9244bcd6",
+  "faces": 3524,
+  "area": 7504.0862,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.429,
+   0.519,
+   0.647
+  ],
+  "rgb_mean": [
+   0.116,
+   0.114,
+   0.114
+  ],
+  "how": [
+   "color=image_bcd9ad0c36be2ce.png (material)",
+   "nog=image_7f7365584e995860.png (content)",
+   "colour alpha: not a metal mask (level 0.22 over 98% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 2,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_3572ba6f36b169fc",
+  "faces": 7805,
+  "area": 7054.676,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.038,
+   0.04
+  ],
+  "gloss_q": [
+   0.322,
+   0.497,
+   0.611
+  ],
+  "rgb_mean": [
+   0.347,
+   0.324,
+   0.288
+  ],
+  "how": [
+   "color=image_5ea3cf3a8bea8cca.png (material)",
+   "nog=image_56eeeeb44b4647c2.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 3,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_291b6cc652bf93db",
+  "faces": 1684,
+  "area": 2864.7717,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.025,
+   0.033,
+   0.035
+  ],
+  "gloss_q": [
+   0.094,
+   0.178,
+   0.321
+  ],
+  "rgb_mean": [
+   0.25,
+   0.237,
+   0.214
+  ],
+  "how": [
+   "color=image_1b97cea5f95e15be.png (material)",
+   "nog=image_717bbdc291dfa685.png (content)",
+   "colour alpha: metal mask (1% metal)"
+  ]
+ },
+ {
+  "i": 4,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_3b5426b6c09f2b89",
+  "faces": 2488,
+  "area": 2629.3915,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.01,
+   0.013,
+   0.017
+  ],
+  "gloss_q": [
+   0.015,
+   0.146,
+   0.3
+  ],
+  "rgb_mean": [
+   0.232,
+   0.202,
+   0.155
+  ],
+  "how": [
+   "color=image_20df7164cc852060.png (material)",
+   "nog=image_4b3c5efb2bc9031f.png (content)"
+  ]
+ },
+ {
+  "i": 5,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_1e8e1068b49558ca",
+  "faces": 2888,
+  "area": 1806.4247,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.017,
+   0.02,
+   0.023
+  ],
+  "gloss_q": [
+   0.18,
+   0.212,
+   0.3
+  ],
+  "rgb_mean": [
+   0.384,
+   0.33,
+   0.254
+  ],
+  "how": [
+   "color=image_7d00e355b316eee3.png (material)",
+   "nog=image_2980f95a27c3e1a9.png (content)"
+  ]
+ },
+ {
+  "i": 6,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_4f1140b1cca80d89",
+  "faces": 14176,
+  "area": 1377.1068,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.382,
+   0.481,
+   0.553
+  ],
+  "rgb_mean": [
+   0.701,
+   0.527,
+   0.419
+  ],
+  "how": [
+   "color=image_7b8c6dfbf4b9a4c.png (material)",
+   "nog=image_950b0fc86fe7705.png (content)",
+   "colour alpha: not a metal mask (level 0.28 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 7,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_6db5888c11926d6e",
+  "faces": 17440,
+  "area": 1358.5211,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.014,
+   0.023,
+   0.032
+  ],
+  "gloss_q": [
+   0.16,
+   0.235,
+   0.334
+  ],
+  "rgb_mean": [
+   0.17,
+   0.163,
+   0.161
+  ],
+  "how": [
+   "color=image_4aef84701861febd.png (material)",
+   "nog=image_3363d2ddaa18184a.png (content)"
+  ]
+ },
+ {
+  "i": 8,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_683ff66447cb53b6",
+  "faces": 13376,
+  "area": 1315.8043,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.387,
+   0.482,
+   0.551
+  ],
+  "rgb_mean": [
+   0.666,
+   0.506,
+   0.403
+  ],
+  "how": [
+   "color=image_34ce4f6e5ad24c33.png (material)",
+   "nog=image_950b0fc86fe7705.png (content)",
+   "colour alpha: not a metal mask (level 0.28 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 9,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_627dcd2637b0f258",
+  "faces": 2712,
+  "area": 1245.3695,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.047
+  ],
+  "gloss_q": [
+   0.565,
+   0.606,
+   0.657
+  ],
+  "rgb_mean": [
+   0.097,
+   0.097,
+   0.096
+  ],
+  "how": [
+   "color=image_43644070b21f802c.png (material)",
+   "nog=image_56d00b131193334e.png (content)",
+   "colour alpha: metal mask (3% metal)"
+  ]
+ },
+ {
+  "i": 10,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_3ba9ed5a69c8431a",
+  "faces": 2460,
+  "area": 1190.2289,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.045,
+   0.049
+  ],
+  "gloss_q": [
+   0.22,
+   0.224,
+   0.237
+  ],
+  "rgb_mean": [
+   0.557,
+   0.465,
+   0.348
+  ],
+  "how": [
+   "color=image_477cf0ecfd117f98.png (material)",
+   "nog=image_7aed4d596611fd4a.png (content)"
+  ]
+ },
+ {
+  "i": 11,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_4abd972da0a9b36c",
+  "faces": 2404,
+  "area": 1188.5138,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.038,
+   0.04
+  ],
+  "gloss_q": [
+   0.101,
+   0.195,
+   0.443
+  ],
+  "rgb_mean": [
+   0.35,
+   0.319,
+   0.278
+  ],
+  "how": [
+   "color=image_545d9fe0e7f5e93e.png (material)",
+   "nog=image_195d8d6c3d1accf9.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 12,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_12982622c6eeb220",
+  "faces": 4344,
+  "area": 1171.6975,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.027,
+   0.037,
+   0.038
+  ],
+  "gloss_q": [
+   0.288,
+   0.431,
+   0.974
+  ],
+  "rgb_mean": [
+   0.283,
+   0.258,
+   0.217
+  ],
+  "how": [
+   "color=image_73f50e7dd2e8aff2.png (material)",
+   "nog=image_2f4e275387422988.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 13,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_ghost_flashbang_pouch_iw9_1_1",
+  "faces": 2040,
+  "area": 1052.9804,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.019,
+   0.027,
+   0.04
+  ],
+  "gloss_q": [
+   0.174,
+   0.212,
+   0.284
+  ],
+  "rgb_mean": [
+   0.27,
+   0.244,
+   0.202
+  ],
+  "how": [
+   "nog=image_21e54c3f20b9165e.png (content)",
+   "color=image_51337e51a1683335.png (content)"
+  ]
+ },
+ {
+  "i": 14,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_7f18cef2227ee6c6",
+  "faces": 9048,
+  "area": 950.5643,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.03,
+   0.031,
+   0.031
+  ],
+  "gloss_q": [
+   0.498,
+   0.58,
+   0.678
+  ],
+  "rgb_mean": [
+   0.208,
+   0.207,
+   0.207
+  ],
+  "how": [
+   "color=image_4717b5f69b807af2.png (material)",
+   "nog=image_20d579412b4e6185.png (content)",
+   "colour alpha: metal mask (1% metal)"
+  ]
+ },
+ {
+  "i": 15,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_buckle_master_urban",
+  "faces": 4346,
+  "area": 833.605,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.007,
+   0.008,
+   0.008
+  ],
+  "gloss_q": [
+   0.635,
+   0.695,
+   0.72
+  ],
+  "rgb_mean": [
+   0.444,
+   0.444,
+   0.445
+  ],
+  "how": [
+   "nog=image_63d6c0a51a9e1d4a.png (content)",
+   "color=image_fab24c2b63138fe.png (content)"
+  ]
+ },
+ {
+  "i": 16,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_585934cd29c969be",
+  "faces": 870,
+  "area": 829.6193,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.017,
+   0.019,
+   0.019
+  ],
+  "gloss_q": [
+   0.538,
+   0.622,
+   0.741
+  ],
+  "rgb_mean": [
+   0.16,
+   0.16,
+   0.16
+  ],
+  "how": [
+   "color=image_53b08fe8e7b6909a.png (material)",
+   "nog=image_6307e9329f083e92.png (content)"
+  ]
+ },
+ {
+  "i": 17,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_17fccefdef03b71b",
+  "faces": 2254,
+  "area": 781.7112,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.038,
+   0.039
+  ],
+  "gloss_q": [
+   0.161,
+   0.225,
+   0.354
+  ],
+  "rgb_mean": [
+   0.393,
+   0.358,
+   0.27
+  ],
+  "how": [
+   "color=image_5429abe281084f9a.png (material)",
+   "nog=image_2b53b3401bba87b4.png (content)",
+   "colour alpha: not a metal mask (level 0.45 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 18,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_58bea95fae775164",
+  "faces": 1527,
+  "area": 781.326,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.032,
+   0.038,
+   0.039
+  ],
+  "gloss_q": [
+   0.415,
+   0.425,
+   0.442
+  ],
+  "rgb_mean": [
+   0.378,
+   0.33,
+   0.255
+  ],
+  "how": [
+   "color=image_5eaec951f9c5fd44.png (material)",
+   "nog=image_4aef509f0ea33516.png (content)",
+   "colour alpha: not a metal mask (level 0.41 over 98% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 19,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_1bfad8dbff5c8a28",
+  "faces": 1322,
+  "area": 734.9929,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.032,
+   0.045,
+   0.049
+  ],
+  "gloss_q": [
+   0.148,
+   0.161,
+   0.408
+  ],
+  "rgb_mean": [
+   0.307,
+   0.277,
+   0.218
+  ],
+  "how": [
+   "color=image_6f7cbd139d8e5400.png (material)",
+   "nog=image_678fc58565a51497.png (content)"
+  ]
+ },
+ {
+  "i": 20,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_western_dday_med_pouch_b",
+  "faces": 1272,
+  "area": 720.9023,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.005,
+   0.021,
+   0.038
+  ],
+  "gloss_q": [
+   0.1,
+   0.151,
+   0.269
+  ],
+  "rgb_mean": [
+   0.343,
+   0.318,
+   0.253
+  ],
+  "how": [
+   "nog=image_18a1c490fc13696f.png (content)",
+   "color=image_134ad96bd57b6a8e.png (content)"
+  ]
+ },
+ {
+  "i": 21,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_695a7a9aee872c16",
+  "faces": 812,
+  "area": 708.7302,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.024,
+   0.036,
+   0.039
+  ],
+  "gloss_q": [
+   0.143,
+   0.192,
+   0.224
+  ],
+  "rgb_mean": [
+   0.348,
+   0.31,
+   0.239
+  ],
+  "how": [
+   "color=image_32a3e1354ac5b2ae.png (material)",
+   "nog=image_4885416961764f5e.png (content)",
+   "colour alpha: not a metal mask (level 0.67 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 22,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_6778b15765bfa975",
+  "faces": 2696,
+  "area": 636.631,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.118
+  ],
+  "gloss_q": [
+   0.513,
+   0.59,
+   0.791
+  ],
+  "rgb_mean": [
+   0.27,
+   0.255,
+   0.218
+  ],
+  "how": [
+   "color=image_287b83e820520378.png (material)",
+   "nog=image_3a2d5a33b5fc22e1.png (content)",
+   "colour alpha: metal mask (8% metal)"
+  ]
+ },
+ {
+  "i": 23,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_radio_blade_antenna",
+  "faces": 2054,
+  "area": 544.75,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.192,
+   0.411,
+   0.647
+  ],
+  "rgb_mean": [
+   0.123,
+   0.122,
+   0.119
+  ],
+  "how": [
+   "nog=image_6c5c7daabe631f3c.png (content)",
+   "color=image_22c7d8e93e9edbee.png (content)",
+   "colour alpha: not a metal mask (level 0.62 over 83% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 24,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_retention_lanyard",
+  "faces": 1200,
+  "area": 497.5045,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.023,
+   0.038
+  ],
+  "gloss_q": [
+   0.322,
+   0.384,
+   0.618
+  ],
+  "rgb_mean": [
+   0.297,
+   0.256,
+   0.209
+  ],
+  "how": [
+   "nog=image_419db7809642c2e0.png (content)",
+   "color=image_2d20cbf909f417a5.png (content)"
+  ]
+ },
+ {
+  "i": 25,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_3a72e495161dbaec",
+  "faces": 1552,
+  "area": 448.1574,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.482,
+   0.647,
+   0.723
+  ],
+  "rgb_mean": [
+   0.079,
+   0.078,
+   0.081
+  ],
+  "how": [
+   "color=image_30d01402cbbed46.png (material)",
+   "nog=image_3970308b30ece813.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 26,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_5caf4e476ab308cc",
+  "faces": 904,
+  "area": 416.4152,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.565,
+   0.602,
+   0.651
+  ],
+  "rgb_mean": [
+   0.354,
+   0.264,
+   0.227
+  ],
+  "how": [
+   "color=image_5373f843c42ac8e6.png (material)",
+   "nog=image_26ae0ed763498d5e.png (content)"
+  ]
+ },
+ {
+  "i": 27,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_65b1a086c604fbc",
+  "faces": 1772,
+  "area": 373.8764,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.009,
+   0.015,
+   0.034
+  ],
+  "gloss_q": [
+   0.127,
+   0.161,
+   0.44
+  ],
+  "rgb_mean": [
+   0.148,
+   0.149,
+   0.14
+  ],
+  "how": [
+   "color=image_6b2fa9d71ae06a30.png (material)",
+   "nog=image_6f55fdf685c33f0e.png (content)",
+   "colour alpha: metal mask (4% metal)"
+  ]
+ },
+ {
+  "i": 28,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_holster_police",
+  "faces": 434,
+  "area": 316.186,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.049,
+   0.054,
+   0.074
+  ],
+  "gloss_q": [
+   0.451,
+   0.683,
+   0.746
+  ],
+  "rgb_mean": [
+   0.108,
+   0.107,
+   0.101
+  ],
+  "how": [
+   "nog=image_33e5af216e397d7d.png (content)",
+   "color=image_344d2523590b3d8f.png (content)",
+   "colour alpha: metal mask (1% metal)"
+  ]
+ },
+ {
+  "i": 29,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_10463a2d5b591ab0",
+  "faces": 1156,
+  "area": 308.7467,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.62,
+   0.675,
+   0.737
+  ],
+  "rgb_mean": [
+   0.221,
+   0.221,
+   0.22
+  ],
+  "how": [
+   "color=image_39d61bd3cb88aaa.png (material)",
+   "nog=image_4e1b2db7e9352e8b.png (content)",
+   "colour alpha: metal mask (2% metal)"
+  ]
+ },
+ {
+  "i": 30,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_buckle_master_desert",
+  "faces": 1984,
+  "area": 277.816,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.007,
+   0.008,
+   0.008
+  ],
+  "gloss_q": [
+   0.046,
+   0.691,
+   0.701
+  ],
+  "rgb_mean": [
+   0.443,
+   0.443,
+   0.444
+  ],
+  "how": [
+   "nog=image_63d6c0a51a9e1d4a.png (content)",
+   "color=image_fab24c2b63138fe.png (content)",
+   "colour alpha: metal mask (1% metal)"
+  ]
+ },
+ {
+  "i": 31,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_plastic_handcuffs_a_black_02",
+  "faces": 1218,
+  "area": 236.5538,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.484,
+   0.71,
+   0.824
+  ],
+  "rgb_mean": [
+   0.117,
+   0.116,
+   0.116
+  ],
+  "how": [
+   "nog=image_2eb7df010541f2e.png (content)",
+   "color=image_13a596e274372c6e.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 32,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_body_mp_kleo_iw9_1_1_carabiner",
+  "faces": 2484,
+  "area": 216.6409,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.38,
+   0.52,
+   0.681
+  ],
+  "gloss_q": [
+   0.398,
+   0.824,
+   0.917
+  ],
+  "rgb_mean": [
+   0.367,
+   0.365,
+   0.364
+  ],
+  "how": [
+   "nog=image_4106e7b159e1a74.png (content)",
+   "color=image_343cc1d0d42270e4.png (content)",
+   "colour alpha: metal mask (93% metal)"
+  ]
+ },
+ {
+  "i": 33,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_offhand_vm_grenade_mike67",
+  "faces": 1744,
+  "area": 196.7868,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.051
+  ],
+  "gloss_q": [
+   0.315,
+   0.56,
+   0.605
+  ],
+  "rgb_mean": [
+   0.257,
+   0.243,
+   0.171
+  ],
+  "how": [
+   "nog=image_7f3c7ec3112e5e3c.png (content)",
+   "color=image_37d0b2f92e1a11bb.png (content)"
+  ]
+ },
+ {
+  "i": 34,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_80e22f112d15d5f",
+  "faces": 1676,
+  "area": 170.1478,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.447,
+   0.504,
+   0.575
+  ],
+  "rgb_mean": [
+   0.512,
+   0.467,
+   0.334
+  ],
+  "how": [
+   "color=image_4a7d3c314fb2a2ff.png (material)",
+   "nog=image_4e1b2db7e9352e8b.png (content)"
+  ]
+ },
+ {
+  "i": 35,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_flashbang_a",
+  "faces": 899,
+  "area": 152.4186,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.029,
+   0.039,
+   0.537
+  ],
+  "gloss_q": [
+   0.392,
+   0.686,
+   0.759
+  ],
+  "rgb_mean": [
+   0.2,
+   0.2,
+   0.199
+  ],
+  "how": [
+   "nog=image_7aaad9851abd2d98.png (content)",
+   "color=image_63ec6b2ec46b8655.png (content)",
+   "colour alpha: metal mask (37% metal)"
+  ]
+ },
+ {
+  "i": 36,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_2e857074b05af5a5",
+  "faces": 376,
+  "area": 133.9556,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.035,
+   0.039
+  ],
+  "gloss_q": [
+   0.566,
+   0.625,
+   0.741
+  ],
+  "rgb_mean": [
+   0.161,
+   0.161,
+   0.161
+  ],
+  "how": [
+   "color=image_44586ec2320cb260.png (material)",
+   "nog=image_4583480e8be3f732.png (content)"
+  ]
+ },
+ {
+  "i": 37,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_eastern_milsim_shadow_company_ptt",
+  "faces": 1332,
+  "area": 127.9882,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.257,
+   0.52,
+   0.566
+  ],
+  "rgb_mean": [
+   0.171,
+   0.168,
+   0.167
+  ],
+  "how": [
+   "nog=image_168b6c4564b0a342.png (content)",
+   "color=image_4c1311d1ebbb5b2c.png (content)"
+  ]
+ },
+ {
+  "i": 38,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_6cb21a8d129b584f",
+  "faces": 2368,
+  "area": 106.8168,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.016,
+   0.019
+  ],
+  "gloss_q": [
+   0.597,
+   0.612,
+   0.632
+  ],
+  "rgb_mean": [
+   0.116,
+   0.116,
+   0.116
+  ],
+  "how": [
+   "color=image_43c3d066756cf8f4.png (material)",
+   "nog=image_1ba856228427680f.png (content)"
+  ]
+ },
+ {
+  "i": 39,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_6e582793184e39b2",
+  "faces": 6218,
+  "area": 97.5116,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.025,
+   0.034,
+   0.037
+  ],
+  "gloss_q": [
+   0.313,
+   0.541,
+   0.682
+  ],
+  "rgb_mean": [
+   0.242,
+   0.222,
+   0.134
+  ],
+  "how": [
+   "color=image_47a3dc4eefc0b5b3.png (material)",
+   "nog=image_5fe1b177e03578c8.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 40,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_wristwear_mp_watch_q_strap_wm",
+  "faces": 332,
+  "area": 87.8086,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.375,
+   0.574,
+   0.744
+  ],
+  "rgb_mean": [
+   0.431,
+   0.446,
+   0.463
+  ],
+  "how": [
+   "nog=image_4ec316eb10e5a5c0.png (content)",
+   "color=image_56a01b69c451d8e9.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 41,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_milsim_west_flag_patch_ir_us_iw9_1_1",
+  "faces": 52,
+  "area": 81.3872,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.631,
+   0.639,
+   0.647
+  ],
+  "rgb_mean": [
+   0.229,
+   0.231,
+   0.228
+  ],
+  "how": [
+   "nog=image_2d102a2ae943fea0.png (content)",
+   "color=image_73e6f2de1ee4e2a1.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 42,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_chemlight_a_yellow",
+  "faces": 252,
+  "area": 79.462,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.445,
+   0.559,
+   0.733
+  ],
+  "rgb_mean": [
+   0.025,
+   0.025,
+   0.025
+  ],
+  "how": [
+   "nog=image_ee9501460ef4382.png (content)",
+   "color=image_2af32dfbcac63840.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 43,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_c_jup_sp_hero_soap_urban_pistol_nachosingle",
+  "faces": 288,
+  "area": 59.0507,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.082,
+   0.084,
+   0.086
+  ],
+  "rgb_mean": [
+   0.155,
+   0.136,
+   0.112
+  ],
+  "how": [
+   "nog=image_a53ba21a6039bd1.png (content)",
+   "color=image_7ce076d3f04064c3.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 44,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_wristwear_mp_watch_q_a_wm",
+  "faces": 698,
+  "area": 54.7425,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.004,
+   0.554,
+   0.564
+  ],
+  "gloss_q": [
+   0.464,
+   0.517,
+   0.78
+  ],
+  "rgb_mean": [
+   0.265,
+   0.276,
+   0.287
+  ],
+  "how": [
+   "nog=image_e79415169b0d5cc.png (content)",
+   "color=image_5be5a688111efdc2.png (content)",
+   "colour alpha: metal mask (87% metal)"
+  ]
+ },
+ {
+  "i": 45,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_77f91908e33fe7e9",
+  "faces": 684,
+  "area": 53.9932,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.037,
+   0.038
+  ],
+  "gloss_q": [
+   0.525,
+   0.62,
+   0.729
+  ],
+  "rgb_mean": [
+   0.185,
+   0.184,
+   0.185
+  ],
+  "how": [
+   "color=image_1692a4282347d090.png (material)",
+   "nog=image_f4f08a980a0e9da.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 46,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_kilgore_rubberband_iw9_1_1",
+  "faces": 286,
+  "area": 53.8762,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.008,
+   0.008,
+   0.008
+  ],
+  "gloss_q": [
+   0.762,
+   0.853,
+   0.894
+  ],
+  "rgb_mean": [
+   0.662,
+   0.597,
+   0.483
+  ],
+  "how": [
+   "nog=image_40cff66bbf852dcb.png (content)",
+   "color=image_1fc4415c08fde764.png (content)"
+  ]
+ },
+ {
+  "i": 47,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_2bdbf40adf9e506a",
+  "faces": 68,
+  "area": 51.5672,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.036,
+   0.037
+  ],
+  "gloss_q": [
+   0.233,
+   0.261,
+   0.353
+  ],
+  "rgb_mean": [
+   0.329,
+   0.329,
+   0.271
+  ],
+  "how": [
+   "color=image_2ba5c8e91bce77dc.png (material)",
+   "nog=image_48373ea61845d933.png (content)",
+   "colour alpha: not a metal mask (level 0.49 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 48,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_28981dd22d618204",
+  "faces": 1155,
+  "area": 49.4901,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.036,
+   0.039
+  ],
+  "gloss_q": [
+   0.213,
+   0.301,
+   0.376
+  ],
+  "rgb_mean": [
+   0.295,
+   0.606,
+   0.676
+  ],
+  "how": [
+   "color=image_65bd3a724303ba63.png (material)",
+   "nog=image_4fbe41516b1e56cf.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 49,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_442fdb55d564c5d3",
+  "faces": 1042,
+  "area": 40.0962,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.038,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.355,
+   0.527,
+   0.561
+  ],
+  "rgb_mean": [
+   0.0,
+   0.041,
+   0.0
+  ],
+  "how": [
+   "color=image_6a4cdb2fa99293ab.png (material)",
+   "nog=image_5f3ed4bb7197a3bb.png (content)",
+   "tint=(0.00, 0.22, 0.00) (unk_semantic_4e)",
+   "colour alpha: tint mask, not used as specular"
+  ]
+ },
+ {
+  "i": 50,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_1e194d89cfb88fd6",
+  "faces": 116,
+  "area": 37.1368,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.333,
+   0.348,
+   0.354
+  ],
+  "rgb_mean": [
+   0.127,
+   0.125,
+   0.126
+  ],
+  "how": [
+   "color=image_4ef7cf8a781bc418.png (material)",
+   "nog=image_3b0070d3de1cd478.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 51,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_c_jup_sp_hero_soap_urban_platecarrier_fieldlight",
+  "faces": 348,
+  "area": 27.6393,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.038,
+   0.039
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.003
+  ],
+  "rgb_mean": [
+   0.379,
+   0.32,
+   0.238
+  ],
+  "how": [
+   "nog=image_596436a8f382ec7a.png (content)",
+   "color=image_7556645083a9ccb3.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 52,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_39914b889fdb01b0",
+  "faces": 266,
+  "area": 20.5608,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.032,
+   0.039
+  ],
+  "gloss_q": [
+   0.225,
+   0.377,
+   0.445
+  ],
+  "rgb_mean": [
+   0.167,
+   0.165,
+   0.162
+  ],
+  "how": [
+   "color=image_9f69c11c4661a89.png (material)",
+   "nog=image_3159283b2eaa3329.png (content)"
+  ]
+ },
+ {
+  "i": 53,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_duct_tape_pieces_a",
+  "faces": 12,
+  "area": 17.1656,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.034,
+   0.035,
+   0.039
+  ],
+  "gloss_q": [
+   0.906,
+   0.906,
+   0.914
+  ],
+  "rgb_mean": [
+   0.438,
+   0.431,
+   0.421
+  ],
+  "how": [
+   "nog=image_ad60121bddf440b.png (content)",
+   "color=image_8de23b88f360df3.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 54,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_buckle_master_olive",
+  "faces": 352,
+  "area": 17.1042,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.007,
+   0.008,
+   0.008
+  ],
+  "gloss_q": [
+   0.673,
+   0.69,
+   0.7
+  ],
+  "rgb_mean": [
+   0.474,
+   0.474,
+   0.474
+  ],
+  "how": [
+   "nog=image_63d6c0a51a9e1d4a.png (content)",
+   "color=image_fab24c2b63138fe.png (content)"
+  ]
+ },
+ {
+  "i": 55,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_usmc_ir_patch",
+  "faces": 22,
+  "area": 14.3755,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.632,
+   0.639,
+   0.647
+  ],
+  "rgb_mean": [
+   0.123,
+   0.0,
+   0.0
+  ],
+  "how": [
+   "nog=image_49ba29b47458a47b.png (content)",
+   "color=image_39bc38c436748ff2.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 56,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_4fc0926b9a80b9a1",
+  "faces": 22,
+  "area": 14.3736,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.632,
+   0.636,
+   0.647
+  ],
+  "rgb_mean": [
+   0.153,
+   0.15,
+   0.153
+  ],
+  "how": [
+   "color=image_1bd562f3e53443d6.png (material)",
+   "nog=image_61ec43e23acd8f6a.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 57,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_482fd43de2ba60e1",
+  "faces": 44,
+  "area": 9.7799,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.665,
+   0.783
+  ],
+  "gloss_q": [
+   0.499,
+   0.64,
+   0.719
+  ],
+  "rgb_mean": [
+   0.399,
+   0.39,
+   0.382
+  ],
+  "how": [
+   "color=image_287b83e820520378.png (material)",
+   "nog=image_3a2d5a33b5fc22e1.png (content)",
+   "colour alpha: metal mask (74% metal)"
+  ]
+ },
+ {
+  "i": 58,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "material_3accc75e732630fe",
+  "faces": 92,
+  "area": 9.2097,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.019,
+   0.036,
+   0.039
+  ],
+  "gloss_q": [
+   0.77,
+   0.854,
+   0.884
+  ],
+  "rgb_mean": [
+   0.319,
+   0.321,
+   0.319
+  ],
+  "how": [
+   "color=image_248612748f32668d.png (material)",
+   "nog=image_564989d4f4bad25.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 59,
+  "model": "rex_body_mp_milsim_us_sf_1_1",
+  "mat": "m_pararescue_altimeter_glass",
+  "faces": 22,
+  "area": 8.5441,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.994,
+   0.994,
+   0.994
+  ],
+  "how": [
+   "color=image_4e3998c5fa676c5c.png (content)"
+  ]
+ },
+ {
+  "i": 60,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_5415d8724f1c7932",
+  "faces": 1128,
+  "area": 17.8599,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.651,
+   0.652,
+   0.653
+  ],
+  "rgb_mean": [
+   0.459,
+   0.37,
+   0.342
+  ],
+  "how": [
+   "color=image_658fb854cd5a95fc.png (material)",
+   "nog=image_23d1b1da48c059a8.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 61,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_head_shared_eyelashes_dense",
+  "faces": 94,
+  "area": 6.6164,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.038,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rgb_mean": [
+   0.127,
+   0.108,
+   0.096
+  ],
+  "how": [
+   "nog=image_782f3fb51ad84d1d.png (content)",
+   "color=(0.13, 0.11, 0.10) (constant, unk_semantic_47)"
+  ]
+ },
+ {
+  "i": 62,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_756e68949c9cddd3",
+  "faces": 28412,
+  "area": 1612.7595,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.0,
+   0.035,
+   0.039
+  ],
+  "gloss_q": [
+   0.013,
+   0.539,
+   0.615
+  ],
+  "rgb_mean": [
+   0.433,
+   0.328,
+   0.262
+  ],
+  "how": [
+   "color=image_8e0256ede0b0a09.png (material)",
+   "nog=image_2943197ffa1f465b.png (content)"
+  ]
+ },
+ {
+  "i": 63,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_headset_rail_adapter",
+  "faces": 672,
+  "area": 96.0591,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.014,
+   0.016,
+   0.016
+  ],
+  "gloss_q": [
+   0.0,
+   0.544,
+   0.704
+  ],
+  "rgb_mean": [
+   0.243,
+   0.236,
+   0.221
+  ],
+  "how": [
+   "nog=image_2f5add5c581f582f.png (content)",
+   "color=image_6fa6ebf83da02242.png (content)",
+   "colour alpha: metal mask (2% metal)"
+  ]
+ },
+ {
+  "i": 64,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_42a074ced5ca3b4e",
+  "faces": 4364,
+  "area": 1496.4157,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.053,
+   0.064
+  ],
+  "gloss_q": [
+   0.174,
+   0.319,
+   0.403
+  ],
+  "rgb_mean": [
+   0.258,
+   0.228,
+   0.202
+  ],
+  "how": [
+   "color=image_67a1627ecc18ad41.png (material)",
+   "nog=image_b1b5686a5b5937a.png (content)"
+  ]
+ },
+ {
+  "i": 65,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_2e9627a610641de2",
+  "faces": 124,
+  "area": 11.2805,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.037,
+   0.76
+  ],
+  "gloss_q": [
+   0.344,
+   0.376,
+   0.894
+  ],
+  "rgb_mean": [
+   0.214,
+   0.223,
+   0.216
+  ],
+  "how": [
+   "color=image_495ef39dcf519b49.png (material)",
+   "nog=image_3b3910667b405baf.png (content)",
+   "colour alpha: metal mask (16% metal)"
+  ]
+ },
+ {
+  "i": 66,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_6cb21a8d129b584f",
+  "faces": 4032,
+  "area": 94.5897,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.016,
+   0.019
+  ],
+  "gloss_q": [
+   0.593,
+   0.612,
+   0.632
+  ],
+  "rgb_mean": [
+   0.117,
+   0.117,
+   0.117
+  ],
+  "how": [
+   "color=image_43c3d066756cf8f4.png (material)",
+   "nog=image_1ba856228427680f.png (content)"
+  ]
+ },
+ {
+  "i": 67,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_50f19101f7be81fa",
+  "faces": 316,
+  "area": 148.8227,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "gloss_q": [
+   0.312,
+   0.451,
+   0.506
+  ],
+  "rgb_mean": [
+   0.178,
+   0.178,
+   0.178
+  ],
+  "how": [
+   "color=image_2672378a5f2a37d0.png (material)",
+   "nog=image_67c79f7d6dbd6da2.png (content)"
+  ]
+ },
+ {
+  "i": 68,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_t10_accessory_ziptie_handcuff_01",
+  "faces": 888,
+  "area": 55.3303,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.563,
+   0.854,
+   0.935
+  ],
+  "rgb_mean": [
+   0.813,
+   0.801,
+   0.763
+  ],
+  "how": [
+   "nog=image_2887cb439d130af.png (content)",
+   "color=image_59530e77d47e5d66.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 69,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_flag_patch_us_black_gold",
+  "faces": 72,
+  "area": 67.4927,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.037,
+   0.039
+  ],
+  "gloss_q": [
+   0.063,
+   0.078,
+   0.29
+  ],
+  "rgb_mean": [
+   0.219,
+   0.202,
+   0.162
+  ],
+  "how": [
+   "nog=image_526c401600449978.png (content)",
+   "color=image_7ca7146c28a65089.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 70,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_f22c2338f458281",
+  "faces": 2017,
+  "area": 607.8968,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.03,
+   0.038,
+   0.04
+  ],
+  "gloss_q": [
+   0.473,
+   0.641,
+   0.771
+  ],
+  "rgb_mean": [
+   0.278,
+   0.259,
+   0.21
+  ],
+  "how": [
+   "color=image_226a8eba90116628.png (material)",
+   "nog=image_3b3d54088e1d864c.png (content)",
+   "colour alpha: not a metal mask (level 0.13 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 71,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_5535213df5c651d4",
+  "faces": 312,
+  "area": 17.4379,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.037,
+   0.039
+  ],
+  "gloss_q": [
+   0.154,
+   0.725,
+   0.804
+  ],
+  "rgb_mean": [
+   0.153,
+   0.153,
+   0.149
+  ],
+  "how": [
+   "color=image_624dea97c2ef4546.png (material)",
+   "nog=image_48ef145d2a5334b0.png (content)",
+   "colour alpha: not a metal mask (level 0.67 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 72,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_2797e0a7a82620eb",
+  "faces": 368,
+  "area": 39.2136,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.022,
+   0.023,
+   0.024
+  ],
+  "gloss_q": [
+   0.204,
+   0.233,
+   0.31
+  ],
+  "rgb_mean": [
+   0.148,
+   0.148,
+   0.147
+  ],
+  "how": [
+   "color=image_249fdb4dead2cde3.png (material)",
+   "nog=image_7f730e2d3fa4f24a.png (content)"
+  ]
+ },
+ {
+  "i": 73,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_34ebe19870b5180",
+  "faces": 7081,
+  "area": 2981.1995,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.023,
+   0.027,
+   0.027
+  ],
+  "gloss_q": [
+   0.03,
+   0.2,
+   0.508
+  ],
+  "rgb_mean": [
+   0.266,
+   0.24,
+   0.191
+  ],
+  "how": [
+   "color=image_45fbf81af24de8aa.png (material)",
+   "nog=image_79f9215d04a1bc4a.png (content)"
+  ]
+ },
+ {
+  "i": 74,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_406ab8341d771304",
+  "faces": 978,
+  "area": 109.9777,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.054,
+   0.061,
+   0.062
+  ],
+  "gloss_q": [
+   0.455,
+   0.495,
+   0.514
+  ],
+  "rgb_mean": [
+   0.668,
+   0.615,
+   0.488
+  ],
+  "how": [
+   "color=image_990c7b40eea127a.png (material)",
+   "nog=image_518e3f54f70e59a5.png (content)"
+  ]
+ },
+ {
+  "i": 75,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_37e432647c141d80",
+  "faces": 1016,
+  "area": 474.8996,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.026,
+   0.037,
+   0.04
+  ],
+  "gloss_q": [
+   0.037,
+   0.082,
+   0.155
+  ],
+  "rgb_mean": [
+   0.333,
+   0.298,
+   0.23
+  ],
+  "how": [
+   "color=image_10e58db75d08b9fa.png (material)",
+   "nog=image_7621e2cfc032a6ea.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 76,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_3375ccd621ec9e36",
+  "faces": 1228,
+  "area": 350.8928,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.04,
+   0.045
+  ],
+  "gloss_q": [
+   0.454,
+   0.632,
+   0.871
+  ],
+  "rgb_mean": [
+   0.599,
+   0.548,
+   0.428
+  ],
+  "how": [
+   "color=image_4f007017d7275116.png (material)",
+   "nog=image_34b61c743f623f7b.png (content)"
+  ]
+ },
+ {
+  "i": 77,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_79aab6d60a33e1be",
+  "faces": 60,
+  "area": 4.9467,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.001
+  ],
+  "gloss_q": [
+   0.361,
+   0.425,
+   0.484
+  ],
+  "rgb_mean": [
+   0.088,
+   0.085,
+   0.08
+  ],
+  "how": [
+   "color=image_1ea3f9ea7a49347c.png (material)",
+   "nog=image_784e77c7cf2b202e.png (content)"
+  ]
+ },
+ {
+  "i": 78,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_234d4568ac7ab85f",
+  "faces": 22,
+  "area": 13.3223,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.632,
+   0.638,
+   0.647
+  ],
+  "rgb_mean": [
+   0.155,
+   0.152,
+   0.155
+  ],
+  "how": [
+   "color=image_55dd4d6feabd6ced.png (material)",
+   "nog=image_61ec43e23acd8f6a.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 79,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_seal_team_v3_helmet_strobe_a",
+  "faces": 340,
+  "area": 138.1214,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.129,
+   0.62,
+   0.714
+  ],
+  "rgb_mean": [
+   0.347,
+   0.332,
+   0.307
+  ],
+  "how": [
+   "nog=image_46d5779862dcbdb8.png (content)",
+   "color=image_62e758e9ed711c61.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 80,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_746c6813196a3ee2",
+  "faces": 188,
+  "area": 63.9135,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.764,
+   0.877,
+   0.959
+  ],
+  "rgb_mean": [
+   0.165,
+   0.164,
+   0.163
+  ],
+  "how": [
+   "color=image_27b0e0b54150b628.png (material)",
+   "nog=image_7c87832e12e54eff.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 81,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_5909d2e11f6c8129",
+  "faces": 6262,
+  "area": 196.8711,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.004,
+   0.004,
+   0.004
+  ],
+  "gloss_q": [
+   0.293,
+   0.34,
+   0.387
+  ],
+  "rgb_mean": [
+   0.053,
+   0.06,
+   0.068
+  ],
+  "how": [
+   "color=image_58e9e91930791ef0.png (material)",
+   "nog=image_12f60e713d297853.png (content)",
+   "colour alpha: metal mask (3% metal)"
+  ]
+ },
+ {
+  "i": 82,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "material_384e387b36617c26",
+  "faces": 1300,
+  "area": 109.1318,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.973,
+   0.984,
+   0.996
+  ],
+  "rgb_mean": [
+   0.359,
+   0.649,
+   0.84
+  ],
+  "how": [
+   "color=image_193336f2d936ab8.png (material)",
+   "nog=image_6f0766a7e909cb5c.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 83,
+  "model": "rex_head_mp_milsim_us_sf_1_1",
+  "mat": "m_head_shared_inside_mouth_iw9",
+  "faces": 2781,
+  "area": 60.5091,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.335,
+   0.656,
+   0.958
+  ],
+  "rgb_mean": [
+   0.48,
+   0.365,
+   0.379
+  ],
+  "how": [
+   "nog=image_20c29983b2b82a9.png (content)",
+   "color=image_15d621427324b07c.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 84,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_cb4a3e7672014e4",
+  "faces": 4267,
+  "area": 1491.2797,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.429,
+   0.507,
+   0.667
+  ],
+  "rgb_mean": [
+   0.119,
+   0.117,
+   0.117
+  ],
+  "how": [
+   "color=image_bcd9ad0c36be2ce.png (material)",
+   "nog=image_7f7365584e995860.png (content)",
+   "colour alpha: not a metal mask (level 0.24 over 97% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 85,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_4f1140b1cca80d89",
+  "faces": 14176,
+  "area": 1378.4749,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.382,
+   0.481,
+   0.553
+  ],
+  "rgb_mean": [
+   0.701,
+   0.527,
+   0.419
+  ],
+  "how": [
+   "color=image_7b8c6dfbf4b9a4c.png (material)",
+   "nog=image_950b0fc86fe7705.png (content)",
+   "colour alpha: not a metal mask (level 0.28 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 86,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_683ff66447cb53b6",
+  "faces": 13376,
+  "area": 1318.3187,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.387,
+   0.482,
+   0.551
+  ],
+  "rgb_mean": [
+   0.666,
+   0.506,
+   0.403
+  ],
+  "how": [
+   "color=image_34ce4f6e5ad24c33.png (material)",
+   "nog=image_950b0fc86fe7705.png (content)",
+   "colour alpha: not a metal mask (level 0.28 over 100% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 87,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_6db5888c11926d6e",
+  "faces": 36432,
+  "area": 664.7663,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.014,
+   0.023,
+   0.032
+  ],
+  "gloss_q": [
+   0.161,
+   0.235,
+   0.334
+  ],
+  "rgb_mean": [
+   0.17,
+   0.163,
+   0.161
+  ],
+  "how": [
+   "color=image_4aef84701861febd.png (material)",
+   "nog=image_3363d2ddaa18184a.png (content)"
+  ]
+ },
+ {
+  "i": 88,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_wristwear_mp_watch_q_strap_vm",
+  "faces": 2982,
+  "area": 109.7416,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.435,
+   0.568,
+   0.74
+  ],
+  "rgb_mean": [
+   0.432,
+   0.446,
+   0.465
+  ],
+  "how": [
+   "nog=image_452bb9a647e82ee.png (content)",
+   "color=image_5d5b39fde73aa685.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 89,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_roze_iw9_4_1_flag_patch",
+  "faces": 1508,
+  "area": 90.7171,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.037,
+   0.038
+  ],
+  "gloss_q": [
+   0.063,
+   0.083,
+   0.277
+  ],
+  "rgb_mean": [
+   0.224,
+   0.223,
+   0.224
+  ],
+  "how": [
+   "nog=image_68e052bcc6b3e573.png (content)",
+   "color=image_34a1162489a79a03.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 90,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_6e582793184e39b2",
+  "faces": 26556,
+  "area": 89.4178,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.026,
+   0.034,
+   0.037
+  ],
+  "gloss_q": [
+   0.324,
+   0.546,
+   0.684
+  ],
+  "rgb_mean": [
+   0.245,
+   0.224,
+   0.136
+  ],
+  "how": [
+   "color=image_47a3dc4eefc0b5b3.png (material)",
+   "nog=image_5fe1b177e03578c8.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 91,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_mp_milsim_west_flag_patch_ir_us_iw9_1_1",
+  "faces": 760,
+  "area": 79.4426,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.631,
+   0.638,
+   0.647
+  ],
+  "rgb_mean": [
+   0.288,
+   0.289,
+   0.287
+  ],
+  "how": [
+   "nog=image_2d102a2ae943fea0.png (content)",
+   "color=image_73e6f2de1ee4e2a1.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 92,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_wristwear_mp_watch_q_a_vm",
+  "faces": 2430,
+  "area": 58.1043,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.557,
+   0.563
+  ],
+  "gloss_q": [
+   0.466,
+   0.524,
+   0.788
+  ],
+  "rgb_mean": [
+   0.27,
+   0.28,
+   0.291
+  ],
+  "how": [
+   "nog=image_6a1e06a874cc5ff4.png (content)",
+   "color=image_4bc8d7dbb720762e.png (content)",
+   "colour alpha: metal mask (80% metal)"
+  ]
+ },
+ {
+  "i": 93,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_2e0127abda13c201",
+  "faces": 4878,
+  "area": 46.7475,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.031,
+   0.036,
+   0.039
+  ],
+  "gloss_q": [
+   0.208,
+   0.296,
+   0.382
+  ],
+  "rgb_mean": [
+   0.283,
+   0.599,
+   0.673
+  ],
+  "how": [
+   "color=image_65bd3a724303ba63.png (material)",
+   "nog=image_4fbe41516b1e56cf.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 94,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "material_5cf05e7941ad64d0",
+  "faces": 1042,
+  "area": 40.1315,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.037,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.444,
+   0.663,
+   0.71
+  ],
+  "rgb_mean": [
+   0.0,
+   0.041,
+   0.0
+  ],
+  "how": [
+   "color=image_413e03b99e88232d.png (material)",
+   "nog=image_7210002d459023f6.png (content)",
+   "tint=(0.00, 0.22, 0.00) (unk_semantic_4e)",
+   "colour alpha: tint mask, not used as specular"
+  ]
+ },
+ {
+  "i": 95,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_parts_wristwear_mp_watch_a_vm_face",
+  "faces": 4,
+  "area": 0.7564,
+  "alpha_kind": null,
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "how": []
+ },
+ {
+  "i": 96,
+  "model": "rex_vm_arms_mp_milsim_us_sf_1_1",
+  "mat": "m_pararescue_altimeter_glass",
+  "faces": 22,
+  "area": 8.7811,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.994,
+   0.994,
+   0.994
+  ],
+  "how": [
+   "color=image_4e3998c5fa676c5c.png (content)"
+  ]
+ },
+ {
+  "i": 97,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_720a46c2d8621d5c",
+  "faces": 3922,
+  "area": 13709.2076,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.241,
+   0.245,
+   0.253
+  ],
+  "rgb_mean": [
+   0.028,
+   0.036,
+   0.074
+  ],
+  "how": [
+   "color=image_481759d8f57d6af9.png (material)",
+   "nog=image_3ae2f7f94beaab46.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 98,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_3bd8c2349a6d7710",
+  "faces": 7423,
+  "area": 11882.9182,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.168,
+   0.182,
+   0.2
+  ],
+  "rgb_mean": [
+   0.062,
+   0.065,
+   0.104
+  ],
+  "how": [
+   "color=image_565b79be37e9031.png (material)",
+   "nog=image_5f7701409dba2eea.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 99,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_2be7b38e12f76d1f",
+  "faces": 2782,
+  "area": 5092.3745,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.036,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.322,
+   0.338,
+   0.353
+  ],
+  "rgb_mean": [
+   0.791,
+   0.786,
+   0.799
+  ],
+  "how": [
+   "color=image_45396999bd3a2d19.png (material)",
+   "nog=image_1c1f6e1d88d3d900.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 100,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_394ad4ee6e164234",
+  "faces": 3406,
+  "area": 2400.0463,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.161,
+   0.18,
+   0.207
+  ],
+  "rgb_mean": [
+   0.061,
+   0.062,
+   0.102
+  ],
+  "how": [
+   "color=image_3d02e75d78f56ee.png (material)",
+   "nog=image_6dc3c92a7574b361.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 101,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_b4a136b6c671c41",
+  "faces": 4143,
+  "area": 2244.3274,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.068,
+   0.094,
+   0.111
+  ],
+  "rgb_mean": [
+   0.062,
+   0.062,
+   0.104
+  ],
+  "how": [
+   "color=image_5cf3b2d7fe4d8202.png (material)",
+   "nog=image_9ed9a041f051196.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 102,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_306c8ea927fdce6f",
+  "faces": 2820,
+  "area": 2093.8793,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.38,
+   0.504,
+   0.621
+  ],
+  "rgb_mean": [
+   0.734,
+   0.731,
+   0.733
+  ],
+  "how": [
+   "color=image_74433532a1084a2b.png (material)",
+   "nog=image_4c3346f566c3a589.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 103,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_1d3557126be46267",
+  "faces": 2202,
+  "area": 1663.9733,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.034,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.308,
+   0.322,
+   0.345
+  ],
+  "rgb_mean": [
+   0.778,
+   0.772,
+   0.785
+  ],
+  "how": [
+   "color=image_630daba570b4ee5b.png (material)",
+   "nog=image_3a878dda44ddad0d.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 104,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_7e62f30a0fc5398e",
+  "faces": 2808,
+  "area": 1660.0712,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.016,
+   0.016
+  ],
+  "gloss_q": [
+   0.413,
+   0.436,
+   0.469
+  ],
+  "rgb_mean": [
+   0.56,
+   0.403,
+   0.381
+  ],
+  "how": [
+   "color=image_4a65314dbda1f019.png (material)",
+   "nog=image_f6e490898508a85.png (content)"
+  ]
+ },
+ {
+  "i": 105,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_d1f3faad75edd80",
+  "faces": 2458,
+  "area": 1641.565,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.307,
+   0.329,
+   0.353
+  ],
+  "rgb_mean": [
+   0.782,
+   0.775,
+   0.788
+  ],
+  "how": [
+   "color=image_22ee97c2d70080cd.png (material)",
+   "nog=image_7ee1bf097d6d04e3.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 106,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_6c457ee9eefd3224",
+  "faces": 11380,
+  "area": 1597.7736,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.015,
+   0.016,
+   0.016
+  ],
+  "gloss_q": [
+   0.4,
+   0.423,
+   0.448
+  ],
+  "rgb_mean": [
+   0.614,
+   0.478,
+   0.435
+  ],
+  "how": [
+   "color=image_2ba6d60e03c69831.png (material)",
+   "nog=image_52aa9667c10e63e2.png (content)",
+   "colour alpha: metal mask (1% metal)"
+  ]
+ },
+ {
+  "i": 107,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_266645186f850c64",
+  "faces": 680,
+  "area": 738.8892,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.305,
+   0.359,
+   0.491
+  ],
+  "rgb_mean": [
+   0.118,
+   0.117,
+   0.129
+  ],
+  "how": [
+   "color=image_2815f2c62b4f843d.png (material)",
+   "nog=image_18e2f56fda2735d1.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 108,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_53181896b7bc94d3",
+  "faces": 242,
+  "area": 18.3482,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.008,
+   0.008,
+   0.046
+  ],
+  "gloss_q": [
+   0.0,
+   0.881,
+   0.977
+  ],
+  "rgb_mean": [
+   0.612,
+   0.348,
+   0.209
+  ],
+  "how": [
+   "color=image_4939d73a3d271369.png (material)",
+   "nog=image_6509e3f47a7aaf3.png (content)",
+   "colour alpha: metal mask (2% metal)"
+  ]
+ },
+ {
+  "i": 109,
+  "model": "body_c_sat_usa_pl_sunflower_base",
+  "mat": "material_321989e38560347d",
+  "faces": 212,
+  "area": 15.3715,
+  "alpha_kind": "tint",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.665,
+   0.382,
+   0.761
+  ],
+  "how": [
+   "color=image_34bfa440a1bd9321.png (material)",
+   "tint=(0.87, 0.50, 1.00) (unk_semantic_47)"
+  ]
+ },
+ {
+  "i": 110,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_13f59f1e7d42a19e",
+  "faces": 16018,
+  "area": 5551.5401,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.378,
+   0.42,
+   0.526
+  ],
+  "rgb_mean": [
+   0.427,
+   0.337,
+   0.258
+  ],
+  "how": [
+   "color=image_539b3c497fe5cb4.png (material)",
+   "nog=image_75f966a8515410d8.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 111,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_6313d683b2c5b3bb",
+  "faces": 10240,
+  "area": 1705.834,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.409,
+   0.458,
+   0.476
+  ],
+  "rgb_mean": [
+   0.726,
+   0.503,
+   0.419
+  ],
+  "how": [
+   "color=image_fb3ae6943d2150f.png (material)",
+   "nog=image_fcd721e9771f249.png (content)",
+   "colour alpha: not a metal mask (level 0.12 over 92% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 112,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_36db2828afb04d8c",
+  "faces": 7528,
+  "area": 800.0304,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.001
+  ],
+  "rgb_mean": [
+   0.357,
+   0.249,
+   0.168
+  ],
+  "how": [
+   "color=image_5eb4b6e71dc0b1a3.png (material)",
+   "nog=image_1d304e0f81810725.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 113,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "m_c_t10_global_teeth",
+  "faces": 902,
+  "area": 70.5614,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.009,
+   0.022,
+   0.12
+  ],
+  "gloss_q": [
+   0.031,
+   0.066,
+   0.407
+  ],
+  "rgb_mean": [
+   0.25,
+   0.157,
+   0.144
+  ],
+  "how": [
+   "color=image_6baa301f395b5459.png (mtl)",
+   "nog=image_7f4b0bcf2ae6d530.png (content)"
+  ]
+ },
+ {
+  "i": 114,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_1165edca71eb0807",
+  "faces": 552,
+  "area": 29.5813,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.636,
+   0.548,
+   0.521
+  ],
+  "how": [
+   "color=image_1ce906320dac227c.png (material)"
+  ]
+ },
+ {
+  "i": 115,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_2e853b05faa7397e",
+  "faces": 92,
+  "area": 3.3014,
+  "alpha_kind": null,
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.523,
+   0.522,
+   0.51
+  ],
+  "how": [
+   "color=image_5ec796cc3a8a5d7f.png (material)"
+  ]
+ },
+ {
+  "i": 116,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "m_c_t10_global_eyes_lacrimal_fluid_mid_shadow",
+  "faces": 1468,
+  "area": 2.8982,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.8,
+   0.801,
+   0.804
+  ],
+  "rgb_mean": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "how": [
+   "color=image_1a195f043de5511a.png (mtl)",
+   "nog=image_f8335788d5719c1.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 117,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_5a1fc430fe7b6f6d",
+  "faces": 3524,
+  "area": 31.7311,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.012,
+   0.006,
+   0.003
+  ],
+  "how": [
+   "color=image_6e36d5130eb9dc74.png (material)"
+  ]
+ },
+ {
+  "i": 118,
+  "model": "head_c_sat_usa_pl_sunflower_base",
+  "mat": "material_5ee325e2ed86f57e",
+  "faces": 453,
+  "area": 57.3864,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.024,
+   0.032,
+   0.035
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rgb_mean": [
+   0.015,
+   0.009,
+   0.008
+  ],
+  "how": [
+   "color=image_3f702c3a781730d4.png (material)",
+   "nog=image_1dcbc2e567555a4d.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 119,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_50c588ba857b5ca5",
+  "faces": 12960,
+  "area": 4413.0629,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.377,
+   0.419,
+   0.526
+  ],
+  "rgb_mean": [
+   0.435,
+   0.347,
+   0.266
+  ],
+  "how": [
+   "color=image_6359b6b1a1927f6f.png (material)",
+   "nog=image_5e2b7d15de728a0b.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 120,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_693e08e75501c222",
+  "faces": 41060,
+  "area": 1714.4213,
+  "alpha_kind": "continuous",
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.408,
+   0.458,
+   0.476
+  ],
+  "rgb_mean": [
+   0.726,
+   0.503,
+   0.418
+  ],
+  "how": [
+   "color=image_5a6a3e58e636a7be.png (material)",
+   "nog=image_3faa43e93cc1c2f4.png (content)",
+   "colour alpha: not a metal mask (level 0.12 over 92% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 121,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_745d3ccb69c77897",
+  "faces": 7528,
+  "area": 800.0304,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.001
+  ],
+  "rgb_mean": [
+   0.357,
+   0.249,
+   0.168
+  ],
+  "how": [
+   "color=image_3e59dde554704a7a.png (material)",
+   "nog=image_74f444413e96bbd8.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 122,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "m_c_t10_global_teeth",
+  "faces": 902,
+  "area": 70.5614,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.009,
+   0.022,
+   0.12
+  ],
+  "gloss_q": [
+   0.031,
+   0.066,
+   0.407
+  ],
+  "rgb_mean": [
+   0.25,
+   0.157,
+   0.144
+  ],
+  "how": [
+   "color=image_6baa301f395b5459.png (mtl)",
+   "nog=image_7f4b0bcf2ae6d530.png (content)"
+  ]
+ },
+ {
+  "i": 123,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_28bdd3fae1ba6592",
+  "faces": 552,
+  "area": 29.5813,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.636,
+   0.548,
+   0.521
+  ],
+  "how": [
+   "color=image_1ce906320dac227c.png (material)"
+  ]
+ },
+ {
+  "i": 124,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_179d19215f49f245",
+  "faces": 92,
+  "area": 3.3014,
+  "alpha_kind": null,
+  "cutout": false,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.523,
+   0.522,
+   0.51
+  ],
+  "how": [
+   "color=image_3c85f97dc54502ae.png (material)"
+  ]
+ },
+ {
+  "i": 125,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "m_c_t10_global_eyes_lacrimal_fluid_mid_shadow",
+  "faces": 1468,
+  "area": 2.8982,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.8,
+   0.801,
+   0.804
+  ],
+  "rgb_mean": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "how": [
+   "color=image_1a195f043de5511a.png (mtl)",
+   "nog=image_f8335788d5719c1.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 126,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_5a1fc430fe7b6f6d",
+  "faces": 3524,
+  "area": 31.7311,
+  "alpha_kind": null,
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "rgb_mean": [
+   0.012,
+   0.006,
+   0.003
+  ],
+  "how": [
+   "color=image_6e36d5130eb9dc74.png (material)"
+  ]
+ },
+ {
+  "i": 127,
+  "model": "head_c_sat_usa_pl_sunflower_base_high",
+  "mat": "material_105d72faf3a7a645",
+  "faces": 453,
+  "area": 57.3864,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.024,
+   0.032,
+   0.035
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rgb_mean": [
+   0.015,
+   0.009,
+   0.008
+  ],
+  "how": [
+   "color=image_3f702c3a781730d4.png (material)",
+   "nog=image_1dcbc2e567555a4d.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 128,
+  "model": "vm_c_sat_usa_pl_sunflower_base",
+  "mat": "material_1dd2caa349fb6d14",
+  "faces": 18084,
+  "area": 5160.2225,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.038,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.07,
+   0.094,
+   0.112
+  ],
+  "rgb_mean": [
+   0.062,
+   0.063,
+   0.104
+  ],
+  "how": [
+   "color=image_7d388693c416023b.png (material)",
+   "nog=image_299dac223683198f.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 129,
+  "model": "vm_c_sat_usa_pl_sunflower_base",
+  "mat": "m_c_t10_pl_base_female_body_viewarm",
+  "faces": 56064,
+  "area": 4744.2661,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.016,
+   0.016,
+   0.016
+  ],
+  "gloss_q": [
+   0.474,
+   0.498,
+   0.521
+  ],
+  "rgb_mean": [
+   0.607,
+   0.437,
+   0.372
+  ],
+  "how": [
+   "color=image_5739cbdccae96007.png (mtl)",
+   "nog=image_6fe37d4d75213b2e.png (content)"
+  ]
+ },
+ {
+  "i": 130,
+  "model": "vm_c_sat_usa_pl_sunflower_base",
+  "mat": "material_52df44ce0f3a3d0d",
+  "faces": 18836,
+  "area": 4287.2156,
+  "alpha_kind": "no_alpha",
+  "cutout": false,
+  "spec_q": [
+   0.035,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.307,
+   0.325,
+   0.353
+  ],
+  "rgb_mean": [
+   0.784,
+   0.777,
+   0.79
+  ],
+  "how": [
+   "color=image_7e5873dd8a049a00.png (material)",
+   "nog=image_4eb8788f0bba03d2.png (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 131,
+  "model": "vm_c_sat_usa_pl_sunflower_base",
+  "mat": "material_758f74d194894621",
+  "faces": 1280,
+  "area": 13.8571,
+  "alpha_kind": "metal_mask",
+  "cutout": false,
+  "spec_q": [
+   0.016,
+   0.016,
+   0.016
+  ],
+  "gloss_q": [
+   0.918,
+   1.0,
+   1.0
+  ],
+  "rgb_mean": [
+   0.665,
+   0.036,
+   0.156
+  ],
+  "how": [
+   "color=image_58dc7176c5e86064.png (material)",
+   "nog=image_1bd68d486ec3349b.png (content)"
+  ]
+ },
+ {
+  "i": 132,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_77222472d63f8064",
+  "faces": 5120,
+  "area": 13372.0104,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.015,
+   0.029,
+   0.039
+  ],
+  "gloss_q": [
+   0.26,
+   0.366,
+   0.561
+  ],
+  "rgb_mean": [
+   0.645,
+   0.645,
+   0.645
+  ],
+  "how": [
+   "color=ximage_29cec6488f769811.dds (mtl)",
+   "nog=ximage_487ccbb828b99e71.dds (content)",
+   "colour alpha: a copy of the (colour-less) colour map, not used as specular"
+  ]
+ },
+ {
+  "i": 133,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_69b289ca74fc793b",
+  "faces": 5047,
+  "area": 9903.1606,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.278,
+   0.352,
+   0.428
+  ],
+  "rgb_mean": [
+   0.075,
+   0.157,
+   0.221
+  ],
+  "how": [
+   "color=ximage_ecb8c7a67ed3581.dds (mtl)",
+   "nog=ximage_3692561627d74.dds (content)",
+   "tint=(0.08, 0.17, 0.24) (unk_semantic_0x2)",
+   "colour alpha: tint mask, not used as specular"
+  ]
+ },
+ {
+  "i": 134,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_6f46266527d342bf",
+  "faces": 4923,
+  "area": 7787.1083,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.322,
+   0.387,
+   0.432
+  ],
+  "rgb_mean": [
+   0.076,
+   0.159,
+   0.225
+  ],
+  "how": [
+   "color=ximage_69ac422019052055.dds (mtl)",
+   "nog=ximage_4378bade030d066a.dds (content)",
+   "tint=(0.08, 0.17, 0.24) (unk_semantic_0x2)",
+   "colour alpha: tint mask, not used as specular"
+  ]
+ },
+ {
+  "i": 135,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_677647f5b5e5c6ba",
+  "faces": 10435,
+  "area": 6448.6591,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.032,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.1,
+   0.301,
+   0.607
+  ],
+  "rgb_mean": [
+   0.157,
+   0.153,
+   0.145
+  ],
+  "how": [
+   "color=ximage_4a0b8d8ef43b62fd.dds (mtl)",
+   "nog=ximage_59693503e747948.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 136,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_2361df96c859e5c9",
+  "faces": 3224,
+  "area": 2951.9415,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.034,
+   0.037,
+   0.039
+  ],
+  "gloss_q": [
+   0.089,
+   0.419,
+   0.611
+  ],
+  "rgb_mean": [
+   0.173,
+   0.174,
+   0.174
+  ],
+  "how": [
+   "color=ximage_2e308b6650d7f802.dds (mtl)",
+   "nog=ximage_4a86c17983160409.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 137,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_f23de9d0003e0ba",
+  "faces": 1820,
+  "area": 1567.7975,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.014,
+   0.021,
+   0.031
+  ],
+  "gloss_q": [
+   0.153,
+   0.187,
+   0.217
+  ],
+  "rgb_mean": [
+   0.208,
+   0.2,
+   0.192
+  ],
+  "how": [
+   "color=ximage_3fa42673af3f3e38.dds (mtl)",
+   "nog=ximage_4a182032b289d561.dds (content)"
+  ]
+ },
+ {
+  "i": 138,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_57b9f1548d6ecb5a",
+  "faces": 3460,
+  "area": 1009.3228,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.417,
+   0.564,
+   0.693
+  ],
+  "rgb_mean": [
+   0.65,
+   0.441,
+   0.333
+  ],
+  "how": [
+   "color=ximage_188424140a6ba0fb.dds (mtl)",
+   "nog=ximage_5451f39649aaefb1.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 139,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_674ffa73bec233c2",
+  "faces": 446,
+  "area": 618.2896,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.001,
+   0.004,
+   0.033
+  ],
+  "gloss_q": [
+   0.364,
+   0.393,
+   0.464
+  ],
+  "rgb_mean": [
+   0.064,
+   0.063,
+   0.064
+  ],
+  "how": [
+   "color=ximage_5db5a1c0adc50dd5.dds (mtl)",
+   "nog=ximage_7e7e1aed6d44c92c.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 140,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_46cad986ead844bc",
+  "faces": 288,
+  "area": 417.887,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.664,
+   0.694,
+   0.729
+  ],
+  "rgb_mean": [
+   0.667,
+   0.515,
+   0.426
+  ],
+  "how": [
+   "color=ximage_114fd457c2073ff2.dds (mtl)",
+   "nog=ximage_1ce35510a5dc6f2d.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 141,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_5b8378fe7201ffd4",
+  "faces": 1113,
+  "area": 272.7842,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.037,
+   0.039,
+   0.496
+  ],
+  "gloss_q": [
+   0.408,
+   0.641,
+   0.701
+  ],
+  "rgb_mean": [
+   0.361,
+   0.323,
+   0.274
+  ],
+  "how": [
+   "color=ximage_1d3311bde4f55c9b.dds (mtl)",
+   "nog=ximage_45b0f96fb0a91f72.dds (content)",
+   "colour alpha: metal mask (13% metal)"
+  ]
+ },
+ {
+  "i": 142,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_109529c57f7ede3",
+  "faces": 636,
+  "area": 142.8083,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.035,
+   0.038,
+   0.039
+  ],
+  "gloss_q": [
+   0.027,
+   0.063,
+   0.161
+  ],
+  "rgb_mean": [
+   0.178,
+   0.178,
+   0.178
+  ],
+  "how": [
+   "color=ximage_61fabe02cca63f62.dds (mtl)",
+   "nog=ximage_79ac172032ddb69c.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 143,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_61348fa15f534bc9",
+  "faces": 1332,
+  "area": 127.9757,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.222,
+   0.475,
+   0.525
+  ],
+  "rgb_mean": [
+   0.162,
+   0.163,
+   0.159
+  ],
+  "how": [
+   "color=ximage_587cf604a77cb218.dds (mtl)",
+   "nog=ximage_6eaec68482c19dd.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 144,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_5d2d22cdf227785f",
+  "faces": 400,
+  "area": 78.7303,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.035,
+   0.038,
+   0.039
+  ],
+  "gloss_q": [
+   0.515,
+   0.546,
+   0.556
+  ],
+  "rgb_mean": [
+   0.444,
+   0.442,
+   0.444
+  ],
+  "how": [
+   "color=ximage_43ab8007e66cf717.dds (mtl)",
+   "nog=ximage_5e22fabd36451cec.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 145,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_4239e8469b97ebc5",
+  "faces": 280,
+  "area": 58.7038,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.039
+  ],
+  "gloss_q": [
+   0.454,
+   0.472,
+   0.494
+  ],
+  "rgb_mean": [
+   0.16,
+   0.158,
+   0.156
+  ],
+  "how": [
+   "color=ximage_4beeb2356d4f9600.dds (mtl)",
+   "nog=ximage_5e9cbe7e438fc2fe.dds (content)"
+  ]
+ },
+ {
+  "i": 146,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_6d71f1c4c455481a",
+  "faces": 648,
+  "area": 47.8745,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.032,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.777,
+   0.858,
+   0.891
+  ],
+  "rgb_mean": [
+   0.553,
+   0.553,
+   0.553
+  ],
+  "how": [
+   "color=ximage_5b81d4cfc3125722.dds (mtl)",
+   "nog=ximage_486577b887e64515.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 147,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_3ebb9f0796c0b768",
+  "faces": 452,
+  "area": 41.8741,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.004,
+   0.004
+  ],
+  "gloss_q": [
+   0.177,
+   0.502,
+   0.741
+  ],
+  "rgb_mean": [
+   0.2,
+   0.188,
+   0.177
+  ],
+  "how": [
+   "color=ximage_411cef3d5b066ec1.dds (mtl)",
+   "nog=ximage_2806b7032b9b0a13.dds (content)"
+  ]
+ },
+ {
+  "i": 148,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_7012a28887e5c728",
+  "faces": 51,
+  "area": 4.9934,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.013,
+   0.013,
+   0.013
+  ],
+  "gloss_q": [
+   0.177,
+   0.239,
+   0.276
+  ],
+  "rgb_mean": [
+   0.218,
+   0.318,
+   0.289
+  ],
+  "how": [
+   "color=ximage_deeab4fb8b2973c.dds (mtl)",
+   "nog=ximage_38fc0efddb4cc30f.dds (content)",
+   "colour alpha: metal mask (3% metal)"
+  ]
+ },
+ {
+  "i": 149,
+  "model": "body_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_597076307ac0631c",
+  "faces": 14,
+  "area": 7.1343,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.869,
+   0.898,
+   0.938
+  ],
+  "rgb_mean": [
+   0.17,
+   0.169,
+   0.17
+  ],
+  "how": [
+   "color=ximage_97a7da0576a1f6d.dds (mtl)",
+   "nog=ximage_7e6c3ed7a8c31e07.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 150,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_1dd6d8e8bcfe67ad",
+  "faces": 11845,
+  "area": 4039.735,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.015,
+   0.019,
+   0.023
+  ],
+  "gloss_q": [
+   0.322,
+   0.325,
+   0.331
+  ],
+  "rgb_mean": [
+   0.071,
+   0.051,
+   0.029
+  ],
+  "how": [
+   "color=ximage_3161bdbffb442388.dds (mtl)",
+   "nog=ximage_7fced3fe89f01d9f.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 151,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_d7957ec0c2b603d",
+  "faces": 37370,
+  "area": 1512.0559,
+  "alpha_kind": "continuous",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.134,
+   0.516,
+   0.681
+  ],
+  "rgb_mean": [
+   0.385,
+   0.269,
+   0.226
+  ],
+  "how": [
+   "color=ximage_62d334ae29df8837.dds (mtl)",
+   "nog=ximage_6d50f550ebe8e8ba.dds (content)",
+   "colour alpha: not a metal mask (level 0.43 over 58% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 152,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_2a2c60685ba942c4",
+  "faces": 1878,
+  "area": 1144.4174,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.029,
+   0.034,
+   0.037
+  ],
+  "gloss_q": [
+   0.369,
+   0.42,
+   0.457
+  ],
+  "rgb_mean": [
+   0.295,
+   0.271,
+   0.296
+  ],
+  "how": [
+   "color=ximage_2253e7408dc83a66.dds (mtl)",
+   "nog=ximage_1d3ec19ce5a20871.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 153,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_730d6774a0200f07",
+  "faces": 3342,
+  "area": 972.7708,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.014,
+   0.015,
+   0.016
+  ],
+  "gloss_q": [
+   0.515,
+   0.65,
+   0.82
+  ],
+  "rgb_mean": [
+   0.254,
+   0.25,
+   0.223
+  ],
+  "how": [
+   "color=ximage_69eda2f98ad2e571.dds (mtl)",
+   "nog=ximage_51a6d5d49b539929.dds (content)",
+   "colour alpha: metal mask (3% metal)"
+  ]
+ },
+ {
+  "i": 154,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_76e00fc4c54e68d",
+  "faces": 2781,
+  "area": 54.1009,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.034,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.036,
+   0.337,
+   0.713
+  ],
+  "rgb_mean": [
+   0.44,
+   0.319,
+   0.271
+  ],
+  "how": [
+   "color=ximage_6b4801e195b8e78.dds (mtl)",
+   "nog=ximage_76f0fbee9dd091ea.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 155,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_298f87ca16d723eb",
+  "faces": 552,
+  "area": 34.0526,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.647,
+   0.647,
+   0.647
+  ],
+  "rgb_mean": [
+   0.464,
+   0.371,
+   0.345
+  ],
+  "how": [
+   "color=ximage_58e8e491c8206e1d.dds (mtl)",
+   "nog=ximage_d29def7866c04f2.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 156,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_517bd4e2087a83af",
+  "faces": 3848,
+  "area": 30.7512,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.016,
+   0.02,
+   0.024
+  ],
+  "gloss_q": [
+   0.322,
+   0.332,
+   0.334
+  ],
+  "rgb_mean": [
+   0.051,
+   0.04,
+   0.026
+  ],
+  "how": [
+   "color=ximage_6eed5fe746ec8f32.dds (mtl)",
+   "nog=ximage_5928119bff4645e9.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 157,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_1f51ab727b6ab022",
+  "faces": 996,
+  "area": 13.2536,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.477
+  ],
+  "gloss_q": [
+   0.169,
+   0.558,
+   0.762
+  ],
+  "rgb_mean": [
+   0.08,
+   0.056,
+   0.019
+  ],
+  "how": [
+   "color=ximage_40ee44fe90cc4855.dds (mtl)",
+   "nog=ximage_768db53a88f9c87d.dds (content)",
+   "colour alpha: metal mask (19% metal)"
+  ]
+ },
+ {
+  "i": 158,
+  "model": "head_mp_kleo_iw9_3_1",
+  "mat": "xmaterial_5f9d5edef5297c41",
+  "faces": 2152,
+  "area": 18.8635,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rgb_mean": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "how": [
+   "color=ximage_4574854c235cd28.dds (mtl)",
+   "nog=ximage_4b6b08ba50c1d79d.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 159,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_1dd6d8e8bcfe67ad",
+  "faces": 11845,
+  "area": 4039.735,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.015,
+   0.019,
+   0.023
+  ],
+  "gloss_q": [
+   0.322,
+   0.325,
+   0.331
+  ],
+  "rgb_mean": [
+   0.071,
+   0.051,
+   0.029
+  ],
+  "how": [
+   "color=ximage_3161bdbffb442388.dds (mtl)",
+   "nog=ximage_7fced3fe89f01d9f.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 160,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_d7957ec0c2b603d",
+  "faces": 37370,
+  "area": 1512.0559,
+  "alpha_kind": "continuous",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.134,
+   0.516,
+   0.681
+  ],
+  "rgb_mean": [
+   0.385,
+   0.269,
+   0.226
+  ],
+  "how": [
+   "color=ximage_62d334ae29df8837.dds (mtl)",
+   "nog=ximage_6d50f550ebe8e8ba.dds (content)",
+   "colour alpha: not a metal mask (level 0.43 over 58% of the surface) - non-metal"
+  ]
+ },
+ {
+  "i": 161,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_2a2c60685ba942c4",
+  "faces": 1878,
+  "area": 1144.4174,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.029,
+   0.034,
+   0.037
+  ],
+  "gloss_q": [
+   0.369,
+   0.42,
+   0.457
+  ],
+  "rgb_mean": [
+   0.295,
+   0.271,
+   0.296
+  ],
+  "how": [
+   "color=ximage_2253e7408dc83a66.dds (mtl)",
+   "nog=ximage_1d3ec19ce5a20871.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 162,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_730d6774a0200f07",
+  "faces": 3342,
+  "area": 972.7708,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.014,
+   0.015,
+   0.016
+  ],
+  "gloss_q": [
+   0.515,
+   0.65,
+   0.82
+  ],
+  "rgb_mean": [
+   0.254,
+   0.25,
+   0.223
+  ],
+  "how": [
+   "color=ximage_69eda2f98ad2e571.dds (mtl)",
+   "nog=ximage_51a6d5d49b539929.dds (content)",
+   "colour alpha: metal mask (3% metal)"
+  ]
+ },
+ {
+  "i": 163,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_76e00fc4c54e68d",
+  "faces": 2781,
+  "area": 54.1009,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.034,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.036,
+   0.337,
+   0.713
+  ],
+  "rgb_mean": [
+   0.44,
+   0.319,
+   0.271
+  ],
+  "how": [
+   "color=ximage_6b4801e195b8e78.dds (mtl)",
+   "nog=ximage_76f0fbee9dd091ea.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 164,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_298f87ca16d723eb",
+  "faces": 552,
+  "area": 34.0526,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.647,
+   0.647,
+   0.647
+  ],
+  "rgb_mean": [
+   0.464,
+   0.371,
+   0.345
+  ],
+  "how": [
+   "color=ximage_58e8e491c8206e1d.dds (mtl)",
+   "nog=ximage_d29def7866c04f2.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 165,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_517bd4e2087a83af",
+  "faces": 3848,
+  "area": 30.7512,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.016,
+   0.02,
+   0.024
+  ],
+  "gloss_q": [
+   0.322,
+   0.332,
+   0.334
+  ],
+  "rgb_mean": [
+   0.051,
+   0.04,
+   0.026
+  ],
+  "how": [
+   "color=ximage_6eed5fe746ec8f32.dds (mtl)",
+   "nog=ximage_5928119bff4645e9.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 166,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_1f51ab727b6ab022",
+  "faces": 996,
+  "area": 13.2536,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.477
+  ],
+  "gloss_q": [
+   0.169,
+   0.558,
+   0.762
+  ],
+  "rgb_mean": [
+   0.08,
+   0.056,
+   0.019
+  ],
+  "how": [
+   "color=ximage_40ee44fe90cc4855.dds (mtl)",
+   "nog=ximage_768db53a88f9c87d.dds (content)",
+   "colour alpha: metal mask (19% metal)"
+  ]
+ },
+ {
+  "i": 167,
+  "model": "head_mp_kleo_iw9_3_1_lod1",
+  "mat": "xmaterial_5f9d5edef5297c41",
+  "faces": 2152,
+  "area": 18.8635,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "gloss_q": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rgb_mean": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "how": [
+   "color=ximage_4574854c235cd28.dds (mtl)",
+   "nog=ximage_4b6b08ba50c1d79d.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 168,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_1faca52318d10719",
+  "faces": 8988,
+  "area": 4037.7225,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.029,
+   0.037,
+   0.039
+  ],
+  "gloss_q": [
+   0.334,
+   0.466,
+   0.647
+  ],
+  "rgb_mean": [
+   0.868,
+   0.868,
+   0.868
+  ],
+  "how": [
+   "color=ximage_45846fbdc2337fa1.dds (mtl)",
+   "nog=ximage_1cdf8125e8ce9e32.dds (content)",
+   "colour alpha: a copy of the (colour-less) colour map, not used as specular"
+  ]
+ },
+ {
+  "i": 169,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_50cd80ef75e2e1ba",
+  "faces": 3968,
+  "area": 1058.2765,
+  "alpha_kind": "tint",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.438,
+   0.53,
+   0.593
+  ],
+  "rgb_mean": [
+   0.076,
+   0.159,
+   0.225
+  ],
+  "how": [
+   "color=ximage_11449b67301fa162.dds (mtl)",
+   "nog=ximage_25fa3c5cf1279ab0.dds (content)",
+   "tint=(0.08, 0.17, 0.24) (unk_semantic_0x2)",
+   "colour alpha: tint mask, not used as specular"
+  ]
+ },
+ {
+  "i": 170,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_7727be02a6564766",
+  "faces": 13016,
+  "area": 1007.498,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.039,
+   0.039,
+   0.04
+  ],
+  "gloss_q": [
+   0.413,
+   0.566,
+   0.694
+  ],
+  "rgb_mean": [
+   0.657,
+   0.427,
+   0.317
+  ],
+  "how": [
+   "color=ximage_41d18afb67e459c1.dds (mtl)",
+   "nog=ximage_76bea0c808fe24f7.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 171,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_10d369c57fba726",
+  "faces": 3668,
+  "area": 205.8807,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.025,
+   0.036
+  ],
+  "gloss_q": [
+   0.167,
+   0.189,
+   0.556
+  ],
+  "rgb_mean": [
+   0.111,
+   0.111,
+   0.111
+  ],
+  "how": [
+   "color=ximage_38ca7eac378377c.dds (mtl)",
+   "nog=ximage_fa4a50603e47a14.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ },
+ {
+  "i": 172,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_7012a28887e5c728",
+  "faces": 3802,
+  "area": 60.6384,
+  "alpha_kind": "metal_mask",
+  "cutout": true,
+  "spec_q": [
+   0.0,
+   0.026,
+   0.568
+  ],
+  "gloss_q": [
+   0.287,
+   0.62,
+   0.701
+  ],
+  "rgb_mean": [
+   0.185,
+   0.194,
+   0.19
+  ],
+  "how": [
+   "color=ximage_deeab4fb8b2973c.dds (mtl)",
+   "nog=ximage_38fc0efddb4cc30f.dds (content)",
+   "colour alpha: metal mask (31% metal)"
+  ]
+ },
+ {
+  "i": 173,
+  "model": "mp_vm_arms_kleo_iw9_3_1",
+  "mat": "xmaterial_597076307ac0631c",
+  "faces": 14,
+  "area": 8.2316,
+  "alpha_kind": "no_alpha",
+  "cutout": true,
+  "spec_q": [
+   0.04,
+   0.04,
+   0.04
+  ],
+  "gloss_q": [
+   0.869,
+   0.898,
+   0.938
+  ],
+  "rgb_mean": [
+   0.17,
+   0.169,
+   0.17
+  ],
+  "how": [
+   "color=ximage_97a7da0576a1f6d.dds (mtl)",
+   "nog=ximage_7e6c3ed7a8c31e07.dds (content)",
+   "colour alpha: none (colour map without alpha) - non-metal"
+  ]
+ }
+]

@@ -312,10 +312,17 @@ def semantics_file(folder, name):
     _mat_info/<name>.txt.  BO6 / BO7 name some materials "m/<name>" - Blender (Cast / FBX)
     calls them "m_<name>" while the file is _mat_info/<name>.txt with "Name: m/<name>" inside,
     so those are matched through that Name line."""
-    for info in (os.path.join(folder, "_mat_info", name + ".txt"),
-                 os.path.join(folder, name + "_images.txt")):
-        if is_file(info):
-            return info
+    names = [name]
+    if name.lower().startswith("m_"):
+        # BO6 / BO7 / MW4: "m/<name>" is also written as _mat_info/<name>.txt WITHOUT a Name line
+        # (sunflower_base's first-person arm skin, teeth, MW4 glass, eyelashes): before 2.5.1
+        # these materials lost their normal / gloss maps and came out flat (gloss 0.5)
+        names.append(name[2:])
+    for n in names:
+        for info in (os.path.join(folder, "_mat_info", n + ".txt"),
+                     os.path.join(folder, n + "_images.txt")):
+            if is_file(info):
+                return info
     d = os.path.join(folder, "_mat_info")
     if not os.path.isdir(io_path(d)):
         return None
@@ -933,9 +940,14 @@ def classify_alpha(roles, uv, weights):
     col = img[y, x, :3].astype(np.float64)
     lum = col @ np.array([0.2126, 0.7152, 0.0722])
     chroma = float(((col.max(1) - col.min(1)) * w).sum())
-    if chroma < 0.01 and float(lum.std()) > 0.004 and float(a.std()) > 0.004 and \
-            abs(float((lum * w).sum()) - mean) < 0.1 and \
-            float(np.corrcoef(lum, a)[0, 1]) > 0.9:
+    # 2.5.1: also when both are FLAT - MW2 Kleo's first-person sleeves: grey 0.969, alpha 0.968,
+    # both std < 0.01, so the correlation says nothing (it came out -0.99) and the whole sleeve
+    # read as 100% metal = white chrome in first person.  Real metal keeps its alpha well above
+    # its grey colour (MW4 carabiner: colour 0.55, alpha 0.88), so the means test still holds.
+    ls, as_ = float(lum.std()), float(a.std())
+    flat = ls < 0.02 and as_ < 0.02
+    if chroma < 0.01 and abs(float((lum * w).sum()) - mean) < 0.1 and \
+            (flat or (ls > 0.004 and as_ > 0.004 and float(np.corrcoef(lum, a)[0, 1]) > 0.9)):
         roles["alpha_kind"] = "tint"
         return "colour alpha: a copy of the (colour-less) colour map, not used as specular"
     mid = float(w[(a > 0.12) & (a < 0.88)].sum())

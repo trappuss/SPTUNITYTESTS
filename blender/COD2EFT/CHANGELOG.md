@@ -2,6 +2,12 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.5.1 — 2026-09-29
+Two texture bugs, found by measuring every material of Kleo (MW2), sunflower_base (BO7) and the MW4 beta male: 174 materials, 11 models.
+- **BO6 / BO7 / MW4 `m_…` materials lost their normal and gloss maps.** These exports write the image list of material `m_<name>` as `_mat_info/<name>.txt`, with no Name line, and it wasn't found. The material then kept only its colour: no normal map, flat gloss 0.5. Affected on the test set: sunflower_base's first-person arm skin, teeth and eye moisture.
+- **MW2 Kleo's first-person sleeves came out as white chrome.** Their grey colour map and its alpha are both flat (0.969 / 0.968), so the "alpha copies a colour-less map" rule from 2.4 didn't trigger, and the whole sleeve read as 100 % metal. Flat grey maps whose alpha matches the colour now count as tint masks too. Real metal keeps an alpha well above its colour (MW4 carabiner: 0.88 vs 0.55) and is unchanged.
+- Regression over the 174 materials: only these 6 materials changed.
+
 ## 2.5.0 — 2026-09-29
 - **Adjust by hand (armature), non-destructive.** New box in the panel.
   - **Start Adjusting** adds a copy of the EFT armature whose bones are disconnected, so any bone can be moved, rotated or scaled. It drives an extra Armature modifier at the top of every converted mesh, so the meshes follow live. The EFT armature and the weights are not touched.
