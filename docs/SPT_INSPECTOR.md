@@ -23,6 +23,12 @@ shows/hides the whole group; `+`/`-` folds it. *Hide gear* hides everything that
 Flags: `[inactive]` = the game has this mesh switched off right now (e.g. the top's armor/vest alternative mesh),
 `[off]` = renderer disabled, `[shadow only]` = drawn only into shadows (first-person body).
 
+**Outfits tab (0.2.0, read-only):** every top / pants / head / hands from vanilla and from each mod (WTT
+`db/CustomClothing`, `db/CustomHeads`), filter by text / part / source. WORN = on the shown character. BUNDLE MISSING =
+the bundle file isn't where the server will look (mods: `<mod>\bundles\<path>`; vanilla: `StreamingAssets\Windows\<path>`).
+*Write catalog to file* saves the list with notes. The server folder is found automatically (the game folder, one or two
+levels inside it, or next to it); otherwise set *4. Outfits / Server folder* in F12.
+
 Output in `<SPT game>\COD2EFT_Screenshots\`: `<time>_<top+pants+head>.png` + `.txt`, and `<time>_…_materials.txt`.
 
 **Seeing your own body in raid:** EFT is first-person only; the panel hides meshes, it doesn't move the camera.
@@ -41,6 +47,12 @@ an EFT update can't break the build, only a lookup, which is logged once as a wa
   grouped by the top-most object named `item_…` / `weapon_…` / `…equipment…` (a hunch about EFT's item object names;
   the first log shows the real names).
 - Bundle of an outfit: loaded `AssetBundle`s that contain a prefab named like the skin object (without `(Clone)`).
+
+## Testing in the cloud (no game, no Unity)
+- `spt_mod/COD2EFTInspector/tests/compile_check.sh`: compiles the plugin with mono `mcs` against public reference DLLs
+  (Unity 2021.3 modules from NuGet, BepInEx 5.4.23.2). Needs `apt-get install mono-mcs`. mcs has no C# 7 type
+  patterns (`x is T t`), so the plugin avoids them.
+- `spt_mod/COD2EFTInspector/tests/run_tests.sh`: runs the Unity-free parts (JSON reader, outfit catalog) under mono.
 
 ## Stage 2 research: outfit / head browser
 Question: can the client switch to and preview any top / pants / head (sorted by the mod it comes from) without a
@@ -67,7 +79,9 @@ server round-trip?
 **Plan (not built; needs Assembly-CSharp references or more reflection, and in-game checks):**
 1. v0.1.0 logs the members of `PlayerBody`, `PlayerModelView` and `TacticalClothingView` on the first panel open;
    read them from the first `LogOutput.log` to pin the exact signatures for SPT 4.1.6.
-2. Read `customization.json` + every mod's `db/CustomClothing` / `db/CustomHeads` into a list (id, name, part, bundle, mod).
+2. ~~Read `customization.json` + every mod's `db/CustomClothing` / `db/CustomHeads` into a list~~ (0.2.0, Outfits tab).
+   The vanilla file's layout (`_props.BodyPart`, `_props.Prefab.path`) is assumed from the Mod Builder's reader; the first
+   catalog file from the PC confirms it.
 3. In the menu: pick an entry → load its bundle → `PlayerModelView.Show` with the swapped customization. Filter by mod / vanilla.
 4. Only then consider raid / hideout (Harmony patch on `PlayerBody.Init`, as Transmog does).
 

@@ -3,6 +3,18 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.2.0 (2026-09-29)
+- **Outfits tab** (read-only): every top / pants / head / hands the SPT server knows, from vanilla
+  (`SPT_Data\database\templates\customization.json`) and from each mod's WTT `db/CustomClothing` and `db/CustomHeads`.
+  Filter by text, part and source (vanilla / one mod / mods only); what the character wears is listed first as WORN;
+  entries whose bundle file is missing are flagged. *Write catalog to file* saves the full list.
+  The server folder is searched next to / inside the game folder; set it in the config (*4. Outfits / Server folder*) if not found.
+- Screenshot `.txt` and material report: each worn part now names its catalog entry (mod, name, id, bundle).
+- Own JSON reader (no dependency on the game's Newtonsoft). JSON + catalog unit-tested with mono
+  (`tests/run_tests.sh`; the mod files in the test are written by the Mod Builder's own `EFTModBuilderCore`).
+- `tests/compile_check.sh`: the cloud compile check (mcs against public Unity/BepInEx reference DLLs).
+- Switching outfits is still not done (next stage; plan in `docs/SPT_INSPECTOR.md`).
+
 ## 0.1.0 (2026-09-29)
 - First version (stage 1). Panel (F9): the character's renderers grouped as Head / Top / Pants / Hands (from
   `PlayerBody.BodySkins`, inactive armor/vest/face-cover meshes included) and gear by item; a checkbox per mesh and

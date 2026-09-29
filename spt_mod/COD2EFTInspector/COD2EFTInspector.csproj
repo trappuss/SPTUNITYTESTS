@@ -23,6 +23,9 @@
     <Managed>$(GamePath)\EscapeFromTarkov_Data\Managed</Managed>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="tests/**" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="BepInEx" HintPath="$(GamePath)\BepInEx\core\BepInEx.dll" Private="False" />
     <Reference Include="UnityEngine" HintPath="$(Managed)\UnityEngine.dll" Private="False" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(Managed)\UnityEngine.CoreModule.dll" Private="False" />

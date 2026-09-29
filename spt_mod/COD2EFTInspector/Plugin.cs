@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.1.0";
+        public const string Version = "0.2.0";
 
         internal static ManualLogSource Log;
 
@@ -28,6 +28,7 @@ namespace COD2EFTInspector
         ConfigEntry<int> _supersize;
         ConfigEntry<bool> _hideHud, _others, _unlockCursor;
         ConfigEntry<float> _scale;
+        ConfigEntry<string> _serverDir;
 
         bool _open, _capturing;
         Rect _win = new Rect(40, 40, 540, 660);
@@ -56,6 +57,8 @@ namespace COD2EFTInspector
             _others = Config.Bind("3. Panel", "Include other players", false, "Also list bots / other players in raid.");
             _unlockCursor = Config.Bind("3. Panel", "Free the mouse", true, "Unlock the mouse cursor while the panel is open (raid / hideout).");
             _scale = Config.Bind("3. Panel", "Scale", 1f, new ConfigDescription("Panel size.", new AcceptableValueRange<float>(0.75f, 2.5f)));
+            _serverDir = Config.Bind("4. Outfits", "Server folder", "",
+                "SPT server folder (the one with user\\mods and SPT_Data). Empty = search next to / inside the game folder.");
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
             try { Game.LogStartup(); } catch (Exception e) { Log.LogError("Startup check failed: " + e); }
@@ -186,8 +189,16 @@ namespace COD2EFTInspector
             GUI.DragWindow();
         }
 
+        bool _outfitsTab;
+
         void DrawContents()
         {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Toggle(!_outfitsTab, " Meshes", GUILayout.Width(90))) _outfitsTab = false;
+            if (GUILayout.Toggle(_outfitsTab, " Outfits (read-only list)", GUILayout.Width(190))) _outfitsTab = true;
+            GUILayout.EndHorizontal();
+            if (_outfitsTab) { DrawOutfits(); return; }
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("<", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + _targets.Count - 1) % _targets.Count; _scan = Run(_targets[_ti]); LogScan(); }
             GUILayout.Label(_targets.Count > 0 ? $"{_ti + 1}/{_targets.Count}  {_targets[_ti].Label}" : "No character found");
@@ -245,6 +256,102 @@ namespace COD2EFTInspector
             GUILayout.Label($"Files: {_outDir}");
         }
 
+        // ------------------------------------------------------------------ outfit catalog (stage 2 groundwork)
+
+        internal static Catalog Cat;
+        string _filter = "", _lastFilter = null, _part = "All", _source = "All";
+        List<Outfit> _shown = new List<Outfit>();
+        HashSet<string> _worn = new HashSet<string>();
+        Vector2 _scroll2;
+
+        internal Catalog GetCatalog(bool reload = false)
+        {
+            if (Cat != null && !reload) return Cat;
+            try
+            {
+                Cat = Catalog.Load(_serverDir.Value, Paths.GameRootPath);
+                Log.LogInfo($"Outfit catalog: {Cat.Items.Count} entries. " + string.Join(" | ", Cat.Notes));
+            }
+            catch (Exception e) { Log.LogError("Outfit catalog failed: " + e); Cat = new Catalog(); Cat.Notes.Add("failed: " + e.Message); }
+            _lastFilter = null;
+            return Cat;
+        }
+
+        /// <summary>Ids and bundle-name stems of what the shown character wears.</summary>
+        HashSet<string> Worn()
+        {
+            var w = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (_scan?.Target?.Player != null)
+                foreach (var line in Game.Customization(_scan.Target.Player)) { int i = line.IndexOf(" = ", StringComparison.Ordinal); if (i > 0) w.Add(line.Substring(i + 3)); }
+            if (_scan != null) foreach (var g in _scan.Body) w.Add(g.Source);
+            return w;
+        }
+
+        bool IsWorn(Outfit o) => _worn.Contains(o.Id ?? "") ||
+            (o.Bundle != null && _worn.Contains(Path.GetFileNameWithoutExtension(o.Bundle.Replace('\\', '/').Split('/').Last())));
+
+        void DrawOutfits()
+        {
+            var cat = GetCatalog();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Reload", GUILayout.Width(70))) cat = GetCatalog(true);
+            if (GUILayout.Button("Write catalog to file", GUILayout.Width(160))) WriteCatalog(cat);
+            GUILayout.Label($"{cat.Items.Count} entries, {cat.Items.Count(o => o.BundleFound == false)} missing bundle");
+            GUILayout.EndHorizontal();
+            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            foreach (var n in cat.Notes.Where(n => n.StartsWith("Server") || n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(4))
+                GUILayout.Label(n);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Filter:", GUILayout.Width(45));
+            _filter = GUILayout.TextField(_filter ?? "", GUILayout.Width(170));
+            foreach (var p in new[] { "All", "Top", "Pants", "Head", "Hands" })
+                if (GUILayout.Toggle(_part == p, p, GUILayout.Width(52)) && _part != p) { _part = p; _lastFilter = null; }
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            var sources = new List<string> { "All", "Mods only" };
+            sources.AddRange(cat.Sources);
+            int si = Math.Max(0, sources.IndexOf(_source));
+            if (GUILayout.Button("<", GUILayout.Width(28))) { _source = sources[(si + sources.Count - 1) % sources.Count]; _lastFilter = null; }
+            GUILayout.Label("From: " + _source);
+            if (GUILayout.Button(">", GUILayout.Width(28))) { _source = sources[(si + 1) % sources.Count]; _lastFilter = null; }
+            GUILayout.EndHorizontal();
+
+            string key = _filter + "|" + _part + "|" + _source;
+            if (key != _lastFilter)
+            {
+                _lastFilter = key;
+                _worn = Worn();
+                string f = (_filter ?? "").Trim();
+                _shown = cat.Items.Where(o =>
+                        (_part == "All" || o.Part == _part) &&
+                        (_source == "All" || (_source == "Mods only" ? o.Source != "vanilla" : o.Source == _source)) &&
+                        (f.Length == 0 || (o.Name ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         (o.Id ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0 || (o.Bundle ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0))
+                    .OrderByDescending(IsWorn).ThenBy(o => o.Source == "vanilla").ThenBy(o => o.Source, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(o => o.Part).ThenBy(o => o.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            }
+            GUILayout.Label($"{_shown.Count} shown" + (_shown.Count > 300 ? " (first 300; narrow the filter)" : "") +
+                            ". Switching outfits from here is the next stage (see docs/SPT_INSPECTOR.md).");
+            _scroll2 = GUILayout.BeginScrollView(_scroll2);
+            foreach (var o in _shown.Take(300))
+                GUILayout.Label($"{(IsWorn(o) ? "WORN  " : "")}[{o.Source}] {o.Part}: {o.Name}   {o.Id}" + (o.BundleFound == false ? "   BUNDLE MISSING" : ""));
+            GUILayout.EndScrollView();
+        }
+
+        void WriteCatalog(Catalog cat)
+        {
+            try
+            {
+                Directory.CreateDirectory(_outDir);
+                var f = Path.Combine(_outDir, $"{Stamp()}_outfit_catalog.txt");
+                File.WriteAllText(f, $"COD2EFT Inspector v{Version} - outfit catalog\r\n\r\n" + cat.Report());
+                _status = "Catalog: " + Path.GetFileName(f);
+                Log.LogInfo("Outfit catalog written: " + f);
+            }
+            catch (Exception e) { _status = "Catalog failed: " + e.Message; Log.LogError("Catalog write failed: " + e); }
+        }
+
         // ------------------------------------------------------------------ output
 
         string Stamp() => DateTime.Now.ToString("yyyyMMdd-HHmmss");
@@ -256,6 +363,7 @@ namespace COD2EFTInspector
                 Refresh(false);
                 Directory.CreateDirectory(_outDir);
                 var f = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}_materials.txt");
+                GetCatalog();
                 File.WriteAllText(f, Reports.Materials(_scan));
                 _status = "Material report: " + Path.GetFileName(f);
                 Log.LogInfo("Material report written: " + f);
@@ -310,6 +418,7 @@ namespace COD2EFTInspector
             {
                 try
                 {
+                    GetCatalog();
                     File.WriteAllText(Path.ChangeExtension(png, ".txt"), Reports.ScreenshotInfo(_scan, png, ss, w, h, _hidden.Keys));
                     _status = $"Saved {Path.GetFileName(png)} ({w}x{h})";
                     Log.LogInfo($"Screenshot saved: {png} ({w}x{h}, supersize {ss}, {canvases.Count} HUD canvases hidden, {_hidden.Count} meshes hidden)");

@@ -45,6 +45,7 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
   - Park 24_1 output that worked in game: `from_pc/20260928-221326/attached/`.
 - **Regression:** convert the test characters before and after a change. Compare the report lines ("Body volume", "Body match after fit") and the PNG hashes. `tools/cod_survey.py` re-measures every COD material. Report exactly what changed.
 - **C#:** there is no compiler, so check by reading. Mirror regexes and maths in Python where useful. Say it is uncompiled.
+- **SPT client plugin** (`spt_mod/COD2EFTInspector/`): `tests/compile_check.sh` compiles it with mono `mcs` (`apt-get install mono-mcs`) against public Unity/BepInEx reference DLLs; `tests/run_tests.sh` runs the Unity-free tests. mcs lacks C# 7 type patterns, so avoid `x is T t`. See `docs/SPT_INSPECTOR.md`.
 - **PowerShell** (`pc/*.ps1`): must run on Windows PowerShell 5.1. Parse-check with pwsh if available. Under `$ErrorActionPreference = 'Stop'`, don't redirect native stderr (`2>$null`).
 
 ## Known traps

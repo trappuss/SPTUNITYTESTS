@@ -56,6 +56,17 @@ namespace COD2EFTInspector
             sb.AppendLine();
         }
 
+        /// <summary>Catalog entries for a worn body part: by profile customization id of that part, else by bundle file name.</summary>
+        static IEnumerable<Outfit> CatalogMatches(Group g, List<string> cust)
+        {
+            var cat = InspectorPlugin.Cat;
+            if (cat == null) return Enumerable.Empty<Outfit>();
+            string part = Catalog.PartOfBodyKey(g.Part);
+            var byId = cust.Where(l => l.StartsWith(g.Part + " = ", StringComparison.Ordinal))
+                           .Select(l => cat.ById(l.Substring(g.Part.Length + 3))).Where(o => o != null).ToList();
+            return byId.Count > 0 ? byId : cat.ByBundleStem(g.Source).Where(o => o.Part == part);
+        }
+
         static void Outfit(StringBuilder sb, Scan scan)
         {
             sb.AppendLine("Profile customization (ids):");
@@ -71,6 +82,7 @@ namespace COD2EFTInspector
                 foreach (var g in scan.Body)
                 {
                     sb.AppendLine($"  {BodyScan.PartLabel(g.Part),-22} {g.Source}   ({g.Entries.Count} renderers)");
+                    foreach (var o in CatalogMatches(g, cust)) sb.AppendLine("      catalog: " + o);
                     foreach (var b in bundles.Where(b => b.StartsWith(g.Source.ToLowerInvariant() + " <-"))) sb.AppendLine("      " + b);
                 }
                 if (bundles.Count == 0) sb.AppendLine("  (no loaded bundle has a prefab with these names)");
