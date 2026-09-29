@@ -70,7 +70,12 @@ Measured COD hand-skin gloss (Kleo FP 0.56, BO5 esports 0.49, Park 24_1 FP 0.35)
 Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters and isn't applied yet.
 
 ## Open work, in order
-1. **User on Windows:** re-import *Park 24_1* with COD2EFT to test the long-path junction fix. It has only ever been simulated on Linux.
+1. ✅ **Long-path fix verified on real Windows** (2026-09-28, COD2EFT 2.4.4, from_pc/20260928-211853).
+   - Park 24_1 (paths up to 269 characters) imported through the temp junction and packed 3 long-path images.
+   - All 19 materials got textures and the conversion finished Upper + Lower. It used to stop at Upper.
+   - All 12 PNGs are tagged `enc=2`, and the atlases show no grey or missing blocks.
+   - **Open:** no head was converted (no `head_…` file was paired with the body). Also, 40% of Lower's vertices stick out more than 3 cm beyond EFT's body (up to 10.8 cm).
+   - **Next:** take Park 24_1 through Unity (COD2EFT_To_Unity.bat → Auto Prefabber → Mod Builder) and into the game.
 2. **User:** re-convert Kleo with *First-person hands* on. The current `EFT_Converted\kleo_empty_.fbx` is hand-edited: its arms are on the Upper slot/atlas and COD2EFT's Hands mesh is missing. The re-conversion unblocks calibration step 2 (tagged textures).
 3. **Blender 2.5.0: `_skin` slots.**
    - The hard part is the skin detector. It must work on hashed IW names and Cold War names.
