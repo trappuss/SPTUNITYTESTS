@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 4, 4)
+VERSION = (2, 5, 0)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -983,7 +983,7 @@ def from_bl(M):
 
 def find_eft_armature(context=None):
     cands = [o for o in bpy.data.objects if o.type == "ARMATURE" and E("Pelvis") in o.data.bones
-             and o.name in bpy.context.scene.objects]
+             and o.name in bpy.context.scene.objects and o.name != "COD2EFT_Adjust"]   # (hand-adjust copy)
     if context is not None and context.scene.cod2eft.eft_armature in cands:
         return context.scene.cod2eft.eft_armature
     return cands[0] if cands else None
@@ -2229,6 +2229,9 @@ def export_fbx(eft, objs, path, log):
         from . import cod2eft_tools as TL
     except ImportError:
         import cod2eft_tools as TL
+    if TL.adjust_rig() is not None:
+        n = TL.adjust_apply()
+        log(f"Hand adjustments in progress were applied to {n} mesh(es) before export")
     if TL.test_pose_active(eft):
         TL.clear_test_pose(eft)
         log("Test pose cleared before export (the FBX is written in the rest pose)")
@@ -2243,16 +2246,26 @@ def export_fbx(eft, objs, path, log):
         o.hide_set(False)
         o.select_set(True)
     bpy.context.view_layer.objects.active = eft
-    # Blender defaults (matches how 'EFT BASIC [Template].fbx' was written: unit scale 1.0,
-    # -Z forward / Y up, leaf bones on, every armature bone written as a cluster)
+    # Blender's defaults, written out: bpy.ops re-uses the LAST values of an operator's properties
+    # in a session, so an FBX exported by hand with other settings would otherwise leak into this
+    # one.  They match how 'EFT BASIC [Template].fbx' was written and the Park 24_1 FBX that worked
+    # in game (2.4.4): UnitScaleFactor 100 (cm), -Z forward / Y up, all scales 1, leaf bones on,
+    # every armature bone written as a cluster.
     try:
         from . import cod2eft_textures as TX
     except ImportError:
         import cod2eft_textures as TX
     restore = TX.fbx_colour_links(objs)
     try:
-        bpy.ops.export_scene.fbx(filepath=path, use_selection=True,
-                                 object_types={"ARMATURE", "MESH"})
+        bpy.ops.export_scene.fbx(filepath=path, use_selection=True, object_types={"ARMATURE", "MESH"},
+                                 global_scale=1.0, apply_unit_scale=True,
+                                 apply_scale_options="FBX_SCALE_NONE", axis_forward="-Z", axis_up="Y",
+                                 use_space_transform=True, bake_space_transform=False,
+                                 use_mesh_modifiers=True, mesh_smooth_type="OFF", use_triangles=False,
+                                 use_tspace=False, use_custom_props=False, colors_type="SRGB",
+                                 add_leaf_bones=True, primary_bone_axis="Y", secondary_bone_axis="X",
+                                 use_armature_deform_only=False, armature_nodetype="NULL",
+                                 bake_anim=True, path_mode="AUTO", embed_textures=False)
     finally:
         restore()
     log(f"Exported {path}")

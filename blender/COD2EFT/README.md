@@ -30,6 +30,16 @@ Press **N** in the 3D view and open the **COD2EFT** tab.
 
 Each run writes a log to the `COD2EFT_Report` text block (Scripting workspace).
 
+## Adjusting by hand (armature)
+
+The automatic fit can leave a shape you want to change, like a twisted waist or an accessory that clips. The **Adjust by hand** box in the COD2EFT tab does this without breaking the rig:
+
+1. **Start Adjusting.** Tick *Only selected meshes* to fix just one accessory. A copy of the EFT armature appears in pose mode with its bones disconnected.
+2. Pose it with **G / R / S** on any bone. The meshes follow live.
+3. **Apply** bakes the pose into the meshes (shape keys included). **Cancel** discards it. Ctrl+Z works too.
+
+The EFT armature, its bones and the weights are never changed. **Start from last applied pose** brings back the previous adjustment. Export applies an adjustment that is still in progress.
+
 ## Separating gear (vests, hats …)
 
 After conversion each part has one atlas material, so Blender's "separate by material" can't split it any more. **Separate by COD Material** (button, or the setting to do it on every import / batch) uses the original COD material of every face, which the tool keeps, and makes one object per COD material: `<name>_Upper_<COD material>`. Each piece keeps the armature, weights and UVs and still uses the part's atlas.

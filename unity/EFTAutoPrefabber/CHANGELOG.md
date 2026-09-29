@@ -2,6 +2,9 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.6.2 — 2026-09-29
+- Name parser: COD2EFT sub-meshes `<name>_<Part>_<label>` now join their part's prefab. These come from *Separate by COD material* (`mp_milsim_us_sf_1_1_Lower_material_5c0b2a55701ee9c2`) and *Join parts* off (`kleo_Upper_00`). Before, they were ignored, or read as a variant (one prefab per piece) or a state (`…_Upper_mtl_vest`). A one-character variant (`Upper_1`), a state word or a LOD after the part keeps its old meaning.
+
 ## 1.6.1 — 2026-09-29
 - Mod Builder: choosing one of the game's own hands for a top no longer throws a NullReferenceException in the checks (it broke the window and both build buttons).
 

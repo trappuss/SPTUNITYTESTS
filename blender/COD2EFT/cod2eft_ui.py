@@ -1031,6 +1031,70 @@ class COD2EFT_OT_clear_clipping(bpy.types.Operator):
         return {"FINISHED"}
 
 
+# ---------------------------------------------------------------------------------------------
+# operators - adjust by hand (non-destructive until applied)
+# ---------------------------------------------------------------------------------------------
+class COD2EFT_OT_adjust_start(bpy.types.Operator):
+    bl_idname = "cod2eft.adjust_start"
+    bl_label = "Start Adjusting"
+    bl_description = ("Pose a copy of the EFT armature to reshape the converted meshes: move, rotate "
+                      "and scale any bone freely (bones are disconnected). The meshes follow live; "
+                      "the EFT armature and the weights are not touched. Apply bakes it in, Cancel "
+                      "throws it away")
+    selected_only: BoolProperty(name="Only selected meshes", default=False,
+                                description="Adjust only the selected converted meshes (e.g. one "
+                                            "accessory that clips) - the rest stays as it is")
+    reuse_last: BoolProperty(name="Start from the last applied pose", default=False,
+                             options={"SKIP_SAVE"})
+
+    def invoke(self, context, event):
+        self.selected_only = any(o.select_get() and o.type == "MESH" for o in context.scene.objects)
+        return context.window_manager.invoke_props_dialog(self)
+
+    def execute(self, context):
+        eft = C.find_eft_armature(context)
+        if not eft:
+            self.report({"ERROR"}, "No EFT armature in the scene")
+            return {"CANCELLED"}
+        meshes = TL.converted_meshes(eft)
+        if self.selected_only:
+            meshes = [o for o in meshes if o.select_get()]
+        try:
+            TL.adjust_start(eft, meshes, TL.adjust_last_pose() if self.reuse_last else None)
+        except RuntimeError as e:
+            self.report({"ERROR"}, str(e))
+            return {"CANCELLED"}
+        self.report({"INFO"}, f"Adjusting {len(meshes)} mesh(es): pose the bones "
+                              "(G / R / S), then Apply or Cancel in the COD2EFT panel")
+        return {"FINISHED"}
+
+
+class COD2EFT_OT_adjust_apply(bpy.types.Operator):
+    bl_idname = "cod2eft.adjust_apply"
+    bl_label = "Apply"
+    bl_description = ("Bake the adjust pose into the meshes (shape keys too) and remove the adjust "
+                      "armature. Ctrl+Z undoes it")
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        n = TL.adjust_apply()
+        C.Log()(f"Adjustments applied by hand to {n} mesh(es)")
+        self.report({"INFO"}, f"Applied to {n} mesh(es)")
+        return {"FINISHED"}
+
+
+class COD2EFT_OT_adjust_cancel(bpy.types.Operator):
+    bl_idname = "cod2eft.adjust_cancel"
+    bl_label = "Cancel"
+    bl_description = "Remove the adjust armature; the meshes go back to how they were"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        TL.adjust_cancel()
+        self.report({"INFO"}, "Adjustments discarded")
+        return {"FINISHED"}
+
+
 def _draw_last_fit(b, scene):
     raw = scene.get("cod2eft_last_fit")
     if not raw:
@@ -1201,6 +1265,21 @@ class COD2EFT_PT_panel(bpy.types.Panel):
         _draw_last_fit(b, context.scene)
 
         b = L.box()
+        b.label(text="Adjust by hand (armature)", icon="BONE_DATA")
+        adj = TL.adjust_rig(context.scene)
+        if adj is None:
+            b.operator("cod2eft.adjust_start", icon="POSE_HLT")
+            if TL.adjust_last_pose(context.scene):
+                b.operator("cod2eft.adjust_start", text="Start from last applied pose",
+                           icon="RECOVER_LAST").reuse_last = True
+        else:
+            b.label(text=f"Posing '{adj.name}': {len(TL.adjust_meshes(context.scene))} mesh(es) follow",
+                    icon="INFO")
+            r = b.row(align=True)
+            r.operator("cod2eft.adjust_apply", icon="CHECKMARK")
+            r.operator("cod2eft.adjust_cancel", icon="X")
+
+        b = L.box()
         b.prop(st, "show_steps", icon="TRIA_DOWN" if st.show_steps else "TRIA_RIGHT",
                emboss=False)
         if st.show_steps:
@@ -1228,7 +1307,8 @@ classes = (COD2EFT_Prefs, COD2EFT_Settings, COD2EFT_OT_reload, COD2EFT_OT_reset_
            COD2EFT_OT_batch, COD2EFT_OT_open_folder, COD2EFT_OT_fit, COD2EFT_OT_convert,
            COD2EFT_OT_oneclick, COD2EFT_OT_save_tweaks, COD2EFT_OT_clear_tweaks,
            COD2EFT_OT_export, COD2EFT_OT_textures, COD2EFT_OT_compare, COD2EFT_OT_test_pose,
-           COD2EFT_OT_check_clipping, COD2EFT_OT_clear_clipping, COD2EFT_PT_panel)
+           COD2EFT_OT_check_clipping, COD2EFT_OT_clear_clipping, COD2EFT_OT_adjust_start,
+           COD2EFT_OT_adjust_apply, COD2EFT_OT_adjust_cancel, COD2EFT_PT_panel)
 
 
 def register():

@@ -2,6 +2,16 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.5.0 — 2026-09-29
+- **Adjust by hand (armature), non-destructive.** New box in the panel.
+  - **Start Adjusting** adds a copy of the EFT armature whose bones are disconnected, so any bone can be moved, rotated or scaled. It drives an extra Armature modifier at the top of every converted mesh, so the meshes follow live. The EFT armature and the weights are not touched.
+  - **Apply** bakes the pose into the meshes (shape keys too) and removes the copy. **Cancel** throws it away.
+  - *Only selected meshes* adjusts just the selected meshes, e.g. one clipping accessory. *Start from last applied pose* brings back the previous adjustment.
+  - This replaces the manual route (back up the armature, unparent all bones, pose, apply the Armature modifier per mesh, re-parent).
+  - Export applies an adjustment that is still in progress first, so the FBX matches what you see.
+  - Tested headless in Blender 4.4: the baked meshes match the live preview to within 0.0004 mm, shape keys included.
+- **FBX export settings are now fixed in the code.** Blender re-uses an operator's last-used values within a session, so a hand-made FBX export with other settings (scale, leaf bones, axes, apply transform) used to leak into COD2EFT's export. The values are unchanged (checked on the Park 24_1 FBX that worked in game): UnitScaleFactor 100 (cm), −Z forward / Y up, scale 1, leaf bones on, all bones written.
+
 ## 2.4.4 — 2026-09-29
 - **Long-path import:** the temp link is only used when it is shorter than the model's folder.
   Before, a short folder such as `C:\COD\kleo` holding a 250+ character file was imported through

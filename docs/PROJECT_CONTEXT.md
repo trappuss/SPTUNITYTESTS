@@ -32,8 +32,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.4.4** (2026-09-29) | Deployed to the PC by sync, files hash-verified (from_pc/20260928-210810). The two long-path import fixes haven't been run in Blender yet |
-| EFT Tools | **1.6.1** (2026-09-29) | Deployed, compiled and loaded on the PC with no compile errors (Editor.log, from_pc/20260928-210810) |
+| COD2EFT | **2.5.0** (2026-09-29) | Adds the hand-adjust layer (armature, non-destructive) and fixes the FBX export settings in code. Tested headless in Blender 4.4, not yet on the PC |
+| EFT Tools | **1.6.2** (2026-09-29) | The parser accepts COD2EFT sub-meshes `<name>_<Part>_<label>`. Parser logic checked in a Python mirror; not compiled |
 
 ## How work reaches the PC now
 The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
@@ -70,6 +70,13 @@ Measured COD hand-skin gloss (Kleo FP 0.56, BO5 esports 0.49, Park 24_1 FP 0.35)
 Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters and isn't applied yet.
 
 ## Open work, in order
+**Current focus (user, 2026-09-29): material accuracy.** See `docs/MATERIALS_PLAN.md` (the `enc=3` bake-in-pixels plan).
+
+**Also open:** hips/waist/spine twist on female characters (MW4 Beta Female).
+- Needs that character's COD export to diagnose.
+- Hunch, not verified: body-volume matching reads the pelvis and spine section centres, and wide hips/glutes pull those centres back, so the fit over-corrects the pelvis.
+- Workaround until then: *Adjust by hand* (2.5.0).
+
 1. ✅ **Long-path fix verified on real Windows** (2026-09-28, COD2EFT 2.4.4, from_pc/20260928-211853).
    - Park 24_1 (paths up to 269 characters) imported through the temp junction and packed 3 long-path images.
    - All 19 materials got textures and the conversion finished Upper + Lower. It used to stop at Upper.

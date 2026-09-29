@@ -66,6 +66,15 @@ namespace EFTAutoPrefab
         static readonly Regex StateSuffix = new Regex(@"[_\-\. ](armou?r|ar|vest|rig|cr|facecover|face_cover|custom|base)$",
                                                       RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+        // COD2EFT sub-meshes: "<name>_<Part>_<label>", written by 'Separate by COD material'
+        // ("mp_milsim_us_sf_1_1_Lower_material_5c0b2a55701ee9c2", "..._Upper_mtl_c_t9_vest") and with 'Join parts' off
+        // ("..._Upper_00"). COD2EFT always capitalises the part word, so this is matched case-sensitively.
+        static readonly Regex CodSubMesh = new Regex(@"^(?<name>.+?)_(?<part>Head|Upper|Lower|Hands)_(?<tail>.+)$",
+                                                     RegexOptions.CultureInvariant);
+        // tails that keep their documented meaning: a state word, a LOD, or a one-character variant ("Upper_1")
+        static readonly Regex CodSubMeshKeep = new Regex(@"^(armou?r|ar|vest|rig|cr|facecover|face_cover|custom|base|lod\d+|\d|[a-z])$",
+                                                         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
         public static MeshState StateFromWord(string w)
         {
             switch ((w ?? "").ToLowerInvariant())
@@ -85,7 +94,8 @@ namespace EFTAutoPrefab
 
         /// <summary>
         /// Parses a mesh object name such as "test1_upper", "kleo_uppera", "upper_1", "arms", "head_lod1",
-        /// "upper_armor", "jacket_upper_vest_lod1", "head_facecover".
+        /// "upper_armor", "jacket_upper_vest_lod1", "head_facecover",
+        /// and COD2EFT sub-meshes "kleo_Upper_material_5c0b2a55" / "kleo_Upper_00" (a piece of kleo's Upper).
         /// Pattern: [piece + separator] + part alias + [optional '_'/'-'] + [variant = digits or ONE letter]
         ///          + [_state] + [_lodN]   (state and LOD suffix may come in either order).
         /// Different pieces (prefixes) with the same part+variant end up in the same prefab;
@@ -97,6 +107,11 @@ namespace EFTAutoPrefab
             if (string.IsNullOrWhiteSpace(objectName)) return r;
             objectName = BlenderDup.Replace(objectName.Trim(), "");   // "jacket_upper.001" -> "jacket_upper"
             string n = objectName;
+            // "<name>_<Part>_<label>" -> "<name>_<label>_<Part>": the label becomes part of the piece, so the sub-mesh
+            // joins its part's prefab instead of being ignored (or read as a variant / state)
+            var cm = CodSubMesh.Match(n);
+            if (cm.Success && !CodSubMeshKeep.IsMatch(cm.Groups["tail"].Value))
+                n = objectName = cm.Groups["name"].Value + "_" + cm.Groups["tail"].Value + "_" + cm.Groups["part"].Value;
 
             bool lodDone = false, stateDone = false;
             for (int pass = 0; pass < 2; pass++)

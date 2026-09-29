@@ -590,3 +590,200 @@ def build_fp_hands(eft, sources, base, log=print):
         "it is exported with the rest" + (f" - WARNING weights left on {bad}" if bad else ""))
     return h
 
+
+
+# ---------------------------------------------------------------------------------------------
+# Adjust layer: hand corrections with the armature, non-destructive until applied
+# ---------------------------------------------------------------------------------------------
+# Start: a copy of the EFT armature ("COD2EFT_Adjust", bones disconnected so they can be moved,
+# rotated and scaled freely) drives an extra Armature modifier at the TOP of every converted
+# mesh's stack, so posing it reshapes the meshes live while the EFT armature and the weights stay
+# untouched.  Apply: bakes the adjust pose into the meshes (shape keys included) and removes the
+# copy.  Cancel: removes it without changing anything.  Same result as unparenting all bones,
+# posing, applying the armature modifier per mesh and re-parenting - in one click each way.
+ADJUST_RIG = "COD2EFT_Adjust"
+ADJUST_MOD = "COD2EFT_Adjust"
+
+
+def adjust_rig(scene=None):
+    scene = scene or bpy.context.scene
+    o = scene.objects.get(ADJUST_RIG)
+    return o if o is not None and o.type == "ARMATURE" else None
+
+
+def adjust_meshes(scene=None):
+    scene = scene or bpy.context.scene
+    return [o for o in scene.objects if o.type == "MESH" and ADJUST_MOD in o.modifiers]
+
+
+def _set_mode(obj, mode):
+    vl = bpy.context.view_layer
+    if bpy.context.object is not None and bpy.context.object.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+    for o in vl.objects:
+        if o.select_get():
+            o.select_set(False)
+    obj.hide_set(False)
+    obj.select_set(True)
+    vl.objects.active = obj
+    if mode != "OBJECT":
+        bpy.ops.object.mode_set(mode=mode)
+
+
+def adjust_start(eft, meshes, restore_pose=None):
+    """Adds the adjust layer to `meshes`. Returns the adjust armature."""
+    if adjust_rig() is not None:
+        raise RuntimeError("An adjustment is already in progress - apply or cancel it first")
+    if not meshes:
+        raise RuntimeError("No converted meshes to adjust")
+    if bpy.context.object is not None and bpy.context.object.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+    if test_pose_active(eft):
+        clear_test_pose(eft)
+    adj = eft.copy()
+    adj.data = eft.data.copy()
+    adj.name = adj.data.name = ADJUST_RIG
+    adj.animation_data_clear()
+    for c in eft.users_collection:
+        c.objects.link(adj)
+    adj.parent = eft.parent
+    adj.matrix_world = eft.matrix_world.copy()
+    for k in [k for k in adj.keys() if k.startswith("cod2eft")]:
+        del adj[k]
+    for pb in adj.pose.bones:
+        pb.matrix_basis = Matrix()
+        for c in list(pb.constraints):
+            pb.constraints.remove(c)
+    _set_mode(adj, "EDIT")
+    for eb in adj.data.edit_bones:
+        eb.use_connect = False
+    bpy.ops.object.mode_set(mode="OBJECT")
+    adj.show_in_front = True
+    adj.data.display_type = "OCTAHEDRAL"
+    if restore_pose:
+        for n, m in restore_pose.items():
+            pb = adj.pose.bones.get(n)
+            if pb is not None:
+                pb.matrix_basis = Matrix(m)
+    for o in meshes:
+        md = o.modifiers.new(ADJUST_MOD, "ARMATURE")
+        md.object = adj
+        md.use_vertex_groups = True
+        md.use_deform_preserve_volume = False
+        o.modifiers.move(len(o.modifiers) - 1, 0)          # first: before the EFT armature
+    eft["cod2eft_adjust_hidden"] = not eft.hide_get()
+    eft.hide_set(True)
+    _set_mode(adj, "POSE")
+    return adj
+
+
+def _lbs(coords, groups, mats, n):
+    """Linear blend skinning like Blender's Armature modifier (weights normalised, vertices
+    without deforming weights stay put). coords (n,3); groups: list of (vertex idx, weight, M)."""
+    acc = np.zeros((n, 3))
+    tot = np.zeros(n)
+    h = np.c_[coords, np.ones(n)]
+    for vi, w, M in groups:
+        acc[vi] += w[:, None] * (h[vi] @ M.T)[:, :3]
+        tot[vi] += w
+    out = coords.copy()
+    ok = tot > 0
+    out[ok] = acc[ok] / tot[ok, None]
+    return out
+
+
+def _bake_adjust(o, adj):
+    me = o.data
+    n = len(me.vertices)
+    if n == 0:
+        return
+    Mo, Ma = o.matrix_world, adj.matrix_world
+    names = {g.index: g.name for g in o.vertex_groups}
+    per = {}
+    for v in me.vertices:
+        for ge in v.groups:
+            if ge.weight > 0 and ge.group in names:
+                per.setdefault(ge.group, ([], []))
+                per[ge.group][0].append(v.index)
+                per[ge.group][1].append(ge.weight)
+    groups = []
+    for gi, (vi, w) in per.items():
+        pb = adj.pose.bones.get(names[gi])
+        if pb is None or not pb.bone.use_deform:
+            continue
+        M = Mo.inverted() @ Ma @ pb.matrix @ pb.bone.matrix_local.inverted() @ Ma.inverted() @ Mo
+        if all(abs(M[i][j] - (i == j)) < 1e-9 for i in range(4) for j in range(4)):
+            M = Matrix()
+        groups.append((np.array(vi), np.array(w), np.array(M)))
+    if not groups:
+        return
+    if me.shape_keys:
+        for kb in me.shape_keys.key_blocks:
+            co = np.empty(n * 3)
+            kb.data.foreach_get("co", co)
+            kb.data.foreach_set("co", _lbs(co.reshape(n, 3), groups, None, n).ravel())
+        co = np.empty(n * 3)
+        me.shape_keys.key_blocks[0].data.foreach_get("co", co)
+        me.vertices.foreach_set("co", co)
+    else:
+        co = np.empty(n * 3)
+        me.vertices.foreach_get("co", co)
+        me.vertices.foreach_set("co", _lbs(co.reshape(n, 3), groups, None, n).ravel())
+    me.update()
+
+
+def _adjust_end(apply):
+    adj = adjust_rig()
+    meshes = adjust_meshes()
+    if bpy.context.object is not None and bpy.context.object.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+    changed = 0
+    if adj is not None and apply:
+        bpy.context.scene["cod2eft_adjust_last"] = json.dumps(
+            {pb.name: [list(r) for r in pb.matrix_basis] for pb in adj.pose.bones
+             if pb.matrix_basis != Matrix()})
+        done = set()
+        for o in meshes:
+            if o.data in done:                     # linked duplicates share their mesh
+                continue
+            if o.data.users > 1:
+                o.data = o.data.copy()             # never change a mesh other objects still use
+            _bake_adjust(o, adj)
+            done.add(o.data)
+            changed += 1
+    for o in meshes:
+        md = o.modifiers.get(ADJUST_MOD)
+        if md is not None:
+            o.modifiers.remove(md)
+    eft = None
+    for o in bpy.context.scene.objects:
+        if o.type == "ARMATURE" and "cod2eft_adjust_hidden" in o:
+            eft = o
+            if o["cod2eft_adjust_hidden"]:
+                o.hide_set(False)
+            del o["cod2eft_adjust_hidden"]
+    if adj is not None:
+        data = adj.data
+        bpy.data.objects.remove(adj, do_unlink=True)
+        if data.users == 0:
+            bpy.data.armatures.remove(data)
+    if eft is not None:
+        _set_mode(eft, "OBJECT")
+    return changed
+
+
+def adjust_apply():
+    """Bakes the adjust pose into the meshes and removes the adjust layer. Returns mesh count."""
+    return _adjust_end(True)
+
+
+def adjust_cancel():
+    return _adjust_end(False)
+
+
+def adjust_last_pose(scene=None):
+    raw = (scene or bpy.context.scene).get("cod2eft_adjust_last")
+    try:
+        return json.loads(raw) if raw else None
+    except ValueError:
+        return None
