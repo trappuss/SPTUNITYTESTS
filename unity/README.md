@@ -1,0 +1,136 @@
+# EFT clothing / head / hands pipeline (SPT 4.1.6 + WTT-CommonLib 3.0.6, WTT-SDK-2022, Unity 2022.3.43f1)
+
+Tools live in `WTT-SDK-2022/Assets/Editor/EFTAutoPrefabber/`. Menus: **Custom Windows > EFT Auto Prefabber** and **Custom Windows > EFT Mod Builder**.
+
+## Workflow
+
+1. Import the model (FBX, rigged to the EFT skeleton). Put textures next to it: `<name>_d` (albedo), `<name>_n` (normal), `<name>_g` (gloss) or `<name>_r` (roughness).
+2. Auto Prefabber: select the model and press **Scan Selection**. With "Fix materials on scan" on, this runs Fix Materials first.
+3. Check parts, variants and states in the list.
+4. Press **Prefabs + bundles + mod** for the whole pipeline, or **Build N prefab(s)** for prefabs only.
+5. Mod Builder (needs setting once: build folder, SPT mods folder, mod folder name, mod name, author):
+   - fill in names, prices, and the hands each top uses;
+   - press **Build bundles + mod**.
+
+## Mesh naming
+
+`<piece>_<part><variant>[_state][_lodN]`
+
+- **Parts:**
+  - `upper`, `lower`, `head`;
+  - `hands` / `hand` / `arms` / `arm` (all mean hands).
+- **Pieces vs variants:**
+  - Meshes with the same part and variant but different pieces go into one prefab: `test1_upper` + `test2_upper`.
+  - A different variant makes a separate prefab: `uppera` or `upper1`.
+- **States** (meshes the game swaps in; they must use the same material slots as the base mesh):
+  - tops: `_armor` (also `_armour`, `_ar`) when body armor is worn; `_vest` (also `_rig`, `_cr`) when a rig, vest-like armor or backpack is worn;
+  - heads: `_facecover` (also `_custom`) when a full face cover is worn.
+- **Ignored suffix:** Blender's `.001`.
+
+## What the prefabs contain (checked against the vanilla bundles)
+
+- Root: LoddedSkin, plus a LODGroup (not on hands). LOD0 is 0.6; the last LOD is 0.015 (0.035 on heads).
+- Per mesh: SkinnedMeshRenderer, Skin, HotObject; hands also get RainCondensator.
+- Bone paths: `Root_Joint/...` for body parts, `Base HumanPelvis/...` for hands.
+- Armor/vest meshes: TorsoSkin (`_base`, `_armor`, `_vest`). A missing alternative falls back to the other one, then to the base mesh.
+- Face-cover mesh: HeadSkin (`Data.Base`, `Data.FaceCover`).
+- Alternative meshes with different bone lists are re-indexed to one shared bone list, written to `<prefab>_meshes/`.
+- Pants get a LegsView plus a `pistol_holster` child. Without it the game shows no pistol on the leg.
+  - Default position: vanilla USEC default pants (right leg). The left-leg option uses the only vanilla left-leg pants.
+  - An object named `pistol_holster` parented to `Base HumanRThigh1` or `Base HumanLThigh1` in the model overrides the position.
+
+## Materials (EFT mode, default)
+
+Evidence comes from the SPT 4.1 game files (273 character prefab bundles, 108 hands bundles). The game renders in gamma colour space.
+
+**Shaders by part:**
+
+| Part | Shader | Notes |
+|---|---|---|
+| Body | `p0/Reflective/Bumped Specular SMap_Decal` | 268 of 275 vanilla materials. `_StencilType` 1 |
+| Hands | `p0/Reflective/Bumped Specular SMap` | `_StencilType` 2, no keywords (162 of 170 vanilla) |
+| Hair / lashes / alpha | `p0/Cutout/Bumped Diffuse` | The SDK has no stub for this shader, so one is created once in `Assets/Shader Assets` |
+
+**How the game lights them:**
+- Rendering is deferred. The lighting shader is `Hidden/Internal-DeferredShadingEFT`, decompiled: Unity's standard GGX BRDF in its gamma-space form.
+- What the character shaders write to the G-buffer:
+  - specular colour = `_MainTex.a × _Glossness × (SpecVals.x + SpecVals.y·F)/2`
+  - smoothness = `_SpecMap.r × _Specularness`
+  - albedo = `_MainTex.rgb × (DefVals.x + DefVals.y·F)`
+  - reflection = `_MainTex.a × cube × _ReflectColor × (SpecVals.x + SpecVals.y·F)/2`
+  - F = (1 − N·V)²/2
+- So `_MainTex` **alpha is the specular + reflection mask** (not opacity), and `_SpecMap` is GGX smoothness.
+
+**Vanilla medians** (393 materials, only texels the meshes' UVs cover):
+
+| Part | Specular at F=0 | Smoothness |
+|---|---|---|
+| Upper | 0.052 | 0.24 |
+| Lower | 0.045 | 0.18 |
+| Head | 0.044 | 0.29 |
+| Hands | 0.057 | 0.27 |
+
+**COD2EFT 2.4+ textures** (PNG tag `COD2EFT enc=2`):
+- `_d` is used as stored; its alpha is COD's specular.
+- `_n` is OpenGL; no auto-detection.
+- `_g` goes in `_SpecMap`.
+- Cut-out = material slot `*_alpha`, with Mip Maps Preserve Coverage and cutoff 0.5.
+- Max Size is at least the file size.
+- `<name>_Hands` materials are set up directly as hands materials.
+- Per-part values map COD's 0.04 dielectric and its gloss onto the vanilla medians:
+
+| Part | `_Glossness` | `_Specularness` | `_ReflectColor` |
+|---|---|---|---|
+| Upper | 2.4 | 1.0 | 0.87 |
+| Lower | 2.0 | 0.75 | 0.61 |
+| Head | 2.2 | 0.6 | 0.9 |
+| Hands | 2.6 | 0.8 (hunch) | 0.55 |
+
+- The full contract is in `SPTModdingTools\COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md`.
+- Still open: an in-game side-by-side against a vanilla head.
+
+**Other textures (generic path):**
+- The fixer writes `<albedo>_eft.png` with RGB = albedo and alpha = 0.4·gloss + 0.03 (fit to vanilla), and puts `_g` in `_SpecMap`.
+- Normals: OpenGL or DirectX is auto-detected.
+- Cut-out: by name keyword (alpha, hair, lash, brow, fur, cutout), whole words only.
+
+**Other material settings:**
+- `_Cube` is set to `patron_cubemap_metall_matte` (242 of 275 vanilla materials).
+- Vanilla medians per part:
+
+| Part | `_DefVals` | `_ReflectColor` | `_SpecVals` |
+|---|---|---|---|
+| Upper | 0.85, 0.7 | 0.358 | 1.1, 2 |
+| Lower | 0.85, 0.7 | 0.255 | 1.1, 2 |
+| Head | 0.8, 1.0 | 0.302 | 1.0, 3 |
+| Hands | 0.8, 0.7 | 0.198 | 1.1, 2 |
+
+**Hands materials:** a hands mesh that shares a body material gets `<material>_hands.mat`, which is regenerated on every build.
+
+## Bundles
+
+- The Mod Builder builds only this mod's bundles and the imposter `shaders`/`cubemaps` stubs, through the SDK's imposter build.
+- Compression is **LZ4** by default. Target is StandaloneWindows, matching the working test bundles and other mods (vanilla uses Win64; an option switches to it).
+- bundles.json dependency keys: `shaders`, `cubemaps`, `assets/commonassets/physics/physicsmaterials.bundle`, plus any other game CABs found inside a bundle.
+
+## Caches and "old bundle still shows"
+
+What SPT 4.1.6 does:
+- **Server:** `user/cache/bundleHashCache.json` re-hashes a bundle when its size or modified time changes, and is rewritten with only the loaded bundles. It cannot serve an old bundle.
+- **Client:** uses `SPT_Runtime/user/cache/bundles/<CRC>/<key>` only when that folder exists for the current CRC. The 4.1 client does not write it; Fika may. It does not exist in this install.
+
+Real causes of old or blank outfits:
+- **Empty bundles.** Unused bundle names still assigned in Unity build as ~730-byte empty bundles.
+- **Old copies.** An old copy of an outfit left in another or test mod.
+
+**Clean** (also runs automatically on build):
+1. Removes unused bundle names.
+2. Offers to delete clothing or empty bundles in the build folder whose name is no longer used.
+3. Deletes client-cache copies of this mod's keys.
+4. Reports files in the mod folder it didn't create.
+5. Manual Clean only: reports other mods that contain a copy of this project's prefabs. It never deletes another mod's files.
+
+## SPT mod rules learned
+
+- Mod GUID must match `^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$`. A `_` in any mod's GUID stops ALL mods loading.
+- Bundle keys are global across mods; a duplicate key fails to load.

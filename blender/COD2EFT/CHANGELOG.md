@@ -2,6 +2,12 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.4.4 — 2026-09-29
+- **Long-path import:** the temp link is only used when it is shorter than the model's folder.
+  Before, a short folder such as `C:\COD\kleo` holding a 250+ character file was imported through
+  `%TEMP%\cod2eft_j\…`, which made the paths *longer* and could leave textures empty.
+- The temp link is now always removed, even when re-pointing the images fails part-way.
+
 ## 2.4.3 — 2026-09-27
 - **Missing textures with long folder paths (Windows) fixed.** Park 24_1 imported with missing
   textures and its conversion stopped at Upper: some image paths are 260+ characters (MAX_PATH),

@@ -2,6 +2,9 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.6.1 — 2026-09-29
+- Mod Builder: choosing one of the game's own hands for a top no longer throws a NullReferenceException in the checks (it broke the window and both build buttons).
+
 ## 1.6.0 — 2026-09-27
 - Version number shown in both windows.
 - Warning plus a Refresh button when Unity has not compiled the newest scripts on disk yet.

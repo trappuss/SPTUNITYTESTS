@@ -360,7 +360,7 @@ namespace EFTAutoPrefab
                         var h = _p.items.FirstOrDefault(x => x.bundleKey == it.handsKey);
                         if (h == null && !GameHands().Any(g => g.Value == it.handsKey))
                             _warnings.Add(label + $": hands '{it.handsKey}' is neither one of this project's bundles nor a game hands bundle - it must come from another mod (not verified).");
-                        else if (h.missing) _errors.Add(label + $": hands bundle '{it.handsKey}' is missing from the project.");
+                        else if (h != null && h.missing) _errors.Add(label + $": hands bundle '{it.handsKey}' is missing from the project.");
                     }
                 }
             }

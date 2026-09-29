@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 4, 3)
+VERSION = (2, 4, 4)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -182,6 +182,9 @@ def _short_link(folder, log=print):
     import tempfile
     root = os.path.join(tempfile.gettempdir(), "cod2eft_j")
     link = os.path.join(root, hashlib.sha1(os.path.normcase(folder).encode("utf-8")).hexdigest()[:10])
+    if len(link) >= len(folder):        # e.g. C:\COD\kleo: the link would make the paths longer
+        log(f"  (long texture paths: the folder is already shorter than a temp link, importing directly)")
+        return None
     try:
         os.makedirs(root, exist_ok=True)
         if os.path.lexists(link):
@@ -221,11 +224,13 @@ def import_model(path, log=print):
             bpy.ops.import_scene.cast(filepath=src)
     finally:
         if link:
-            _relink_images([i for i in bpy.data.images if i not in images], link, folder, log)
             try:
-                _drop_link(link)
-            except OSError as e:
-                log(f"  (couldn't remove the short link {link}: {e})")
+                _relink_images([i for i in bpy.data.images if i not in images], link, folder, log)
+            finally:                    # never leave the junction behind in the temp folder
+                try:
+                    _drop_link(link)
+                except OSError as e:
+                    log(f"  (couldn't remove the short link {link}: {e})")
     new = [o for o in bpy.data.objects if o not in before]
     for o in new:
         o["cod2eft_file"] = path                       # textures are found next to it
