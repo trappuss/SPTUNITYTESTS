@@ -2,6 +2,11 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.3 — 2026-09-29
+- **Tidier panel.** The COD2EFT tab is split into sub-panels in the order you use them: the status at the top (version, template, EFT armature, and any changed settings in red, as before), then **1. Convert a Character** and **2. Export for Unity** (open), and collapsed: **Extra Parts** (Separate by COD Material, First-Person Hands), **Batch Convert**, **Settings** (sub-panels **Fit**, **Parts & Weights**, **Textures** with a tick in its title, **Texture Options**), **Check the Fit**, **Adjust by Hand**, **Step by Step**. Click a title to open it; Blender remembers it. Every setting and button is still there; setting names and defaults are unchanged, so saved .blend files and the batch keep working. A few settings got tooltips they lacked.
+- Files: none moved or removed (see the report; the folder is a live install and the .bat files are double-clicked).
+- No change to conversions: `tools/regress.py` reports 2.6.3 identical to the 2.6.1 baselines (enc=2 and enc=3: fit numbers, parts, mesh counts, PNG hashes) on all 4 test characters. Checked headless in Blender 4.4 (registers, every panel draws); not yet seen in the real Blender UI.
+
 ## 2.6.2 — 2026-09-29
 - `Install_COD2EFT_Addon.bat`: a template path with non-ASCII characters (e.g. `Ü`) no longer aborts the install. `COD2EFT_Convert.bat` writes `template_path.txt` in the console code page, and `install_addon.py` now reads UTF-8 first, then the console / ANSI code pages. (Audit item. Checked in Python with a cp850 file; not run on Windows.)
 - `COD2EFT_To_Unity.bat` copies only COD2EFT's own sets, `<name>_<Head|Upper|Lower|Hands>_*.png`. Before, copying `Kleo` also picked up `Kleo_Alt_*` textures. (Audit item.)

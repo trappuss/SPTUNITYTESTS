@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 2)
+VERSION = (2, 6, 3)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 

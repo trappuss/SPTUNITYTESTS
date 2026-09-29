@@ -10,6 +10,11 @@ Everything the .bat tools do is available here:
   * Batch Convert         - files or a whole folder tree; runs in a background Blender so your
                             open scene is untouched; writes <name>_EFT.blend / .fbx / report
   * Fit / tweak / Convert / Export - the step-by-step tools
+
+Panel layout (sub-panels, in the order of the everyday flow): status at the top, then
+1. Convert a Character, 2. Export for Unity, and collapsed: Extra Parts, Batch Convert,
+Settings (Fit / Parts & Weights / Textures / Texture Options), Check the Fit, Adjust by Hand,
+Step by Step.
 """
 import os
 import sys
@@ -90,7 +95,9 @@ class COD2EFT_MatClass(bpy.types.PropertyGroup):
 
 
 class COD2EFT_Settings(bpy.types.PropertyGroup):
-    eft_armature: PointerProperty(name="EFT Armature", type=bpy.types.Object, poll=_poll_eft)
+    eft_armature: PointerProperty(
+        name="EFT Armature", type=bpy.types.Object, poll=_poll_eft,
+        description="The EFT armature to fit onto (empty = the one found in the scene)")
     output_name: StringProperty(
         name="Name", default="",
         description="Base name for the converted objects (empty = from the COD file)")
@@ -165,7 +172,10 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
                     "Batch Convert")
     max_influences: IntProperty(name="Max bones / vertex", default=4, min=0, max=8,
                                 description="0 = unlimited. EFT meshes use 4")
-    join_parts: BoolProperty(name="Join into Head/Upper/Lower", default=True)
+    join_parts: BoolProperty(
+        name="Join into Head/Upper/Lower", default=True,
+        description="Join the converted meshes into one object per part (<name>_Head / _Upper "
+                    "/ _Lower), the object names the Unity tools expect")
     split_materials: BoolProperty(
         name="Separate by COD material", default=False,
         description="After converting, split every part into one object per original COD "
@@ -180,6 +190,8 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
     output_dir: StringProperty(
         name="Output", subtype="DIR_PATH", default="",
         description="Batch output folder (empty = 'EFT_Converted' next to what you picked)")
+    # show_steps / show_settings / show_tex_options: the panel's old fold-outs, now sub-panels
+    # (2.6.3); kept so saved .blend files and scripts that set them still load
     show_steps: BoolProperty(name="Step by step", default=False)
     show_settings: BoolProperty(name="Settings", default=False)
     convert_textures: BoolProperty(
@@ -231,7 +243,8 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
         description="How the material look is written into the textures (the PNG tag tells "
                     "Unity which)")
     mat_classes: CollectionProperty(type=COD2EFT_MatClass)
-    show_classes: BoolProperty(name="Material classes", default=False)
+    show_classes: BoolProperty(name="Material classes", default=False,
+                               description="Show the class found for each COD material")
     tex_layout: EnumProperty(
         name="Texture layout", default="ISLANDS",
         items=[("ISLANDS", "Used parts only (sharper)",
@@ -552,6 +565,7 @@ class COD2EFT_OT_batch(bpy.types.Operator, _PickFiles):
 class COD2EFT_OT_open_folder(bpy.types.Operator):
     bl_idname = "cod2eft.open_folder"
     bl_label = "Open Folder"
+    bl_description = "Open the folder in the file browser"
     what: StringProperty(default="out")
 
     def execute(self, context):
@@ -881,26 +895,6 @@ def _draw_classes(layout, st):
         c.label(text="Change a class, then Convert Textures", icon="INFO")
 
 
-def _draw_tex_options(layout, st):
-    if not st.convert_textures:
-        return
-    c = layout.column(align=True)
-    c.prop(st, "show_tex_options", icon="TRIA_DOWN" if st.show_tex_options else "TRIA_RIGHT",
-           emboss=False)
-    c.prop(st, "tex_material_mode", text="")
-    _draw_classes(c, st)
-    if st.show_tex_options:
-        c.prop(st, "tex_layout", text="")
-        r = c.row(align=True)
-        r.prop(st, "tex_normals", expand=True)
-        c.prop(st, "tex_spec")
-        c.prop(st, "tex_metal")
-        c.prop(st, "tex_ao")
-        r = c.row()
-        r.enabled = st.tex_ao > 0
-        r.prop(st, "tex_ao_spec")
-
-
 def _out_name(context, objs):
     n = context.scene.cod2eft.output_name.strip()
     if n:
@@ -1210,13 +1204,26 @@ def _draw_last_fit(b, scene):
 
 
 # ---------------------------------------------------------------------------------------------
-# panel
+# panels
 # ---------------------------------------------------------------------------------------------
-class COD2EFT_PT_panel(bpy.types.Panel):
-    bl_label = f"COD → EFT Porter  v{C.VERSION_STR}"
+# One main panel (status: version, template, EFT armature, changed settings) with sub-panels in
+# the order of the everyday flow:  Convert a Character -> Export for Unity, then the rarely used
+# ones (collapsed by default): Extra Parts, Batch, Settings (Fit / Parts & Weights / Textures),
+# Check the Fit, Adjust by Hand, Step by Step.  Blender remembers which ones are open.
+class _Panel:
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "COD2EFT"
+
+
+class _SubPanel(_Panel):
+    bl_parent_id = "COD2EFT_PT_panel"
+    bl_options = {"DEFAULT_CLOSED"}
+
+
+class COD2EFT_PT_panel(_Panel, bpy.types.Panel):
+    bl_idname = "COD2EFT_PT_panel"
+    bl_label = f"COD → EFT Porter  v{C.VERSION_STR}"
 
     def draw(self, context):
         st = context.scene.cod2eft
@@ -1227,14 +1234,13 @@ class COD2EFT_PT_panel(bpy.types.Panel):
         b = L.box()
         home = live_home()
         r = b.row(align=True)
-        r.label(text=f"COD2EFT v{C.VERSION_STR}", icon="PREFERENCES")
         if home:
-            r.label(text="live from folder", icon="LINKED")
+            r.label(text="Live from the COD2EFT folder", icon="LINKED")
             sub = r.row(align=True)
             sub.enabled = not running
             sub.operator("cod2eft.reload", text="", icon="FILE_REFRESH")
         else:
-            r.label(text="installed copy", icon="PACKAGE")
+            r.label(text="Installed copy", icon="PACKAGE")
         # is there a newer (or different) version in the COD2EFT folder than the one running?
         folder = home or (pf.data_dir if pf and pf.data_dir else None)
         fv = folder_version(folder)
@@ -1254,137 +1260,249 @@ class COD2EFT_PT_panel(bpy.types.Panel):
         if not eft:
             r.operator("cod2eft.append_template", text="Add", icon="APPEND_BLEND")
 
-        # ---- settings used by Import and Batch: changes are always visible -----------------
-        b = L.box()
-        r = b.row(align=True)
-        r.prop(st, "show_settings", text="Settings (Import + Batch)",
-               icon="TRIA_DOWN" if st.show_settings else "TRIA_RIGHT", emboss=False)
+        # settings used by Import and Batch: changes are always visible, even when collapsed
         changed = changed_settings(st)
         ntw = saved_tweak_count() if st.apply_tweaks else 0
         if changed:
-            r.operator("cod2eft.reset_settings", text="Reset", icon="LOOP_BACK")
             col = b.column(align=True)
             col.alert = True
-            col.label(text=f"{len(changed)} setting(s) changed from default:", icon="ERROR")
+            r = col.row(align=True)
+            r.label(text=f"{len(changed)} setting(s) changed from default:", icon="ERROR")
+            r.operator("cod2eft.reset_settings", text="Reset", icon="LOOP_BACK")
             for label, val in changed:
                 col.label(text=f"    {label}: {val}")
         else:
-            b.label(text="All settings at their defaults", icon="CHECKMARK")
+            b.label(text="Settings: all at their defaults", icon="CHECKMARK")
         if ntw:
             r = b.row(align=True)
             r.alert = True
             r.label(text=f"Saved pose tweaks on {ntw} bone(s) are applied", icon="ERROR")
             r.operator("cod2eft.clear_tweaks", text="", icon="TRASH")
-        if st.show_settings:
-            col = b.column(align=True)
-            col.label(text="Fit", icon="POSE_HLT")
-            col.prop(st, "match_body")
-            sub = col.column(align=True)
-            sub.enabled = st.match_body
-            sub.prop(st, "head_height")
-            sub.prop(st, "face_landmark")
-            sub.prop(st, "neck_lean")
-            sub.prop(st, "head_forward", slider=True)
-            sub.prop(st, "match_fingertips")
-            col.prop(st, "match_lengths")
-            col.prop(st, "fit_scale")
-            col.prop(st, "apply_tweaks")
-            col = b.column(align=True)
-            col.label(text="Convert", icon="MOD_VERTEX_WEIGHT")
-            col.prop(st, "prefer_cast")
-            col.prop(st, "max_influences")
-            col.prop(st, "join_parts")
-            col.prop(st, "split_materials")
-            col.prop(st, "fp_hands")
-            sub = col.row(align=True)
-            sub.enabled = st.fp_hands
-            sub.prop(st, "fp_source")
-            col = b.column(align=True)
-            col.label(text="Textures", icon="TEXTURE")
-            r = col.row(align=True)
-            r.prop(st, "convert_textures")
-            sub = r.row(align=True)
-            sub.enabled = st.convert_textures
-            sub.prop(st, "texture_size", text="")
-            _draw_tex_options(col, st)
+        if running:
+            b.label(text="Batch running: " + _BATCH["status"], icon="TIME")
 
-        b = L.box()
-        b.label(text="Convert one character (this scene)", icon="IMPORT")
-        op = b.operator("cod2eft.import_cod", text="Import + Convert...", icon="PLAY")
+
+class COD2EFT_PT_convert(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_panel"
+    bl_label = "1. Convert a Character"
+
+    def draw(self, context):
+        L = self.layout
+        c = L.column(align=True)
+        c.scale_y = 1.4
+        op = c.operator("cod2eft.import_cod", text="Import + Convert...", icon="PLAY")
         op.convert = True
-        op = b.operator("cod2eft.import_cod", text="Import only...", icon="IMPORT")
+        op = L.operator("cod2eft.import_cod", text="Import only...", icon="IMPORT")
         op.convert = False
-        b.operator("cod2eft.split_materials", icon="MOD_EXPLODE")
-        b.operator("cod2eft.fp_hands", icon="VIEW_PAN")
-        b.operator("cod2eft.export", icon="EXPORT")
+        L.label(text="Uses the Settings below", icon="INFO")
 
-        b = L.box()
-        b.label(text="Batch (files or whole folders)", icon="FILE_FOLDER")
-        b.prop(st, "output_dir")
-        b.prop(st, "export_fbx")
-        r = b.row()
+
+class COD2EFT_PT_export(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_panel"
+    bl_label = "2. Export for Unity"
+
+    def draw(self, context):
+        L = self.layout
+        c = L.column(align=True)
+        c.scale_y = 1.4
+        c.operator("cod2eft.export", icon="EXPORT")
+        c = L.column(align=True)
+        c.label(text="Then run COD2EFT_To_Unity.bat: it copies", icon="INFO")
+        c.label(text="    the .fbx + PNGs into the Unity project")
+
+
+class COD2EFT_PT_parts(_SubPanel, bpy.types.Panel):
+    bl_label = "Extra Parts"
+
+    def draw(self, context):
+        L = self.layout
+        L.operator("cod2eft.split_materials", icon="MOD_EXPLODE")
+        L.operator("cod2eft.fp_hands", icon="VIEW_PAN")
+
+
+class COD2EFT_PT_batch(_SubPanel, bpy.types.Panel):
+    bl_label = "Batch Convert (files / folders)"
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        L = self.layout
+        running = _BATCH["proc"] is not None
+        L.prop(st, "output_dir")
+        L.prop(st, "export_fbx")
+        r = L.row()
         r.enabled = not running
         r.operator("cod2eft.batch", text="Batch Convert...", icon="SEQ_SEQUENCER")
         if _BATCH["status"]:
-            b.label(text=("Running: " if running else "") + _BATCH["status"],
+            L.label(text=("Running: " if running else "") + _BATCH["status"],
                     icon="TIME" if running else "INFO")
             if running:
-                b.label(text="(Esc over the 3D view cancels)")
+                L.label(text="(Esc over the 3D view cancels)")
         if _BATCH["out"] and not running:
-            b.operator("cod2eft.open_folder", text="Open output folder",
+            L.operator("cod2eft.open_folder", text="Open output folder",
                        icon="FILEBROWSER").what = "out"
 
-        b = L.box()
-        b.label(text="Check", icon="VIEWZOOM")
+
+class COD2EFT_PT_settings(_SubPanel, bpy.types.Panel):
+    bl_label = "Settings (Import + Batch)"
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        r = self.layout.row(align=True)
+        r.label(text="Changed settings are listed above")
+        sub = r.row(align=True)
+        sub.enabled = bool(changed_settings(st))
+        sub.operator("cod2eft.reset_settings", text="Reset", icon="LOOP_BACK")
+
+
+class COD2EFT_PT_settings_fit(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_settings"
+    bl_label = "Fit"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw_header(self, context):
+        self.layout.label(icon="POSE_HLT")
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        col = self.layout.column(align=True)
+        col.prop(st, "match_body")
+        sub = col.column(align=True)
+        sub.enabled = st.match_body
+        sub.prop(st, "head_height")
+        sub.prop(st, "face_landmark")
+        sub.prop(st, "neck_lean")
+        sub.prop(st, "head_forward", slider=True)
+        sub.prop(st, "match_fingertips")
+        col.prop(st, "match_lengths")
+        col.prop(st, "fit_scale")
+        col.prop(st, "apply_tweaks")
+
+
+class COD2EFT_PT_settings_convert(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_settings"
+    bl_label = "Parts & Weights"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw_header(self, context):
+        self.layout.label(icon="MOD_VERTEX_WEIGHT")
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        col = self.layout.column(align=True)
+        col.prop(st, "prefer_cast")
+        col.prop(st, "max_influences")
+        col.prop(st, "join_parts")
+        col.prop(st, "split_materials")
+        col.prop(st, "fp_hands")
+        sub = col.row(align=True)
+        sub.enabled = st.fp_hands
+        sub.prop(st, "fp_source")
+
+
+class COD2EFT_PT_settings_textures(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_settings"
+    bl_label = "Textures"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw_header(self, context):
+        self.layout.prop(context.scene.cod2eft, "convert_textures", text="")
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        col = self.layout.column(align=True)
+        col.enabled = st.convert_textures
+        col.prop(st, "texture_size")
+        col.prop(st, "tex_material_mode", text="")
+        _draw_classes(col, st)
+
+
+class COD2EFT_PT_settings_tex_options(_Panel, bpy.types.Panel):
+    bl_parent_id = "COD2EFT_PT_settings_textures"
+    bl_label = "Texture Options"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        c = self.layout.column(align=True)
+        c.enabled = st.convert_textures
+        c.prop(st, "tex_layout", text="")
+        r = c.row(align=True)
+        r.prop(st, "tex_normals", expand=True)
+        c.prop(st, "tex_spec")
+        c.prop(st, "tex_metal")
+        c.prop(st, "tex_ao")
+        r = c.row()
+        r.enabled = st.tex_ao > 0
+        r.prop(st, "tex_ao_spec")
+
+
+class COD2EFT_PT_check(_SubPanel, bpy.types.Panel):
+    bl_label = "Check the Fit"
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        L = self.layout
         on = TL.compare_is_on(context.scene)
-        b.operator("cod2eft.compare", text="Compare to EFT" + (" (on)" if on else ""),
+        L.operator("cod2eft.compare", text="Compare to EFT" + (" (on)" if on else ""),
                    icon="OVERLAY", depress=on)
-        r = b.row(align=True)
+        r = L.row(align=True)
         r.prop(st, "test_pose", text="")
         r.operator("cod2eft.test_pose", text="Pose", icon="ARMATURE_DATA").rest = False
         r.operator("cod2eft.test_pose", text="Rest", icon="LOOP_BACK").rest = True
-        r = b.row(align=True)
+        r = L.row(align=True)
         r.operator("cod2eft.check_clipping", icon="MOD_SHRINKWRAP")
         r.operator("cod2eft.clear_clipping", text="", icon="X")
-        _draw_last_fit(b, context.scene)
+        _draw_last_fit(L, context.scene)
 
-        b = L.box()
-        b.label(text="Adjust by hand (armature)", icon="BONE_DATA")
+
+class COD2EFT_PT_adjust(_SubPanel, bpy.types.Panel):
+    bl_label = "Adjust by Hand (armature)"
+
+    def draw(self, context):
+        L = self.layout
         adj = TL.adjust_rig(context.scene)
         if adj is None:
-            b.operator("cod2eft.adjust_start", icon="POSE_HLT")
+            L.operator("cod2eft.adjust_start", icon="POSE_HLT")
             if TL.adjust_last_pose(context.scene):
-                b.operator("cod2eft.adjust_start", text="Start from last applied pose",
+                L.operator("cod2eft.adjust_start", text="Start from last applied pose",
                            icon="RECOVER_LAST").reuse_last = True
         else:
-            b.label(text=f"Posing '{adj.name}': {len(TL.adjust_meshes(context.scene))} mesh(es) follow"
+            L.label(text=f"Posing '{adj.name}': {len(TL.adjust_meshes(context.scene))} mesh(es) follow"
                          + (" (bones unparented)" if adj.get("cod2eft_unparented") else ""),
                     icon="INFO")
-            r = b.row(align=True)
+            r = L.row(align=True)
             r.operator("cod2eft.adjust_apply", icon="CHECKMARK")
             r.operator("cod2eft.adjust_cancel", icon="X")
 
-        b = L.box()
-        b.prop(st, "show_steps", icon="TRIA_DOWN" if st.show_steps else "TRIA_RIGHT",
-               emboss=False)
-        if st.show_steps:
-            b.label(text="(uses the Settings above)", icon="INFO")
-            b.prop(st, "eft_armature")
-            b.prop(st, "output_name")
-            cods = [o.name for o in context.scene.objects
-                    if C.is_cod_armature(o) and o.visible_get()]
-            b.label(text=f"COD armatures: {', '.join(cods) if cods else 'none'}",
-                    icon="OUTLINER_OB_ARMATURE")
-            b.operator("cod2eft.fit", icon="POSE_HLT")
-            r = b.row(align=True)
-            r.operator("cod2eft.save_tweaks", icon="FILE_TICK")
-            r.operator("cod2eft.clear_tweaks", icon="TRASH", text="")
-            b.operator("cod2eft.convert", icon="MOD_VERTEX_WEIGHT")
-            b.operator("cod2eft.textures", icon="TEXTURE")
-            b.operator("cod2eft.oneclick", icon="PLAY")
-            b.operator("cod2eft.open_folder", text="Open settings folder",
-                       icon="FILEBROWSER").what = "data"
 
+class COD2EFT_PT_steps(_SubPanel, bpy.types.Panel):
+    bl_label = "Step by Step"
+
+    def draw(self, context):
+        st = context.scene.cod2eft
+        L = self.layout
+        L.label(text="(uses the Settings above)", icon="INFO")
+        L.prop(st, "eft_armature")
+        L.prop(st, "output_name")
+        cods = [o.name for o in context.scene.objects
+                if C.is_cod_armature(o) and o.visible_get()]
+        L.label(text=f"COD armatures: {', '.join(cods) if cods else 'none'}",
+                icon="OUTLINER_OB_ARMATURE")
+        L.operator("cod2eft.fit", icon="POSE_HLT")
+        r = L.row(align=True)
+        r.operator("cod2eft.save_tweaks", icon="FILE_TICK")
+        r.operator("cod2eft.clear_tweaks", icon="TRASH", text="")
+        L.operator("cod2eft.convert", icon="MOD_VERTEX_WEIGHT")
+        L.operator("cod2eft.textures", icon="TEXTURE")
+        L.operator("cod2eft.oneclick", icon="PLAY")
+        L.operator("cod2eft.open_folder", text="Open settings folder",
+                   icon="FILEBROWSER").what = "data"
+
+
+PANELS = (COD2EFT_PT_panel, COD2EFT_PT_convert, COD2EFT_PT_export, COD2EFT_PT_parts,
+          COD2EFT_PT_batch, COD2EFT_PT_settings, COD2EFT_PT_settings_fit,
+          COD2EFT_PT_settings_convert, COD2EFT_PT_settings_textures,
+          COD2EFT_PT_settings_tex_options, COD2EFT_PT_check, COD2EFT_PT_adjust, COD2EFT_PT_steps)
 
 classes = (COD2EFT_Prefs, COD2EFT_MatClass, COD2EFT_Settings, COD2EFT_OT_reload, COD2EFT_OT_reset_settings,
            COD2EFT_OT_split_materials, COD2EFT_OT_fp_hands,
@@ -1393,7 +1511,7 @@ classes = (COD2EFT_Prefs, COD2EFT_MatClass, COD2EFT_Settings, COD2EFT_OT_reload,
            COD2EFT_OT_oneclick, COD2EFT_OT_save_tweaks, COD2EFT_OT_clear_tweaks,
            COD2EFT_OT_export, COD2EFT_OT_textures, COD2EFT_OT_compare, COD2EFT_OT_test_pose,
            COD2EFT_OT_check_clipping, COD2EFT_OT_clear_clipping, COD2EFT_OT_adjust_start,
-           COD2EFT_OT_adjust_apply, COD2EFT_OT_adjust_cancel, COD2EFT_PT_panel)
+           COD2EFT_OT_adjust_apply, COD2EFT_OT_adjust_cancel) + PANELS
 
 
 def register():

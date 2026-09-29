@@ -30,7 +30,7 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.6.2** (2026-09-29) | *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| COD2EFT | **2.6.3** (2026-09-29) | Panel reorganised into sub-panels (no conversion change, regression identical). 2.6.x: *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
 | EFT Tools | **1.7.2** (2026-09-29) | `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 | COD2EFT Inspector (SPT client plugin) | **0.6.0** (2026-09-29) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.x adds photo mode (orbit camera, studio lights, turntable; safeguards from CineKit) and F12 buttons; 0.4.0 live try-on of any catalog outfit (hideout / raid) and saving a head via HeadVoiceSelector; 0.5.0 material checks, one-click A/B turntables (the material A/B, item 2 above), solo; 0.6.0 menu-preview try-on and pose turntables (game animations); compiled with mcs only. Stage-2 route found in Improved Customization UI (client-side preview), see `docs/SPT_INSPECTOR.md`. |
 
