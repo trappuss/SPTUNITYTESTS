@@ -1,0 +1,67 @@
+===== mp_western_t9mi6_24_1 =====   (folder: C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\Park 24_1 Investigtor 4K LOD)   COD2EFT v2.4.4
+Importing body_mp_western_t9mi6_24_1_lod1_LOD0.cast
+  Long texture paths (up to 269 characters): importing through C:\Users\notso\AppData\Local\Temp\cod2eft_j\d9336dce9e
+Using installed Cast add-on 'io_scene_cast'
+  3 image(s) with long paths packed into the .blend
+EFT armature: Body EFT Armature; COD armatures: ['body_mp_western_t9mi6_24_1_lod1_LOD0']
+Skeleton 'body_mp_western_t9mi6_24_1_lod1_LOD0': 176 bones (body / body part)
+Detected skeleton family: IW8 rig - MW2019 / Vanguard / early MW2 (Warzone 1-2)
+Alignment of 'body_mp_western_t9mi6_24_1_lod1_LOD0': scale 0.01000, landmark error mean 6.26 cm, max 9.34 cm (j_clavicle_le)
+18 COD mesh object(s) moved into EFT space
+Fixed inside-out triangle winding on 18 mesh(es) (faces wound against their own normals in the export - would render inside-out in Unity)
+Fingertips: 10 COD fingertip(s) found - the last finger segments are aimed at EFT's fingertips (length change limited to x0.8-x1.25)
+Fit rig: 176 bones, 50 driven by EFT directions
+Body volume: COD section centre vs joint (fwd cm) -> EFT: pelvis -1.8->+2.4, spine2 +3.0->+6.7, spine3 +3.9->+8.3, knee_L +2.2->-2.4, shin_L -1.8->+0.5, thigh_L +1.9->+0.2, upperarm_L -1.3->-0.4, knee_R +2.2->-2.4, shin_R -1.8->+0.5, thigh_R +1.9->+0.2, upperarm_R -1.3->-0.4
+Face: head placed by joints (no eyeball bones)
+Ground: COD soles define a floor tilted 0.3 deg after alignment (levelled); ankle joints 8.8 cm above the soles
+Body moved +5.1 cm forward to match the hip section
+Shoulders moved to match the upper-arm sections: j_shoulder_le 1.6 cm, j_shoulder_ri 1.6 cm
+Head height (limited): spine + neck x1.060 (limit 0.94-1.06) to bring the nose tip to EFT's height
+Knuckles: 8 finger roots moved onto EFT's knuckles (mean 1.5 cm, max 3.0 cm, some limited to 3 cm)
+Fingertips after fit: 0.0 cm from EFT's on average, max 0.0 cm (10 fingers)
+Pose verification: max matrix error 3.06e-07 (j_cosmetic_4)
+Largest segment stretches: j_index_ri_1 x1.270, j_index_le_1 x1.270, j_ring_le_1 x1.243, j_ring_ri_1 x1.243, j_pinky_ri_1 x1.239, j_pinky_le_1 x1.239
+Largest joint offsets (COD joint -> EFT joint, bones placed by joint): j_spinelower->Spine1 9.5cm, j_shoulder_le->LUpperarm 1.6cm, j_shoulder_ri->RUpperarm 1.6cm, j_ball_le->LToe 1.3cm, j_ball_ri->RToe 1.3cm, j_neck->Neck 0.6cm
+Body match after fit (COD - EFT section centre, forward cm): pelvis -1.2, spine2 +0.4, spine3 +0.6, knee_L +0.1, shin_L -1.9, thigh_L +2.0, upperarm_L -0.7, knee_R +0.1, shin_R -1.9, thigh_R +2.0, upperarm_R -0.7
+Soles after fit: +0.0 cm from EFT floor, tilt 0.1 deg
+Converting 18 mesh object(s) to EFT weights
+  CastMesh: split into Upper, Lower
+  CastMesh.016: split into Upper, Lower
+  CastMesh.017: split into Upper, Lower
+Helper bones merged via nearest mapped parent: Head <- j_helmet, j_visor, j_visor_inner, tag_eye, tag_helmetlight; LCalf <- j_cosmetic_39, j_cosmetic_6, j_cosmetic_7; LCollarbone <- j_dummy_sling_clavicle, j_sling_clavicle, j_teres_le; LForearm1 <- j_shield_le; LForearm3 <- tag_wrist_attach_le; LPalm <- j_proc_wrist_le, tag_accessory_left, tag_ik_wrist_loc_le; LThigh1 <- j_cosmetic_53, j_hip_proc_le, j_hipholster_le; LUpperarm <- j_proc_shoulder_le, tag_reflector_arm_le; Pelvis <- j_crotch, j_dummy_knee_dist, j_pelvishelpertip_le, j_proc_hip_lift_aim_le, j_proc_hip_lift_aim_ri, j_proc_hip_lift_le, j_proc_hip_lift_ri, tag_stowed_hip_rear; RCalf <- j_cosmetic_10, j_cosmetic_11, j_cosmetic_42, j_cosmetic_43; RCollarbone <- j_gun, j_gun_adjust, j_teres_ri, tag_weapon_left, tag_weapon_right; RPalm <- j_proc_wrist_ri, tag_accessory_right, tag_ik_wrist_loc_ri; RThigh1 <- j_hip_proc_ri, j_hipholster_ri, tag_stowed_thigh; RUpperarm <- j_proc_shoulder_ri, tag_reflector_arm_ri; Spine1 <- j_cosmetic_1, j_cosmetic_31, j_cosmetic_32, j_cosmetic_37, j_cosmetic_38, j_cosmetic_41, j_cosmetic_5, j_cosmetic_75, j_cosmetic_9, j_groinprotector (+7 more); Spine2 <- j_chest, j_cosmetic_21, j_cosmetic_22, j_cosmetic_27, j_cosmetic_28, j_cosmetic_51, j_dummy_sling_spine, j_dummy_slingcenteraim, j_proc_dummy_spinelift, j_proc_spineupper (+7 more); Spine3 <- j_cosmetic_2, j_cosmetic_4, j_proc_spinelift, tag_carry_attach, tag_inhand, tag_shield_back, tag_stowed_back, tag_stowed_back2, tag_stowed_back3, tag_weapon_chest
+Upper: CastMesh.001, CastMesh.003, CastMesh.004, CastMesh.005, CastMesh.007, CastMesh.008, CastMesh.009, CastMesh.015, CastMesh.018, CastMesh.019, CastMesh.020
+Lower: CastMesh, CastMesh.002, CastMesh.006, CastMesh.010, CastMesh.011, CastMesh.012, CastMesh.013, CastMesh.014, CastMesh.016, CastMesh.017
+Done: mp_western_t9mi6_24_1_Upper, mp_western_t9mi6_24_1_Lower parented to 'Body EFT Armature'
+Sticks out of EFT's own body (EFT vests/rigs/helmets may clip there - use 'Check gear clipping' to see where):
+  mp_western_t9mi6_24_1_Lower: 40% of vertices more than 3 cm outside EFT's body (most: 10.8 cm)
+  mp_western_t9mi6_24_1_Upper: 8% of vertices more than 3 cm outside EFT's body (most: 8.7 cm)
+Texture options: 2048 px, normals OPENGL, specular x1, metal colour kept 0.7, AO 1 into colour and specular, only the used parts of each texture
+Textures for mp_western_t9mi6_24_1_Upper:
+  body_mp_western_t9mi6_24_1_lod1: color=body_mp_western_t9mi6_24_1_lod1_c&body_mp_western_t9mi6_24_1_lod1_s~14817358352428556694.dds (material), nog=body_mp_western_t9mi6_24_1_lod1_n&body_mp_western_t9mi6_24_1_lod1_g~10282176885170638692.dds (content)
+  mtl_c_t9_decal_dogtag_chain: color=c_t9_decal_dogtag_chain_c&c_t9_decal_dogtag_chain_s~9497956091592820637.dds (material), nog=c_t9_decal_dogtag_chain_n&c_t9_decal_dogtag_chain_g~13468752204159087512.dds (content), cut-out=c_t9_decal_dogtag_chain_c~15062126845342495372.dds (unk_semantic_0x1B; cuts 77% of the surface, strands in 91% of it)
+  mtl_c_t9_id_badge_01: color=c_t9_id_badge_01_c&c_t9_id_badge_01_s~1192066903161287241.dds (material), nog=c_t9_id_badge_01_n&c_t9_id_badge_01_g~15570993281376703409.dds (content), colour alpha: metal mask (21% metal)
+  mtl_c_t9_id_badge_01_plastic: color=c_t9_id_badge_01_plastic_c&defaultspec~3177133192507137699.dds (material)
+  mtl_c_t9_decal_o_ring_01: color=c_t9_decal_o_ring_01_c&default_white_255~10935539340651366261.dds (material), cut-out=c_t9_decal_o_ring_01_c~2250212481932720675.dds (unk_semantic_0x1B; cuts 86% of the surface, strands in 100% of it)
+  mtl_c_t9_pouch_01: color=c_t9_pouch_01_c&defaultspec~14734456003639822584.dds (material), nog=c_t9_pouch_01_n&c_t9_pouch_01_g~1516171113170559373.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  mtl_c_t9_base_female_arm_white: color=c_t9_base_female_arm_white_c&defaultspec~17607355838206296408.dds (material), nog=c_t9_base_female_arm_white_n&c_t9_base_female_arm_white_g~3689135270449513945.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  mtl_c_t9_female_blouse_01_button_decal: color=c_t9_female_blouse_01_button_decal_c&c_t9_female_blouse_01_button_decal_s~7709203590104704681.dds (material), nog=c_t9_female_blouse_01_button_decal_n&default_gray_187~10603510639755433427.dds (content), cut-out=c_t9_female_blouse_01_button_decal_c~1019539964176993734.dds (unk_semantic_0x1B; cuts 79% of the surface, strands in 100% of it)
+  mtl_c_t9_female_blouse_01_b: color=c_t9_female_blouse_01_b_c&defaultspec~4080131549178238059.dds (material), nog=c_t9_female_blouse_01_b_n&default_gray_187~15711616499385076302.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  -> 9 material(s) combined into mp_western_t9mi6_24_1_Upper_d.png, mp_western_t9mi6_24_1_Upper_alpha_d.png
+  texel density on the model: typical 1771 px/m, lowest 894 px/m (body_mp_western_t9mi6_24_1_lod1); 9 texture piece(s), atlas used: main 87%, alpha 66%
+  NOTE 92 face(s) had UVs across a texture repeat - their texture may look stretched
+Textures for mp_western_t9mi6_24_1_Lower:
+  body_mp_western_t9mi6_24_1_lod1: color=body_mp_western_t9mi6_24_1_lod1_c&body_mp_western_t9mi6_24_1_lod1_s~14817358352428556694.dds (material), nog=body_mp_western_t9mi6_24_1_lod1_n&body_mp_western_t9mi6_24_1_lod1_g~10282176885170638692.dds (content), colour alpha: metal mask (2% metal)
+  mtl_c_t9_female_pants_03_clothanim: color=c_t9_female_pants_03_c&c_t9_female_pants_03_s~11866941971156921928.dds (material), nog=c_t9_female_pants_03_n&c_t9_female_pants_03_g~6798250782932839624.dds (content)
+  mtl_c_t9_pistol_magazine_02: color=c_t9_pistol_magazine_02_c&c_t9_pistol_magazine_02_s~8611172826033557499.dds (material), nog=c_t9_pistol_magazine_02_n&c_t9_pistol_magazine_02_g~14645230471545493241.dds (content), colour alpha: metal mask (4% metal)
+  mtl_c_t9_uk_double_mag_pouch_01: color=c_t9_uk_double_mag_pouch_01_c&defaultspec~8525175051605825649.dds (material), nog=c_t9_uk_double_mag_pouch_01_n&c_t9_uk_double_mag_pouch_01_g~7241023344406382229.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  mtl_c_t9_decal_button_outside_02: color=default_black_gloss&c_t9_decal_button_outside_02_s~7062482336431441854.dds (material), nog=c_t9_decal_button_outside_01_n&c_t9_decal_button_outside_02_g&white~6947721848359735024.dds (content), cut-out=c_t9_decal_button_outside_01_alpha~17864169935130899051.dds (unk_semantic_0x1B; cuts 43% of the surface, strands in 100% of it)
+  mtl_c_t9_usa_gun_holster_04: color=c_t9_usa_gun_holster_04_c&defaultspec~2404239075269961483.dds (material), nog=c_t9_usa_gun_holster_04_n&c_t9_usa_gun_holster_04_g~9733368830103989532.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  mtl_c_t9_decal_button_outside_01: color=c_t9_decal_button_c&c_t9_decal_button_outside_01_s~8293772941277357857.dds (material), nog=c_t9_decal_button_outside_01_n&c_t9_decal_button_outside_01_g~2616465936875860576.dds (content), cut-out=c_t9_decal_button_a~13062567134315598429.dds (unk_semantic_0x1B; cuts 36% of the surface, strands in 100% of it)
+  mtl_c_t9_base_female_legs_white: color=c_t9_base_female_legs_white_c&c_t9_base_female_legs_white_s~6747615887772176759.dds (material), nog=c_t9_base_female_legs_white_n&c_t9_base_female_legs_white_g~15982846546148829310.dds (content)
+  mtl_c_t9_female_blouse_01_button_decal: color=c_t9_female_blouse_01_button_decal_c&c_t9_female_blouse_01_button_decal_s~7709203590104704681.dds (material), nog=c_t9_female_blouse_01_button_decal_n&default_gray_187~10603510639755433427.dds (content), cut-out=c_t9_female_blouse_01_button_decal_c~1019539964176993734.dds (unk_semantic_0x1B; cuts 78% of the surface, strands in 100% of it)
+  mtl_c_t9_female_blouse_01_b: color=c_t9_female_blouse_01_b_c&defaultspec~4080131549178238059.dds (material), nog=c_t9_female_blouse_01_b_n&default_gray_187~15711616499385076302.dds (content), colour alpha: none (colour map without alpha) - non-metal
+  -> 10 material(s) combined into mp_western_t9mi6_24_1_Lower_d.png, mp_western_t9mi6_24_1_Lower_alpha_d.png
+  texel density on the model: typical 1162 px/m, lowest 806 px/m (body_mp_western_t9mi6_24_1_lod1); 10 texture piece(s), atlas used: main 92%, alpha 10%
+Exported C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\Park 24_1 Investigtor 4K LOD\body_mp_western_t9mi6_24_1_lod1\EFT_Converted\mp_western_t9mi6_24_1_EFT.fbx
+Saving C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\Park 24_1 Investigtor 4K LOD\body_mp_western_t9mi6_24_1_lod1\EFT_Converted\mp_western_t9mi6_24_1_EFT.blend
+Saved C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\Park 24_1 Investigtor 4K LOD\body_mp_western_t9mi6_24_1_lod1\EFT_Converted\mp_western_t9mi6_24_1_EFT.blend

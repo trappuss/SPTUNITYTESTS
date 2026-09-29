@@ -1,0 +1,7 @@
+﻿Sent: 2026-09-28T21:18:53
+Repo commit: a75c6d1 PC results 20260928-210810
+Repo versions: COD2EFT v2.4.4, EFT Tools v1.6.1
+
+Unity last loaded: [EFT Tools] v1.6.1 (2026-09-29) loaded
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe
+SKIPPED (over 90 MB): C:\Users\notso\Downloads\Claude Current\SPTModdingTools\Testing\Park 24_1 Investigtor 4K LOD\body_mp_western_t9mi6_24_1_lod1\EFT_Converted\mp_western_t9mi6_24_1_EFT.blend
