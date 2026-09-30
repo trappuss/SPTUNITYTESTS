@@ -29,7 +29,12 @@ namespace COD2EFTInspector
         public bool InvertAimDrag;
         // background: Isolate = only the character (and what it wears / holds), on a solid colour
         public bool Isolate, NoFog = true, NoPost, WorldLightsOff;
-        public bool Ortho;   // orthographic camera, size = distance * tan(fov / 2) so the framing matches
+        public bool Ortho;
+        // play mode (0.9.0): the player controls the character (walk, shoot, reload, inspect) while the camera keeps
+        // orbiting it; the camera follows the character's facing, and the plugin gives input back (InputBlock)
+        public bool Play;
+        public bool DoubleClicked;   // set by HandleMouse, read and cleared by the plugin
+        float _lastClick = -1f;   // orthographic camera, size = distance * tan(fov / 2) so the framing matches
         bool _oldOrtho;
         float _oldOrthoSize;
         public Color BgColor = DefaultBg;
@@ -217,7 +222,7 @@ namespace COD2EFTInspector
         /// <summary>Every frame while photo mode is on: keeps the character at CharYaw / CharPitch.</summary>
         public void Update()
         {
-            if (!Active || !Game.Alive(_player) || !_startRot.HasValue) return;
+            if (!Active || Play || !Game.Alive(_player) || !_startRot.HasValue) return;
             var cur = ReadRot();
             if (cur.HasValue) WriteRot(cur.Value, new Vector2(_startRot.Value.x + CharYaw, CharPitch));
         }
@@ -259,9 +264,19 @@ namespace COD2EFTInspector
 
             var root = _player.transform;
             int hidden = 0;
+            // the character's layers (body, gear, weapon): anything on them near the character is kept, because held / slung
+            // items are not always children of the player object (0.8.0 hid the gun)
+            int charLayers = 0;
+            foreach (var r in root.GetComponentsInChildren<Renderer>(true)) if (r != null) charLayers |= 1 << r.gameObject.layer;
+            foreach (var n in new[] { "Player", "Weapon", "PlayerSpiritAura" }) { int l = LayerMask.NameToLayer(n); if (l >= 0) charLayers |= 1 << l; }
+            var centre = root.position + Vector3.up;
+            var near = new List<string>();
             foreach (var r in UnityEngine.Object.FindObjectsOfType<Renderer>())
             {
                 if (r == null || _isoHidden.ContainsKey(r) || r.transform.IsChildOf(root) || r.GetComponent<Light>() != null) continue;
+                bool close = (r.bounds.center - centre).sqrMagnitude < 2.5f * 2.5f;
+                if (close && (charLayers & (1 << r.gameObject.layer)) != 0) continue;
+                if (close && near.Count < 25) near.Add($"{BodyScan.PathOf(r.transform)} [layer {LayerMask.LayerToName(r.gameObject.layer)}]");
                 _isoHidden[r] = r.forceRenderingOff;
                 r.forceRenderingOff = true;
                 hidden++;
@@ -299,6 +314,8 @@ namespace COD2EFTInspector
                 _isoLights.Clear();
                 RenderSettings.ambientMode = _oldAmbMode; RenderSettings.ambientLight = _oldAmb; RenderSettings.ambientIntensity = _oldAmbInt;
             }
+            if (near.Count > 0)
+                InspectorPlugin.Log.LogInfo("Photo mode: isolate hid these objects within 2.5 m of the character (if one is your gear, tell Claude): " + string.Join("; ", near));
             if (hidden > 0)
                 InspectorPlugin.Log.LogInfo($"Photo mode: isolate: {hidden} more renderer(s) hidden ({_isoHidden.Count} in all), {_isoTerrain.Count} terrain(s), " +
                     $"camera effects off: {(_isoFx.Count == 0 ? "none" : string.Join(", ", _isoFx.Keys.Where(b => b != null).Select(b => b.GetType().Name)))}" +
@@ -326,6 +343,16 @@ namespace COD2EFTInspector
 
         public bool Isolated => Active && _isoOn;
 
+        /// <summary>Leaving play mode: the character's current facing / aim become the new reference (no snap back).</summary>
+        public void Rebase()
+        {
+            if (!Active || !Game.Alive(_player)) return;
+            _baseYaw = _player.transform.eulerAngles.y;
+            _startRot = ReadRot();
+            CharYaw = 0f;
+            CharPitch = _startRot.HasValue ? Mathf.Clamp(_startRot.Value.y, -60f, 60f) : 0f;
+        }
+
         // ------------------------------------------------------------------ resets
 
         public void ResetCamera() { Ortho = false; Yaw = CharYaw + DefYaw; Pitch = DefPitch; Distance = DefDistance; Height = DefHeight; Fov = DefFov; }
@@ -340,9 +367,10 @@ namespace COD2EFTInspector
         {
             if (!Active) return;
             try { IsolateOff(); } catch (Exception e) { InspectorPlugin.Log.LogError("Photo mode: restoring the background failed: " + e); }
-            try { if (_startRot.HasValue && Game.Alive(_player)) { var cur = ReadRot(); if (cur.HasValue) WriteRot(cur.Value, _startRot.Value); } }
+            try { if (!Play && _startRot.HasValue && Game.Alive(_player)) { var cur = ReadRot(); if (cur.HasValue) WriteRot(cur.Value, _startRot.Value); } }
             catch (Exception e) { InspectorPlugin.Log.LogError("Photo mode: turning the character back failed: " + e); }
             Active = false;
+            Play = false;
             _blockForceSet = false;
             BgOverride = null;
             foreach (var l in _lights) if (l != null) UnityEngine.Object.Destroy(l.gameObject);
@@ -399,6 +427,11 @@ namespace COD2EFTInspector
         {
             var m = Input.mousePosition;
             for (int b = 0; b < 2; b++) if (Input.GetMouseButtonDown(b)) _dragOk[b] = !overPanel;
+            if (Input.GetMouseButtonDown(0) && !overPanel)
+            {
+                if (Time.unscaledTime - _lastClick < 0.3f) { DoubleClicked = true; _lastClick = -1f; }
+                else _lastClick = Time.unscaledTime;
+            }
             var d = m - _lastMouse;
             if (Input.GetMouseButton(1) && _dragOk[1])
             {
@@ -441,7 +474,8 @@ namespace COD2EFTInspector
             if (!Active) return;
             if (!Game.Alive(_player) || _cam == null) { InspectorPlugin.Log.LogInfo("Photo mode: player or camera gone"); Exit(); return; }
             var pt = _player.transform;
-            float baseYaw = _baseYaw;   // world facing at photo-mode start: turning the character doesn't turn the camera
+            // world facing at photo-mode start: turning the character doesn't turn the camera; in play mode the camera follows
+            float baseYaw = Play ? pt.eulerAngles.y : _baseYaw;
             var target = pt.position + Vector3.up * Height;
             var camPos = target + Dir(baseYaw + Yaw, Pitch) * Distance;
             _cam.transform.position = camPos;

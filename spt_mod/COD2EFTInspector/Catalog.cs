@@ -96,6 +96,9 @@ namespace COD2EFTInspector
                 int n = 0;
                 foreach (var e in entries)
                 {
+                    // upper-body suites pair a top with its first-person hands: _props.Body + _props.Hands
+                    string sb = Json.Str(e, "_props", "Body"), sh = Json.Str(e, "_props", "Hands");
+                    if (!string.IsNullOrEmpty(sb) && !string.IsNullOrEmpty(sh) && !HandsOfTop.ContainsKey(sb)) HandsOfTop[sb] = sh;
                     string bp = Json.Str(e, "_props", "BodyPart"), path = Json.Str(e, "_props", "Prefab", "path");
                     if (bp == null || path == null || !VanillaPart.ContainsKey(bp) || path.Length == 0) continue;
                     Items.Add(new Outfit { Id = Json.Str(e, "_id"), Name = Json.Str(e, "_name"), Part = VanillaPart[bp], Bundle = path, Source = "vanilla", File = f });
@@ -148,6 +151,7 @@ namespace COD2EFTInspector
                                 Items.Add(new Outfit { Id = top, Name = n, Part = "Top", Bundle = Json.Str(e, "topBundlePath"), Source = name, File = f });
                             if (bottom != null)
                                 Items.Add(new Outfit { Id = bottom, Name = n, Part = "Pants", Bundle = Json.Str(e, "bottomBundlePath"), Source = name, File = f });
+                            if (top != null && hands != null && !HandsOfTop.ContainsKey(top)) HandsOfTop[top] = hands;
                             if (hands != null && !string.IsNullOrEmpty(hb))
                                 Items.Add(new Outfit { Id = hands, Name = n + " (hands)", Part = "Hands", Bundle = hb, Source = name, File = f });
                         }
@@ -246,7 +250,18 @@ namespace COD2EFTInspector
         }
 
         /// <summary>The first-person hands that belong to a top (same mod and outfit name).</summary>
-        public Outfit HandsFor(Outfit top) =>
+        /// <summary>top id -> hands id (vanilla suites, WTT CustomClothing entries).</summary>
+        public readonly Dictionary<string, string> HandsOfTop = new Dictionary<string, string>();
+
+        /// <summary>The first-person hands that go with a top: the suite's pairing, else a mod set's hands by name.</summary>
+        public Outfit HandsFor(Outfit top)
+        {
+            string hid;
+            if (top != null && top.Id != null && HandsOfTop.TryGetValue(top.Id, out hid)) { var h = ById(hid); if (h != null) return h; }
+            return HandsForByName(top);
+        }
+
+        Outfit HandsForByName(Outfit top) =>
             top == null ? null : Items.FirstOrDefault(o => o.Part == "Hands" && o.Source == top.Source && o.File == top.File && SetKey(o.Name) == SetKey(top.Name));
 
         /// <summary>WTT HeadVoiceSelector's server mod is installed (its route saves a head to the profile).</summary>

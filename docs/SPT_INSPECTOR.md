@@ -65,6 +65,11 @@ List<PoolResourceInfo> resources, AssemblyType assemblyType, YieldDelegate yield
 runs anyway. Verified in game so far: photo mode, isolate and transparent PNG (0.7.0 screenshots). The hideout body = the profile's
 outfit (the body log).
 
+**Play mode (0.9.0):** in photo mode a double-click outside the panel (or the *Play mode* button) gives the character back
+to the player (`InputBlock` released, cursor locked). The photo camera keeps orbiting and follows the character's facing.
+Esc / F9 returns to photo mode and re-bases the character's facing (`PhotoMode.Rebase`). Hands: `Catalog.HandsOfTop`
+(vanilla suites `_props.Body` -> `_props.Hands`, WTT topId -> handsId).
+
 **Try-on diagnostics (0.7.0):** a Wear logs its target body, the loader arguments with types, per-bundle results on failure, and
 every `PlayerBody` in the scene (owner, active, what it shows). If the game rebuilds your body afterwards, a warning says so.
 *Log all bodies* button in the try-on section.

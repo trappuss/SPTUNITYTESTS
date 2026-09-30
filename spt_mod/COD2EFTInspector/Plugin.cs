@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.8.0";
+        public const string Version = "0.9.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -51,7 +51,7 @@ namespace COD2EFTInspector
         readonly Dictionary<Renderer, bool> _hidden = new Dictionary<Renderer, bool>();
         readonly PhotoMode _photo = new PhotoMode();
         ConfigEntry<float> _lightStrength;
-        ConfigEntry<bool> _blockInput, _invertAim;
+        ConfigEntry<bool> _blockInput, _invertAim, _playOnDoubleClick, _topsBringHands;
         ConfigEntry<float> _winW, _winH;
         bool _resizing;
         ConfigEntry<string> _bgColor;
@@ -86,6 +86,11 @@ namespace COD2EFTInspector
                 new ConfigDescription("Multiplier for the key / fill / rim lights.", new AcceptableValueRange<float>(0f, 4f)));
             _blockInput = Config.Bind("3. Panel", "Block game input while open", true,
                 "While the panel is open (raid / hideout) the character takes no input: no look, aim, fire or walk. Given back on close.");
+            _playOnDoubleClick = Config.Bind("5. Photo mode", "Double-click to play", true,
+                "In photo mode, a double-click outside the panel gives you full control of the character (walk, shoot, reload, inspect) " +
+                "while the photo camera keeps orbiting. Esc goes back.");
+            _topsBringHands = Config.Bind("4. Outfits", "Tops bring their hands", true,
+                "Wearing a top also puts on its first-person hands (the suite's pairing). Off: hands only change when you wear hands.");
             _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
             _bgColor = Config.Bind("5. Photo mode", "Background colour", "#00B140", "Solid background colour for Isolate character (HTML colour; default chroma green).");
             _winW = Config.Bind("3. Panel", "Width", 600f, "Panel width (drag the bottom-right corner of the panel to change it).");
@@ -150,7 +155,9 @@ namespace COD2EFTInspector
         {
             try
             {
-                if (_panelKey.Value.IsDown()) TogglePanel();
+                // play mode (photo mode with full control): Esc or the panel key goes back
+                if (_photo.Play && (!_photo.Active || Input.GetKeyDown(KeyCode.Escape) || _panelKey.Value.IsDown())) SetPlay(false);
+                else if (_panelKey.Value.IsDown()) TogglePanel();
                 if (_shotKey.Value.IsDown()) TakeScreenshot();
                 if (Time.unscaledTime >= _nextTick)
                 {
@@ -161,14 +168,16 @@ namespace COD2EFTInspector
                     if (ow != null) { Log.LogWarning("Wear: " + ow); _status = "Note: " + ow; try { BodyScan.LogBodies(null); } catch { } }
                     if (_open) Refresh(false);
                 }
-                if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+                if (_photo.Play) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+                else if ((_open || _photo.Active) && _unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
                 // panel open or photo mode: the character takes no input (look / aim / fire / walk); given back as it was
-                InputBlock.Set(Game.MainPlayer(), _photo.Active || (_open && _blockInput.Value));
-                if (_photo.Active)
+                InputBlock.Set(Game.MainPlayer(), !_photo.Play && (_photo.Active || (_open && _blockInput.Value)));
+                if (_photo.Active && !_photo.Play)
                 {
                     _photo.InvertAimDrag = _invertAim.Value;
                     _photo.HandleMouse(MouseOverPanel());
                     _photo.Update();
+                    if (_photo.DoubleClicked) { _photo.DoubleClicked = false; if (_playOnDoubleClick.Value) SetPlay(true); }
                 }
                 // photo mode can end by itself (player gone: hideout / raid left); its hidden UI must come back, some of it is the menu's
                 if (!_photo.Active && _photoHud.Count > 0)
@@ -179,6 +188,29 @@ namespace COD2EFTInspector
                 }
             }
             catch (Exception e) { Game.LogOnce("update:" + e.GetType().Name + e.Message, "Update failed: " + e); }
+        }
+
+        bool _openBeforePlay;
+
+        /// <summary>Play mode on / off: full control of the character inside photo mode (the panel hides; Esc comes back).</summary>
+        void SetPlay(bool on)
+        {
+            if (on == _photo.Play || (on && !_photo.Active)) return;
+            _photo.Play = on;
+            if (on)
+            {
+                _openBeforePlay = _open;
+                _open = false;
+                InputBlock.Release();
+                Log.LogInfo("Photo mode: play mode on (full control; Esc to leave)");
+            }
+            else
+            {
+                _photo.Rebase();   // the character keeps where it now faces / aims
+                _open = _openBeforePlay || _open;
+                _status = "Back from play mode";
+                Log.LogInfo("Photo mode: play mode off");
+            }
         }
 
         void TogglePanel()
@@ -280,6 +312,14 @@ namespace COD2EFTInspector
 
         void OnGUI()
         {
+            if (_photo.Play && !_capturing)
+            {
+                Ui.Init();
+                var r = new Rect(Screen.width / 2f - 170f, 18f, 340f, 30f);
+                GUI.DrawTexture(r, Ui.Tex1(new Color(0f, 0f, 0f, 0.6f)));
+                GUI.Label(r, "PLAY MODE  ·  Esc to leave", Ui.Banner);
+                return;
+            }
             if (!_open || _capturing) return;
             if (_unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             Ui.Init();
@@ -529,6 +569,7 @@ namespace COD2EFTInspector
         {
             var cat = GetCatalog();
             var all = new List<Outfit>(items);
+            if (!_topsBringHands.Value) return all;
             foreach (var top in items.Where(o => o.Part == "Top").ToList())
                 if (!all.Any(o => o.Part == "Hands")) { var h = cat.HandsFor(top); if (h != null) all.Add(h); }
             return all;
@@ -597,6 +638,7 @@ namespace COD2EFTInspector
         /// <summary>Back to how it was before photo mode / try-on: meshes, pose, character, camera, lights, background, outfit.</summary>
         void ResetAll()
         {
+            SetPlay(false);
             ShowAll();
             if (_photo.Active)
             {
@@ -733,7 +775,7 @@ namespace COD2EFTInspector
                         (_source == "All" || (_source == "Mods only" ? o.Source != "vanilla" : o.Source == _source)) &&
                         (f.Length == 0 || (o.Name ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0 ||
                          (o.Id ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0 || (o.Bundle ?? "").IndexOf(f, StringComparison.OrdinalIgnoreCase) >= 0))
-                    .OrderByDescending(IsWorn).ThenBy(o => o.Source == "vanilla").ThenBy(o => o.Source, StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(o => o.Source == "vanilla").ThenBy(o => o.Source, StringComparer.OrdinalIgnoreCase)
                     .ThenBy(o => o.Part).ThenBy(o => o.Name, StringComparer.OrdinalIgnoreCase).ToList();
             }
             int missing = cat.Items.Count(o => o.BundleFound == false);
@@ -742,13 +784,23 @@ namespace COD2EFTInspector
             foreach (var n in cat.Notes.Where(n => n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(3))
                 GUILayout.Label(n, Ui.Small);
 
+            // what is worn now, pinned above the list (the list itself keeps its order, so Wear doesn't move your place)
+            var wearing = cat.Items.Where(IsWorn).OrderBy(o => o.Part == "Head" ? 0 : o.Part == "Top" ? 1 : o.Part == "Pants" ? 2 : 3).ToList();
+            if (wearing.Count > 0)
+            {
+                GUILayout.BeginVertical(Ui.CardBox);
+                GUILayout.Label("Wearing now", Ui.Small);
+                foreach (var o in wearing) GUILayout.Label($"<b>{o.Part}</b>   {o.Name}   <color=#9aa0a8>{o.Source}</color>", Ui.Label);
+                GUILayout.EndVertical();
+            }
+            _topsBringHands.Value = Toggle(_topsBringHands.Value, "Tops bring their hands", "Off: wear hands separately (Part: Hands)");
             _scroll2 = GUILayout.BeginScrollView(_scroll2, GUILayout.ExpandHeight(true));
             bool canWear = CanWear();
             foreach (var o in _shown.Take(300))
             {
                 GUILayout.BeginHorizontal();
-                GUI.enabled = canWear && o.Part != "Hands" && o.BundleFound != false;
-                if (GUILayout.Button(new GUIContent("Wear", o.Part == "Hands" ? "Hands come with their top" : "Try on (not saved)"), Ui.Button, GUILayout.Width(58))) WearItems(new List<Outfit> { o });
+                GUI.enabled = canWear && o.BundleFound != false;
+                if (GUILayout.Button(new GUIContent("Wear", o.Part == "Top" && _topsBringHands.Value ? "Try on with its hands (not saved)" : "Try on (not saved)"), Ui.Button, GUILayout.Width(58))) WearItems(new List<Outfit> { o });
                 GUI.enabled = true;
                 GUILayout.BeginVertical();
                 GUILayout.Label($"<b>{o.Name}</b>", Ui.Label);
@@ -823,7 +875,9 @@ namespace COD2EFTInspector
                 GUILayout.FlexibleSpace();
                 return;
             }
-            GUILayout.Label("Mouse outside the panel:  right drag = orbit   ·   left drag = turn character / aim   ·   wheel = zoom", Ui.Small);
+            GUILayout.Label("Mouse outside the panel:  right drag = orbit   ·   left drag = turn character / aim   ·   wheel = zoom" +
+                            (_playOnDoubleClick.Value ? "   ·   double-click = play mode (full control, Esc to leave)" : ""), Ui.Small);
+            if (GUILayout.Button(new GUIContent("Play mode", "Full control of the character (walk, shoot, reload, inspect) with this camera; Esc to leave"), Ui.Button)) SetPlay(true);
             _scrollPhoto = GUILayout.BeginScrollView(_scrollPhoto, GUILayout.ExpandHeight(true));
 
             if (BeginSection("Camera", ph.ResetCamera))

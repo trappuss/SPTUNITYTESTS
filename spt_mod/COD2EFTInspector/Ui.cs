@@ -18,7 +18,7 @@ namespace COD2EFTInspector
         public static readonly Color Bad = new Color(0.95f, 0.38f, 0.35f);
 
         public static GUIStyle Window, Title, Chip, H, Label, Small, Mono, Button, Primary, Tiny, Tab, TabOn, Seg, SegOn,
-                               CardBox, SectionHead, Value, Status, Badge, Toggle, Field;
+                               CardBox, SectionHead, Value, Status, Badge, Toggle, Field, Banner;
         static bool _made;
 
         public static Texture2D Tex(Color c)
@@ -87,6 +87,7 @@ namespace COD2EFTInspector
             Toggle = new GUIStyle(GUI.skin.toggle) { fontSize = 13, wordWrap = true };
             Toggle.normal.textColor = Toggle.onNormal.textColor = Toggle.hover.textColor = Toggle.onHover.textColor = Text;
             Toggle.active.textColor = Toggle.onActive.textColor = Text;
+            Banner = Lbl(14, Color.white, true, false); Banner.alignment = TextAnchor.MiddleCenter;
             Field = new GUIStyle(GUI.skin.textField) { fontSize = 13, padding = new RectOffset(6, 6, 4, 4) };
         }
 

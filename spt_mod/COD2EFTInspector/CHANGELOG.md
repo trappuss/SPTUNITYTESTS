@@ -3,6 +3,23 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.9.0 (2026-09-30)
+User feedback on 0.8.0 (no new log; compiled with mcs only, untested in game):
+- **Isolate hid the gun / gear**: held and slung items aren't always children of the player object. Isolate now also keeps
+  every renderer on the character's layers (the layers its own meshes use, plus `Player` / `Weapon`) within 2.5 m. Any other
+  object within 2.5 m that it hides is logged by path and layer, so a missing piece can be named from one log.
+- **Tops didn't change the hands**: a top only found its hands through a mod set's name, so vanilla tops brought none. The
+  catalog now reads the pairing from the suites in `customization.json` (`_props.Body` + `_props.Hands`) and from WTT
+  `topId` / `handsId`.
+- **Hands on their own**: hands entries now have *Wear*. Option *Tops bring their hands* (Catalog tab / F12 *4. Outfits*,
+  on by default): off means a top leaves the hands alone.
+- **Catalog keeps its order**: wearing something no longer moves it to the top (your place in the list stays). What you
+  wear is pinned in a *Wearing now* box above the list and still tagged WORN in it.
+- **Play mode** (photo mode): a double-click outside the panel (or the *Play mode* button) gives full control of the
+  character (walk, shoot, reload, inspect) while the photo camera keeps orbiting it and follows its facing. The panel
+  hides; a banner says "PLAY MODE · Esc to leave". Esc (or F9) goes back to photo mode, and the character keeps where
+  it faces. Setting *5. Photo mode / Double-click to play* (on). Esc may also reach the game's own menu: not checked.
+
 ## 0.8.0 (2026-09-30)
 Panel redesign (user: hard to see and navigate). No change to what the buttons do. Compiled with mcs only; the look is unchecked in game.
 - New `Ui.cs`: one dark theme, bigger text (13 px base), flat buttons, accent colour for the main action, cards for sections.
