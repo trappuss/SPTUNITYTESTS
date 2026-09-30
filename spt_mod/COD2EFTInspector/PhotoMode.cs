@@ -33,6 +33,8 @@ namespace COD2EFTInspector
         // play mode (0.9.0): the player controls the character (walk, shoot, reload, inspect) while the camera keeps
         // orbiting it; the camera follows the character's facing, and the plugin gives input back (InputBlock)
         public bool Play;
+        public bool PlayCameraTurns = true;   // play mode: the camera turns with the character (off: it keeps its world angle)
+        float _lastBase;                     // the base yaw the camera used last frame (Rebase keeps the camera where it is)
         public bool DoubleClicked;   // set by HandleMouse, read and cleared by the plugin
         float _lastClick = -1f;   // orthographic camera, size = distance * tan(fov / 2) so the framing matches
         bool _oldOrtho;
@@ -348,6 +350,7 @@ namespace COD2EFTInspector
         {
             if (!Active || !Game.Alive(_player)) return;
             _baseYaw = _player.transform.eulerAngles.y;
+            Yaw = Mathf.Repeat(Yaw + _lastBase - _baseYaw, 360f);   // same camera position as the last frame, relative to the new base
             _startRot = ReadRot();
             CharYaw = 0f;
             CharPitch = _startRot.HasValue ? Mathf.Clamp(_startRot.Value.y, -60f, 60f) : 0f;
@@ -475,7 +478,8 @@ namespace COD2EFTInspector
             if (!Game.Alive(_player) || _cam == null) { InspectorPlugin.Log.LogInfo("Photo mode: player or camera gone"); Exit(); return; }
             var pt = _player.transform;
             // world facing at photo-mode start: turning the character doesn't turn the camera; in play mode the camera follows
-            float baseYaw = Play ? pt.eulerAngles.y : _baseYaw;
+            float baseYaw = Play && PlayCameraTurns ? pt.eulerAngles.y : _baseYaw;
+            _lastBase = baseYaw;
             var target = pt.position + Vector3.up * Height;
             var camPos = target + Dir(baseYaw + Yaw, Pitch) * Distance;
             _cam.transform.position = camPos;

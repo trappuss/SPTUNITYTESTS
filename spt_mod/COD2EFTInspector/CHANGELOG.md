@@ -3,6 +3,14 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.9.1 (2026-09-30)
+User: 0.9.0 checked in game and working (isolate with gear, hands, catalog order, play mode).
+- **Play mode: camera turns with the character** (Photo tab under *Play mode*, and F12 *5. Photo mode*; on by default). Off:
+  the camera keeps its angle in the world while you walk and turn. Changing it in F12 applies at once, even during play.
+- **Esc from play mode** now always brings the panel back. 0.9.0 reopened it only if it had been open when play mode
+  started, so a double-click with the panel closed left you with no panel.
+- Leaving play mode keeps the camera exactly where it was (the orbit angle is re-based with the character's new facing).
+
 ## 0.9.0 (2026-09-30)
 User feedback on 0.8.0 (no new log; compiled with mcs only, untested in game):
 - **Isolate hid the gun / gear**: held and slung items aren't always children of the player object. Isolate now also keeps

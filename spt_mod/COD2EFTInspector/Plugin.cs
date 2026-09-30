@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.9.0";
+        public const string Version = "0.9.1";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -51,7 +51,7 @@ namespace COD2EFTInspector
         readonly Dictionary<Renderer, bool> _hidden = new Dictionary<Renderer, bool>();
         readonly PhotoMode _photo = new PhotoMode();
         ConfigEntry<float> _lightStrength;
-        ConfigEntry<bool> _blockInput, _invertAim, _playOnDoubleClick, _topsBringHands;
+        ConfigEntry<bool> _blockInput, _invertAim, _playOnDoubleClick, _topsBringHands, _playCamTurns;
         ConfigEntry<float> _winW, _winH;
         bool _resizing;
         ConfigEntry<string> _bgColor;
@@ -89,6 +89,8 @@ namespace COD2EFTInspector
             _playOnDoubleClick = Config.Bind("5. Photo mode", "Double-click to play", true,
                 "In photo mode, a double-click outside the panel gives you full control of the character (walk, shoot, reload, inspect) " +
                 "while the photo camera keeps orbiting. Esc goes back.");
+            _playCamTurns = Config.Bind("5. Photo mode", "Play mode: camera turns with the character", true,
+                "On: the camera stays behind / around the character as it turns. Off: the camera keeps its angle in the world (the character turns in front of it).");
             _topsBringHands = Config.Bind("4. Outfits", "Tops bring their hands", true,
                 "Wearing a top also puts on its first-person hands (the suite's pairing). Off: hands only change when you wear hands.");
             _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
@@ -155,6 +157,7 @@ namespace COD2EFTInspector
         {
             try
             {
+                _photo.PlayCameraTurns = _playCamTurns.Value;   // F12 changes apply at once, also during play mode
                 // play mode (photo mode with full control): Esc or the panel key goes back
                 if (_photo.Play && (!_photo.Active || Input.GetKeyDown(KeyCode.Escape) || _panelKey.Value.IsDown())) SetPlay(false);
                 else if (_panelKey.Value.IsDown()) TogglePanel();
@@ -190,7 +193,6 @@ namespace COD2EFTInspector
             catch (Exception e) { Game.LogOnce("update:" + e.GetType().Name + e.Message, "Update failed: " + e); }
         }
 
-        bool _openBeforePlay;
 
         /// <summary>Play mode on / off: full control of the character inside photo mode (the panel hides; Esc comes back).</summary>
         void SetPlay(bool on)
@@ -199,15 +201,15 @@ namespace COD2EFTInspector
             _photo.Play = on;
             if (on)
             {
-                _openBeforePlay = _open;
                 _open = false;
+                _photo.PlayCameraTurns = _playCamTurns.Value;
                 InputBlock.Release();
                 Log.LogInfo("Photo mode: play mode on (full control; Esc to leave)");
             }
             else
             {
                 _photo.Rebase();   // the character keeps where it now faces / aims
-                _open = _openBeforePlay || _open;
+                if (!_open) TogglePanel();   // always back to the panel (0.9.0 kept it closed if it was closed before)
                 _status = "Back from play mode";
                 Log.LogInfo("Photo mode: play mode off");
             }
@@ -878,6 +880,7 @@ namespace COD2EFTInspector
             GUILayout.Label("Mouse outside the panel:  right drag = orbit   ·   left drag = turn character / aim   ·   wheel = zoom" +
                             (_playOnDoubleClick.Value ? "   ·   double-click = play mode (full control, Esc to leave)" : ""), Ui.Small);
             if (GUILayout.Button(new GUIContent("Play mode", "Full control of the character (walk, shoot, reload, inspect) with this camera; Esc to leave"), Ui.Button)) SetPlay(true);
+            _playCamTurns.Value = Toggle(_playCamTurns.Value, "Play mode: camera turns with the character", "Off: the camera keeps its world angle while you walk / turn");
             _scrollPhoto = GUILayout.BeginScrollView(_scrollPhoto, GUILayout.ExpandHeight(true));
 
             if (BeginSection("Camera", ph.ResetCamera))
