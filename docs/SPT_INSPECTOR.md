@@ -55,6 +55,12 @@ Supersize is capped at 2x for it.
 Hunches to check in the log: the camera component list (which effects exist), `Player.Rotate(Vector2)` for the character turn,
 the up/down sign of the aim (F12 *Invert aim drag*).
 
+**Bundle loading (0.7.1, `BundleLoader.cs`):** SPT 4.1.6 has `EFT.ObjectsFactory.LoadBundlesAndCreatePools(Pools pools,
+List<PoolResourceInfo> resources, AssemblyType assemblyType, YieldDelegate yield, IProgress progress, CancellationToken ct)`
+(0.7.0 log). Arguments are built by type and every choice is logged. If loading fails but every bundle is already loaded, Init
+runs anyway. Verified in game so far: photo mode, isolate and transparent PNG (0.7.0 screenshots). The hideout body = the profile's
+outfit (the body log).
+
 **Try-on diagnostics (0.7.0):** a Wear logs its target body, the loader arguments with types, per-bundle results on failure, and
 every `PlayerBody` in the scene (owner, active, what it shows). If the game rebuilds your body afterwards, a warning says so.
 *Log all bodies* button in the try-on section.

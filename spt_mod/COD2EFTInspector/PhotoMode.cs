@@ -29,6 +29,9 @@ namespace COD2EFTInspector
         public bool InvertAimDrag;
         // background: Isolate = only the character (and what it wears / holds), on a solid colour
         public bool Isolate, NoFog = true, NoPost, WorldLightsOff;
+        public bool Ortho;   // orthographic camera, size = distance * tan(fov / 2) so the framing matches
+        bool _oldOrtho;
+        float _oldOrthoSize;
         public Color BgColor = DefaultBg;
         public Color? BgOverride;   // transparent capture: black / white passes
         public static readonly Color DefaultBg = new Color(0f, 177f / 255f, 64f / 255f);   // chroma green
@@ -144,6 +147,8 @@ namespace COD2EFTInspector
             _oldFov = _cam.fieldOfView;
             _oldMask = _cam.cullingMask;
             _oldClear = _cam.clearFlags;
+            _oldOrtho = _cam.orthographic;
+            _oldOrthoSize = _cam.orthographicSize;
             _oldBg = _cam.backgroundColor;
             _baseYaw = player.transform.eulerAngles.y;
             _startRot = ReadRot();
@@ -323,7 +328,7 @@ namespace COD2EFTInspector
 
         // ------------------------------------------------------------------ resets
 
-        public void ResetCamera() { Yaw = CharYaw + DefYaw; Pitch = DefPitch; Distance = DefDistance; Height = DefHeight; Fov = DefFov; }
+        public void ResetCamera() { Ortho = false; Yaw = CharYaw + DefYaw; Pitch = DefPitch; Distance = DefDistance; Height = DefHeight; Fov = DefFov; }
         public void ResetCharacter() { CharYaw = 0f; CharPitch = 0f; }
         public void ResetLights() { SetLights(true); LightsFollowCamera = true; }   // strength: the plugin's config value
         public void ResetBackground() { Isolate = false; NoFog = true; NoPost = false; WorldLightsOff = false; BgColor = DefaultBg; BgOverride = null; }
@@ -344,7 +349,8 @@ namespace COD2EFTInspector
             _lights.Clear();
             try
             {
-                if (_cam != null) { _cam.fieldOfView = _oldFov; _cam.cullingMask = _oldMask; _cam.clearFlags = _oldClear; _cam.backgroundColor = _oldBg; }
+                if (_cam != null) { _cam.fieldOfView = _oldFov; _cam.cullingMask = _oldMask; _cam.clearFlags = _oldClear; _cam.backgroundColor = _oldBg;
+                                  _cam.orthographic = _oldOrtho; _cam.orthographicSize = _oldOrthoSize; }
                 foreach (var kv in _shadowFix) if (kv.Key != null) kv.Key.shadowCastingMode = kv.Value;
                 _shadowFix.Clear();
                 string back = _oldPov != null && _oldPov.ToString() != "FreeCamera" ? _oldPov.ToString() : "FirstPerson";
@@ -441,6 +447,8 @@ namespace COD2EFTInspector
             _cam.transform.position = camPos;
             _cam.transform.rotation = Quaternion.LookRotation(target - camPos, Vector3.up);
             _cam.fieldOfView = Fov;
+            _cam.orthographic = Ortho;
+            if (Ortho) _cam.orthographicSize = Mathf.Max(0.05f, Distance * Mathf.Tan(Fov * 0.5f * Mathf.Deg2Rad));
             if (Time.unscaledTime >= _nextBodyFix) { _nextBodyFix = Time.unscaledTime + 0.5f; FixBody(); }
             IsolateTick();
             float lightYaw = LightsFollowCamera ? baseYaw + Yaw : baseYaw + CharYaw;

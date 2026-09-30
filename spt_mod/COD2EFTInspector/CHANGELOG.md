@@ -3,6 +3,26 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.7.1 (2026-09-30)
+From the 0.7.0 log (from_pc/20260929-195957):
+- **Wear, the real cause**: the plugin found only `EFT.ObjectsFactory.LoadBundlesAndCreatePools(Pools, List<PoolResourceInfo>,
+  AssemblyType, YieldDelegate, IProgress, CancellationToken)` and passed `null` for `pools`, `resources` and `yield`. The resource
+  list was built only as an array, so a `List<>` parameter got null ("Value cannot be null, parameter 'source'").
+  New `BundleLoader.cs`: builds every argument by type. Resources: a `List<T>` or array of T made from the bundle path (T's `path`
+  member, a constructor that takes a path / ResourceKey, or a ResourceKey member). Class / delegate arguments come from the
+  game's own static instances (found by type, each choice logged). Every loader found is tried in turn. The first use logs the
+  members of `PoolResourceInfo`, `Pools` and `YieldDelegate`, so a wrong guess is fixable from one log. If loading still fails
+  but every bundle is already loaded (e.g. the outfit you own and wear), the body is rebuilt anyway. Untested in game.
+- Hideout vs menu, answered by the body log: your hideout character already wears the RCTA COD outfit (your profile owns it),
+  the same as the main-menu preview. The earlier difference was Wear failing.
+- **Panel**: resizable (drag the bottom-right corner; size kept in F12 *3. Panel*), **X** close button, long messages shortened
+  (full text in the log).
+- **Photo**: *Orthographic* toggle in the Camera section (size follows distance and FOV, so the framing stays; *Reset camera*
+  turns it off).
+- **Transparent PNG**: worked in 0.7.0 (93 % of the frame transparent, clean edges), but the character came out 2-8 %
+  see-through: the white pass bloomed onto it. The second pass is now grey, and alpha above 0.96 counts as solid.
+  *All post effects off* gives the exact colours.
+
 ## 0.7.0 (2026-09-29)
 User feedback on 0.6.0 (compiled with mcs only; nothing below tested in game yet):
 - **Wear failed with "Value cannot be null"** (no log of it was sent; the only BepInEx log in `from_pc/` is from 0.2.0).

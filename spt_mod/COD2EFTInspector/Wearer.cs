@@ -75,92 +75,6 @@ namespace COD2EFTInspector
             return null;
         }
 
-        static MethodInfo _loader;
-        static object _loaderTarget;
-
-        static bool FindLoader()
-        {
-            if (_loader != null) return true;
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == "Assembly-CSharp"))
-            {
-                Type[] types;
-                try { types = a.GetTypes(); } catch (ReflectionTypeLoadException e) { types = e.Types.Where(t => t != null).ToArray(); }
-                foreach (var t in types)
-                {
-                    var m = t.GetMethods(Inst | BindingFlags.Static).FirstOrDefault(x => x.Name == "LoadBundlesAndCreatePools" &&
-                        x.GetParameters().Any(p => p.ParameterType.IsArray || (p.ParameterType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(p.ParameterType))));
-                    if (m == null) continue;
-                    object target = null;
-                    if (!m.IsStatic)
-                    {
-                        var single = Game.FindType("Comfort.Common.Singleton`1");
-                        try { target = single?.MakeGenericType(t).GetProperty("Instance", BindingFlags.Static | BindingFlags.Public)?.GetValue(null, null); } catch { }
-                        if (!Game.Alive(target)) { Log($"{t.FullName}.{m.Name} found but Singleton<{t.Name}> is empty"); continue; }
-                    }
-                    _loader = m; _loaderTarget = target;
-                    Log($"bundle loader: {t.FullName}.{m.Name}(" + string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name + " " + p.Name)) + ")");
-                    return true;
-                }
-            }
-            Warn("no LoadBundlesAndCreatePools method found in Assembly-CSharp");
-            return false;
-        }
-
-        static object PickEnum(Type t, params string[] preferred)
-        {
-            foreach (var n in preferred)
-                foreach (var v in Enum.GetNames(t)) if (string.Equals(v, n, StringComparison.OrdinalIgnoreCase)) return Enum.Parse(t, v);
-            return Enum.GetValues(t).GetValue(0);
-        }
-
-        /// <summary>Arguments for the bundle loader, chosen by parameter type (logged).</summary>
-        static object[] LoaderArgs(Type keyType, Array keys)
-        {
-            var ps = _loader.GetParameters();
-            var args = new object[ps.Length];
-            for (int i = 0; i < ps.Length; i++)
-            {
-                var pt = ps[i].ParameterType;
-                if (pt.IsArray && pt.GetElementType() == keyType) args[i] = keys;
-                else if (pt.IsGenericType && pt.IsAssignableFrom(keys.GetType())) args[i] = keys;
-                else if (pt.IsEnum)
-                    args[i] = pt.Name.IndexOf("Priority", StringComparison.OrdinalIgnoreCase) >= 0 ? PickEnum(pt, "Immediate", "General")
-                            : pt.Name.IndexOf("Assembly", StringComparison.OrdinalIgnoreCase) >= 0 ? PickEnum(pt, "Local", "Offline")
-                            : PickEnum(pt, "Raid", "Hideout", "Player");
-                else if (ps[i].HasDefaultValue) args[i] = ps[i].DefaultValue;
-                else if (pt.IsValueType) args[i] = Activator.CreateInstance(pt);   // CancellationToken, bool, ...
-                // a class with static instances of itself (EFT's JobPriorityClass.Immediate / .General): 0.6.0 passed null here,
-                // the likely cause of "Value cannot be null" (hunch until the next log)
-                else args[i] = StaticOfType(pt, "Immediate", "General", "Default");
-            }
-            Game.LogOnce("loaderargs", "Wear: loader arguments: " + string.Join(", ", args.Select((a, i) => ps[i].ParameterType.Name + " " + ps[i].Name + "=" +
-                (a is Array ? $"[{((Array)a).Length} keys]" : a?.ToString() ?? "null"))), false);
-            for (int i = 0; i < ps.Length; i++)
-                if (args[i] == null && !ps[i].HasDefaultValue)
-                    Game.LogOnce("loadernull:" + ps[i].Name, $"Wear: loader argument '{ps[i].Name}' ({ps[i].ParameterType.FullName}) is null: nothing of that type found", true);
-            return args;
-        }
-
-        /// <summary>A public static field / property of this type holding an instance of it (preferred names first); null if none.</summary>
-        static object StaticOfType(Type t, params string[] preferred)
-        {
-            var found = new List<KeyValuePair<string, object>>();
-            try
-            {
-                foreach (var f in t.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                    if (t.IsAssignableFrom(f.FieldType)) { var v = f.GetValue(null); if (v != null) found.Add(new KeyValuePair<string, object>(f.Name, v)); }
-                foreach (var p in t.GetProperties(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                    if (t.IsAssignableFrom(p.PropertyType) && p.GetIndexParameters().Length == 0)
-                    { var v = p.GetValue(null, null); if (v != null) found.Add(new KeyValuePair<string, object>(p.Name, v)); }
-            }
-            catch (Exception e) { Warn($"reading the static members of {t.FullName} failed: {(e.InnerException ?? e).Message}"); }
-            if (found.Count == 0) return null;
-            foreach (var n in preferred)
-                foreach (var kv in found) if (string.Equals(kv.Key, n, StringComparison.OrdinalIgnoreCase)) { Log($"loader argument {t.Name} = {t.Name}.{kv.Key}"); return kv.Value; }
-            Log($"loader argument {t.Name} = {t.Name}.{found[0].Key} (of: {string.Join(", ", found.Select(kv => kv.Key))})");
-            return found[0].Value;
-        }
-
         /// <summary>One line for an exception: type, message, the null parameter's name and the first game frames.</summary>
         internal static string Describe(Exception e)
         {
@@ -184,43 +98,7 @@ namespace COD2EFTInspector
             }
         }
 
-        static Array MakeKeys(Type keyType, IList<Outfit> items)
-        {
-            var keys = Array.CreateInstance(keyType, items.Count);
-            for (int i = 0; i < items.Count; i++)
-            {
-                var rk = Activator.CreateInstance(keyType);
-                SetMember(rk, "path", items[i].Bundle);
-                SetMember(rk, "rcid", "");
-                keys.SetValue(rk, i);
-            }
-            return keys;
-        }
-
         static string Name(Outfit o) => $"{o.Part} '{o.Name}' (id {o.Id ?? "null"}, bundle '{o.Bundle ?? "null"}', from {o.Source})";
-
-        /// <summary>After a failed batch load: loads each bundle alone and names the ones that fail.</summary>
-        static IEnumerator Diagnose(Type keyType, IList<Outfit> items, Action<string> result)
-        {
-            var bad = new List<string>();
-            foreach (var o in items)
-            {
-                Task t = null;
-                string err = null;
-                try { t = _loader.Invoke(_loader.IsStatic ? null : _loaderTarget, LoaderArgs(keyType, MakeKeys(keyType, new[] { o }))) as Task; }
-                catch (Exception e) { err = Describe(e); }
-                if (t != null)
-                {
-                    float until = Time.realtimeSinceStartup + 30f;
-                    while (!t.IsCompleted && Time.realtimeSinceStartup < until) yield return null;
-                    if (!t.IsCompleted) err = "no answer in 30 s";
-                    else if (t.IsFaulted) err = Describe(t.Exception);
-                }
-                Log($"diagnosis: {Name(o)}: {err ?? "loads fine alone"}");
-                if (err != null) bad.Add($"{o.Part} '{o.Name}' bundle '{o.Bundle}'");
-            }
-            result(bad.Count == 0 ? "each bundle loads fine alone (see the log)" : "failing: " + string.Join("; ", bad));
-        }
 
         /// <summary>Wears the given catalog entries (any parts). done(message) is called with the result.</summary>
         public static IEnumerator Wear(Component player, IList<Outfit> items, Action<string> done)
@@ -228,8 +106,6 @@ namespace COD2EFTInspector
             Busy = true;
             string error = null;
             Action<string> fail = m => { if (error == null) { error = m; Warn(m); } };
-            Array keys = null;
-            Type keyType = null;
             try
             {
                 if (player == null) fail("no local player (try-on works in raid and the hideout)");
@@ -238,7 +114,7 @@ namespace COD2EFTInspector
                 var body = (Game.Get(player, "_playerBody") ?? Game.Get(player, "PlayerBody")) as Component;
                 if (error == null && cust == null) fail("Profile.Customization is not a dictionary");
                 if (error == null && body == null) fail("PlayerBody not found");
-                if (error == null && !FindLoader()) fail("bundle loader not found (see log)");
+                if (error == null && !BundleLoader.Find()) fail("bundle loader not found (see log)");
                 var init = body?.GetType().GetMethods(Inst).FirstOrDefault(m => m.Name == "Init" && m.GetParameters().Length == 8);
                 if (error == null && init == null) fail("PlayerBody.Init with 8 parameters not found");
                 foreach (var o in items)
@@ -270,27 +146,17 @@ namespace COD2EFTInspector
                     if (bc != null && !ReferenceEquals(bc, cust))
                         foreach (var o in items) { var k = FindKey(bc, BodyKey(o.Part)); if (k != null) bc[k] = MakeId(ValueType(bc), o.Id); }
 
-                    var keyParam = _loader.GetParameters().First(p => p.ParameterType.IsArray || p.ParameterType.IsGenericType).ParameterType;
-                    keyType = keyParam.IsArray ? keyParam.GetElementType() : keyParam.GetGenericArguments()[0];
-                    keys = MakeKeys(keyType, items);
-                    Log($"loading {items.Count} bundle(s): " + string.Join(", ", items.Select(o => o.Bundle)));
+                    // (the bundle keys are built by BundleLoader from each item's bundle path)
                 }
             }
             catch (Exception e) { fail("preparing failed: " + e); }
 
-            Task load = null;
-            if (error == null)
+            string loadErr = null;
+            if (error == null) yield return BundleLoader.Load(items, m => loadErr = m);
+            if (error == null && loadErr != null)
             {
-                try { load = _loader.Invoke(_loader.IsStatic ? null : _loaderTarget, LoaderArgs(keyType, keys)) as Task; }
-                catch (Exception e) { fail("bundle loader call failed: " + Describe(e)); }
-            }
-            if (load != null) yield return Await(load, "loading the bundles", fail);
-            if (error != null && keyType != null && _loader != null && items.Count > 0 && error.Contains("bundle"))
-            {
-                string which = null;
-                yield return Diagnose(keyType, items, r => which = r);
-                error += " | " + which;
-                Warn("bundle diagnosis: " + which);
+                if (BundleLoader.AllLoaded(items)) Warn(loadErr + " -- but every bundle is already in memory, so the body is rebuilt anyway");
+                else fail(loadErr);
             }
 
             Task initTask = null;

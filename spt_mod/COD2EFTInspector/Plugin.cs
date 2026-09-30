@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.7.0";
+        public const string Version = "0.7.1";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -52,6 +52,8 @@ namespace COD2EFTInspector
         readonly PhotoMode _photo = new PhotoMode();
         ConfigEntry<float> _lightStrength;
         ConfigEntry<bool> _blockInput, _invertAim;
+        ConfigEntry<float> _winW, _winH;
+        bool _resizing;
         ConfigEntry<string> _bgColor;
         bool _transparent;
         Vector2 _scroll3;
@@ -86,6 +88,9 @@ namespace COD2EFTInspector
                 "While the panel is open (raid / hideout) the character takes no input: no look, aim, fire or walk. Given back on close.");
             _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
             _bgColor = Config.Bind("5. Photo mode", "Background colour", "#00B140", "Solid background colour for Isolate character (HTML colour; default chroma green).");
+            _winW = Config.Bind("3. Panel", "Width", 540f, "Panel width (drag the bottom-right corner of the panel to change it).");
+            _winH = Config.Bind("3. Panel", "Height", 660f, "Panel height (drag the bottom-right corner of the panel to change it).");
+            _win.width = Mathf.Max(360f, _winW.Value); _win.height = Mathf.Max(240f, _winH.Value);
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
             try { Game.LogStartup(); } catch (Exception e) { Log.LogError("Startup check failed: " + e); }
@@ -280,7 +285,17 @@ namespace COD2EFTInspector
             var m = GUI.matrix;
             float s = Mathf.Clamp(_scale.Value, 0.75f, 2.5f);
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
-            _win = GUILayout.Window(0x0C0D2EF, _win, DrawWindow, $"{PluginName} v{Version}");
+            if (_resizing)
+            {
+                if (!Input.GetMouseButton(0)) { _resizing = false; _winW.Value = _win.width; _winH.Value = _win.height; }
+                else
+                {
+                    var mp = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y) / s;
+                    _win.width = Mathf.Clamp(mp.x - _win.x + 6f, 360f, Mathf.Max(360f, Screen.width / s));
+                    _win.height = Mathf.Clamp(mp.y - _win.y + 6f, 240f, Mathf.Max(240f, Screen.height / s));
+                }
+            }
+            _win = GUILayout.Window(0x0C0D2EF, _win, DrawWindow, $"{PluginName} v{Version}", GUILayout.Width(_win.width), GUILayout.Height(_win.height));
             GUI.matrix = m;
         }
 
@@ -288,6 +303,11 @@ namespace COD2EFTInspector
         {
             try { DrawContents(); }
             catch (Exception e) { GUILayout.Label("Panel error (see BepInEx log): " + e.Message); Game.LogOnce("gui:" + e.Message, "Panel error: " + e); }
+            if (GUI.Button(new Rect(_win.width - 26f, 2f, 22f, 16f), "X")) TogglePanel();
+            // resize grip, bottom-right corner (the size is kept in the config)
+            var grip = new Rect(_win.width - 18f, _win.height - 18f, 18f, 18f);
+            GUI.Label(grip, "//");
+            if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && grip.Contains(Event.current.mousePosition)) { _resizing = true; Event.current.Use(); }
             GUI.DragWindow();
         }
 
@@ -324,7 +344,7 @@ namespace COD2EFTInspector
             for (int i = 1; i <= 4; i++)
                 if (GUILayout.Toggle(_supersize.Value == i, $"{i}x", GUILayout.Width(40)) && _supersize.Value != i) _supersize.Value = i;
             GUILayout.EndHorizontal();
-            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            StatusLabel();
 
             _scroll = GUILayout.BeginScrollView(_scroll);
             if (_scan != null)
@@ -548,7 +568,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             if (GUILayout.Button("Write catalog to file", GUILayout.Width(160))) WriteCatalog(cat);
             GUILayout.Label($"{cat.Items.Count} entries, {cat.Items.Count(o => o.BundleFound == false)} missing bundle");
             GUILayout.EndHorizontal();
-            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            StatusLabel();
             DrawTryOn(cat);
             foreach (var n in cat.Notes.Where(n => n.StartsWith("Server") || n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(4))
                 GUILayout.Label(n);
@@ -641,7 +661,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             if (GUILayout.Button($"Screenshot ({_shotKey.Value})", GUILayout.Width(150))) TakeScreenshot();
             if (GUILayout.Button("Reset all", GUILayout.Width(80))) ResetAll();
             GUILayout.EndHorizontal();
-            if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            StatusLabel();
             if (!ph.Active)
             {
                 GUILayout.Label("Photo mode puts the camera around your own character (raid or hideout) and stops the character taking input. " +
@@ -665,6 +685,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
             ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f, PhotoMode.DefDistance);
             ph.Height = Slider("Height", ph.Height, 0f, 2.2f, PhotoMode.DefHeight);
             ph.Fov = Slider("FOV", ph.Fov, 10f, 90f, PhotoMode.DefFov);
+            ph.Ortho = GUILayout.Toggle(ph.Ortho, " Orthographic (no perspective; the view size follows distance and FOV)");
 
             Section("Character", () => { ph.ResetCharacter(); if (_pose != "Stand") SetPose("Stand"); });
             ph.CharYaw = Slider("Turn", ph.CharYaw, -180f, 180f, 0f);
@@ -708,7 +729,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                 ph.NoFog = GUILayout.Toggle(ph.NoFog, " Fog / sky / scattering off (they tint the background)");
                 ph.NoPost = GUILayout.Toggle(ph.NoPost, " All post effects off (exact colour; the character looks less 'in game')");
                 ph.WorldLightsOff = GUILayout.Toggle(ph.WorldLightsOff, " World lights off (studio lights only)");
-                _transparent = GUILayout.Toggle(_transparent, " Transparent PNG (2 captures: black + white background; max supersize 2x)");
+                _transparent = GUILayout.Toggle(_transparent, " Transparent PNG (2 captures: black + grey background; max supersize 2x)");
             }
 
             Section("Captures", null);
@@ -732,6 +753,13 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
         }
 
         /// <summary>A labelled slider; with a default it gets a small "R" button that puts the default back.</summary>
+        /// <summary>The last message, shortened to a few lines (the full text is in the BepInEx log).</summary>
+        void StatusLabel()
+        {
+            if (string.IsNullOrEmpty(_status)) return;
+            GUILayout.Label(_status.Length <= 320 ? _status : _status.Substring(0, 320) + " ... (full text in BepInEx\\LogOutput.log)");
+        }
+
         static float Slider(string label, float v, float min, float max, float? def = null)
         {
             GUILayout.BeginHorizontal();
@@ -822,7 +850,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                     yield return null;
                     yield return new WaitForEndOfFrame();
                     try { black = ScreenCapture.CaptureScreenshotAsTexture(ss); } catch (Exception e) { err = "capture (black): " + e.Message; }
-                    _photo.BgOverride = Color.white;
+                    _photo.BgOverride = new Color(0.5f, 0.5f, 0.5f);   // grey, not white: a white background blooms onto the character
                     yield return null;
                     yield return new WaitForEndOfFrame();
                     try { if (err == null) { white = ScreenCapture.CaptureScreenshotAsTexture(ss); tex = Matte.Make(black, white); } }
@@ -860,7 +888,7 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                     GetCatalog();
                     File.WriteAllText(Path.ChangeExtension(png, ".txt"), Reports.ScreenshotInfo(_scan, png, ss, w, h, _hidden.Keys,
                         _photo.Active ? $"Photo mode: yaw {_photo.Yaw:0.#} pitch {_photo.Pitch:0.#} distance {_photo.Distance:0.##} height {_photo.Height:0.##} " +
-                                        $"fov {_photo.Fov:0.#}, studio lights {(_photo.Lights ? "on x" + _photo.LightStrength.ToString("0.##") : "off")}" +
+                                        $"fov {_photo.Fov:0.#}{(_photo.Ortho ? " orthographic" : "")}, studio lights {(_photo.Lights ? "on x" + _photo.LightStrength.ToString("0.##") : "off")}" +
                                         (_photo.LightsFollowCamera ? " (follow camera)" : " (fixed to character)")
                                       : "Photo mode: off"));
                     _status = $"Saved {Path.GetFileName(png)} ({w}x{h})";
