@@ -2,6 +2,21 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.6 — 2026-09-30
+- **New: posture numbers after the fit** (user report: converted characters, mostly female, look like the head and neck are pushed forward and the back leans back). The fit itself is unchanged.
+  - The report has a new line `Posture after fit`, and the panel's *Last fit* box shows *Back lean* and *Neck lean* vs EFT. All values are side-view angles in degrees from vertical, + = forward, COD vs EFT's own body:
+    - `back`: pelvis joint → neck-base joint (the skeleton);
+    - `back~`: hip section centre → chest section centre (the body as you see it);
+    - `neck`: neck-base joint → eye centres (or nose tip);
+    - `neck~`: neck section centre → eye centres. A hood or ponytail at the neck can skew this one.
+  - `tools/regress.py` reads these numbers and compares them when the baseline has them.
+- **No chest-shape guard.** The idea was that the bust pulls the chest section forward and the fit then pulls the upper spine back. The 4 test characters don't show that:
+  - COD chest-minus-waist section gap: +0.8 / −1.0 / −2.6 / +1.3 cm (valeria / Kleo / sunflower / MW4 male). EFT's is +1.6 cm, so no character's chest sits further forward than EFT's.
+  - After the fit the chest section matches EFT's within 0–1.5 cm.
+  - Measured body line (`back~`): 1.3–4.6° *forward* of EFT, not back. The skeleton line (`back`) is 0.6–4.9° back.
+  - Neck, joints: 0.7–1.2° back of EFT. Neck, body: 0.8–2.5° forward (Kleo 8.1°, hood).
+- Regression: identical to the 2.6.1 baselines (enc=2 and enc=3). New baselines `tools/baselines/cod2eft_2.6.6*.json` include the posture numbers. Tested headless in Blender 4.4 with the template rebuilt from the FBX.
+
 ## 2.6.5 — 2026-09-29
 - **Fix: "Export FBX for Unity" gave a shrunk, paper-thin, invisible character in game** (user report; exporting by hand with *Apply Scalings: FBX Units Scale* worked).
   - Since 2.5.0 the export used *All Local*, which bakes the scene unit into the objects: ×100 in a metre scene, ×0.01 in a centimetre scene like the user's.

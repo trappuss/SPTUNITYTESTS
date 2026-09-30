@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 5)
+VERSION = (2, 6, 6)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -1099,6 +1099,85 @@ def log_body_match(meshes, EJ, log):
     return res
 
 
+def side_lean(a, b):
+    """Lean of the line a -> b in the side view (forward / up plane, model facing -Y), degrees
+    from vertical; + = b sits forward of a."""
+    v = np.asarray(b, float) - np.asarray(a, float)
+    return math.degrees(math.atan2(float(v @ FWD), float(v[2])))
+
+
+def neck_section(P, T, EJ):
+    """Centre of the neck's cross-section a quarter of the way up from EFT's Neck joint to its
+    Head joint (plane across Neck -> Head, points within 5 cm of the centre line and 12 cm of
+    the axis), as a point, or None.  Front/back = mid of the 2nd / 98th percentile, like
+    skin_sections().  A ponytail / hood can pull it back a little."""
+    n, h = EJ.get(E("Neck")), EJ.get(E("Head"))
+    if n is None or h is None:
+        return None
+    axis = (h - n) / np.linalg.norm(h - n)
+    c = n + 0.25 * (h - n)
+    fw = FWD - axis * (FWD @ axis)
+    fw /= np.linalg.norm(fw)
+    Q = plane_cut(P, T, c, axis) - c
+    s = (np.linalg.norm(Q, axis=1) < 0.12) & (np.abs(Q @ np.cross(axis, fw)) < 0.05)
+    if s.sum() < 8:
+        return None
+    y = Q[s] @ fw
+    return c + (np.percentile(y, 98) + np.percentile(y, 2)) / 2 * fw
+
+
+# Centre of EFT's own neck section (neck_section() on Bear_head_0 + Tshirt_bear_Voin_lod0 in the
+# template), forward of the section point, m
+EFT_NECK_FWD = 0.0258
+
+
+def fit_posture(rig, EJ, meshes, face_cod, face_eft, face_what, log):
+    """Side-view posture after the fit, COD vs EFT (2.6.6).  Every number is the lean of a line
+    in the side view (forward / up plane), degrees from vertical, + = the upper end forward:
+      back  = pelvis joint -> neck-base joint (COD: posed j_mainroot -> j_neck; EFT: Pelvis ->
+              Neck): the skeleton.
+      back~ = centre of the hip section -> centre of the chest section (skin_sections() at EFT's
+              Pelvis / Spine3 landmarks, on the fitted mesh; EFT: its own section centres,
+              EFT_SKIN): the body as seen.  A bust / chest rig moves the chest centre forward.
+      neck  = neck-base joint -> face landmark (eye centres, or the nose tip; EFT: Neck ->
+              EFT_EYES / EFT_NOSE): how far the head is carried forward over the neck joint.
+      neck~ = centre of the neck section (neck_section()) -> face landmark: the neck as seen.
+    Joints and section centres (percentile mid-points of whole cuts), never single vertices.
+    The eye offset itself is in "Face after fit".  Returns {line: [COD, EFT]} (degrees)."""
+    pb = rig.pose.bones
+    rows = {}
+    if "j_mainroot" in pb and "j_neck" in pb:
+        rows["back"] = (side_lean(np3(pb["j_mainroot"].head), np3(pb["j_neck"].head)),
+                        side_lean(EJ[E("Pelvis")], EJ[E("Neck")]))
+    bpy.context.view_layer.update()
+    P, T = mesh_arrays(meshes, bpy.context.evaluated_depsgraph_get())
+    got = skin_sections(P, T, EJ, eft_side=True)
+    if "pelvis" in got and "spine3" in got:
+        cen = {}
+        for k in ("pelvis", "spine3"):
+            c, _, fw, _ = section_frame(EJ, k, True)
+            cen[k] = (c + got[k]["fwd"] * fw, c + EFT_SKIN[k][0] * fw)
+        rows["back~"] = (side_lean(cen["pelvis"][0], cen["spine3"][0]),
+                         side_lean(cen["pelvis"][1], cen["spine3"][1]))
+    if face_cod is not None:
+        if "j_neck" in pb:
+            rows["neck"] = (side_lean(np3(pb["j_neck"].head), face_cod),
+                            side_lean(EJ[E("Neck")], face_eft))
+        nc = neck_section(P, T, EJ)
+        if nc is not None:
+            n, h = EJ[E("Neck")], EJ[E("Head")]
+            fw = FWD - (h - n) * (FWD @ (h - n)) / ((h - n) @ (h - n))
+            ne = n + 0.25 * (h - n) + EFT_NECK_FWD * fw / np.linalg.norm(fw)
+            rows["neck~"] = (side_lean(nc, face_cod), side_lean(ne, face_eft))
+    if rows:
+        log("Posture after fit (side view, deg from vertical, + = leaning forward): " + ", ".join(
+            f"{k} COD {c:+.1f} / EFT {e:+.1f} ({abs(c - e):.1f} {'fwd' if c >= e else 'back'})"
+            for k, (c, e) in rows.items()))
+        log(f"  (back = pelvis -> neck-base joints, back~ = hip -> chest section centres, "
+            f"neck = neck-base joint -> {face_what}, neck~ = neck section centre -> {face_what})")
+    return {k: [round(c, 1), round(e, 1)] for k, (c, e) in rows.items()}
+
+
 def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=True, log=None,
             basename="", match_body=True, match_height=False, neck_max_lean=NECK_MAX_LEAN,
             head_forward=0.5, face_landmark="eyes", head_height=None, match_fingertips=True,
@@ -1696,6 +1775,14 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
         g = -face_gap * 100
         summary["face"] = [round(float(g @ FWD), 1), round(float(g[2]), 1)]
         summary["face_what"] = face_what
+    if match_body:
+        try:
+            post = fit_posture(rig, EJ, meshes, None if face_gap is None else EFT_FACE - face_gap,
+                               EFT_FACE, face_what, log)
+            if post:
+                summary["posture"] = post
+        except Exception as ex:                        # report only - never fail the fit
+            log(f"(posture check skipped: {ex})")
     if tip_err:
         summary["tips"] = [round(float(np.mean(tip_err)) * 100, 1),
                            round(float(max(tip_err)) * 100, 1)]

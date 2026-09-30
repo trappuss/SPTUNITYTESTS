@@ -8,7 +8,8 @@ Run with a Python that has bpy (Blender 4.4 as a module, see CLAUDE.md):
 
 What it records per character (from the batch report and the output folder):
   - the fit lines: body volume, body match after fit, soles, face, fingertips, body moved,
-    limited section centres, head height
+    limited section centres, head height, posture after fit (2.6.6+; compared only when the
+    baseline has it, tolerance 0.3 deg)
   - per converted part: vertex / face counts (from the .blend)
   - every PNG: sha256 (texture output byte-identical or not)
 Compare: numbers that moved more than --tol (cm, default 0.2), changed hashes, parts that
@@ -95,6 +96,10 @@ def parse_report(path):
     m = re.search(rf"Face after fit: .*? ({NUM}) cm forward, ({NUM}) cm up", txt)
     if m:
         rec["face_cm"] = [float(m.group(1)), float(m.group(2))]
+    m = re.search(r"Posture after fit[^:]*: (.*)", txt)
+    if m:
+        rec["posture"] = {k: [float(c), float(e)] for k, c, e in
+                          re.findall(rf"([\w~]+) COD ({NUM}) / EFT ({NUM})", m.group(1))}
     m = re.search(r"limited unusual section centres[^:]*: (.*)", txt)
     rec["limited"] = m.group(1).strip() if m else ""
     rec["parts"] = re.findall(r"Done: (.*) parented", txt)
@@ -128,7 +133,7 @@ def collect(out):
     return res
 
 
-def compare(old, new, tol):
+def compare(old, new, tol, tol_deg=0.3):
     diffs = []
     for name in sorted(set(old) | set(new)):
         if name not in new:
@@ -149,6 +154,9 @@ def compare(old, new, tol):
                 diffs.append(f"{name}: {key} {va} -> {vb}")
         if a.get("face_cm") and b.get("face_cm") and max(abs(x - y) for x, y in zip(a["face_cm"], b["face_cm"])) > tol:
             diffs.append(f"{name}: face_cm {a['face_cm']} -> {b['face_cm']}")
+        for k in sorted(set(a.get("posture", {})) & set(b.get("posture", {}))):
+            if abs(a["posture"][k][0] - b["posture"][k][0]) > tol_deg:
+                diffs.append(f"{name}: posture.{k} {a['posture'][k][0]} -> {b['posture'][k][0]} deg")
         if a.get("limited") != b.get("limited"):
             diffs.append(f"{name}: limited '{a.get('limited')}' -> '{b.get('limited')}'")
         if a.get("parts") != b.get("parts"):

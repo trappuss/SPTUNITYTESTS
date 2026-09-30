@@ -1376,6 +1376,14 @@ def _draw_last_fit(b, scene):
     if "face" in f:
         what = "Eyes" if f.get("face_what") == "eye centres" else "Face"
         col.label(text=f"  {what} {f['face'][0]:+.1f} cm fwd, {f['face'][1]:+.1f} cm up vs EFT")
+    post = f.get("posture", {})
+    for k, what in (("back", "Back"), ("neck", "Neck")):
+        # joint line, and the line through the section centres (the body as seen) when measured
+        rows = [(post[x], x.endswith("~")) for x in (k, k + "~") if x in post]
+        if rows:
+            col.label(text=f"  {what} lean vs EFT: " + ", ".join(
+                f"{'body' if body else 'joints'} {abs(c - e):.1f} deg "
+                f"{'fwd' if c >= e else 'back'}" for (c, e), body in rows))
     if "tips" in f:
         col.label(text=f"  Fingertips {f['tips'][0]:.1f} cm from EFT's (max {f['tips'][1]:.1f})")
     if f.get("outside"):
