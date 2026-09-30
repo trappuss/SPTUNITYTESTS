@@ -2,6 +2,10 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.8 — 2026-09-30
+- **UV tiles check** (user report on BO7 brie: "face on the neck"). The report now prints `WARNING UV tiles: <material> …` for every COD material with faces outside the 0..1 UV square: the faces per tile and how many images the export lists. The panel's *Last fit* box shows `Check: N material(s) use UV tiles outside 0..1`. The conversion itself is unchanged. Regression (enc2 and enc3, 4 characters): fit numbers, parts and mesh counts are identical. Three `_d` PNG hashes differ from the 2.6.7 baseline, but unchanged 2.6.7 code gives the same new hashes in this cloud environment (checked on MW4 Beta Male), so that difference comes from library versions, not from 2.6.8.
+- Findings in `docs/UV_TILES.md`: COD uses tiles as a *repeating* texture (e.g. brie's left and right gloves one tile apart), which is what the conversion already does. The mirror rule matched 0 of 992 tile seams on the test characters. The face on the neck appears only when the atlas is shown with the second UV layer `COD_original_UV` instead of UV0. Please send a screenshot showing *UV Maps* and brie's COD export.
+
 ## 2.6.7 — 2026-09-30
 - **Fix: head looked pushed forward and the back leaned back** (user report, Park 24_1 / female characters).
   - Cause (measured): only the neck *joint* was placed on EFT's. The neck itself then sat 0.3–2.5 cm behind EFT's neck, while the eyes sat exactly on EFT's eyes. Park 24_1 (your 2.6.6 report + the old Park FBX): neck about 1.5–2.5 cm behind, upper back about 2 cm behind.

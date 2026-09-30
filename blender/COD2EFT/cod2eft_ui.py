@@ -1397,6 +1397,13 @@ def _draw_last_fit(b, scene):
     if f.get("outside"):
         col.label(text="  Sticks out > 3 cm: " + ", ".join(
             f"{k} {v}%" for k, v in sorted(f["outside"].items())))
+    try:
+        tiles = json.loads(scene.get("cod2eft_uv_tiles", "[]"))
+    except ValueError:
+        tiles = []
+    if tiles:
+        col.label(text=f"  Check: {len(tiles)} material(s) use UV tiles outside 0..1 "
+                       "(report: WARNING UV tiles)", icon="ERROR")
 
 
 # ---------------------------------------------------------------------------------------------

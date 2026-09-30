@@ -1490,6 +1490,33 @@ def load_class_overrides(path):
             if str(v).lower() in CLASSES and str(v).lower() != "cutout"}
 
 
+def uv_tile_counts(centres):
+    """{(u tile, v tile): faces} from the faces' UV centres.  convert_part wraps every face by its
+    centre's tile, i.e. it reads UVs outside 0..1 as a repeating texture."""
+    t = np.floor(np.asarray(centres, np.float64)).astype(int)
+    keys, n = np.unique(t, axis=0, return_counts=True) if len(t) else ([], [])
+    return {(int(k[0]), int(k[1])): int(c) for k, c in zip(keys, n)}
+
+
+def tile_text(tiles):
+    return ", ".join(f"u{u:+d} v{v:+d}: {n}" if (u, v) != (0, 0) else f"u0 v0: {n}"
+                     for (u, v), n in sorted(tiles.items()))
+
+
+def cod_listed_images(mat, model_file):
+    """How many different images a COD material's export lists (Greyhound / _mat_info file),
+    constants such as $white left out.  None when there is no list.  COD-specific."""
+    name = base_name(mat.name if hasattr(mat, "name") else mat)
+    folder = os.path.dirname(model_file) if model_file else ""
+    if not folder or not os.path.isdir(folder):
+        return None
+    folder = _sibling_export(folder, name) or folder
+    info = semantics_file(folder, name)
+    if not info:
+        return None
+    return len({img for _, img in _parse_semantics(info) if img and not img.startswith("$")})
+
+
 def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_strength=1.0,
                  log=print, ao_in_spec=True, normal_style="OPENGL", uv_layout="ISLANDS",
                  metal_keep=METAL_KEEP, material_mode="ENC2", class_overrides=None,
@@ -1557,7 +1584,7 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
     far = far * abs(sc) ** (2.0 / 3.0)
     new_uv = uv.copy()
     result = {"part": part, "materials": len(mats), "files": [], "notes": [], "density": {},
-              "classes": []}
+              "classes": [], "tiles": []}
     new_mats = []
     # textures of every material, and whether it is cut out (hair / lash / fringe cards):
     # sample points inside each face = its corners, its centre, and corner-centre midpoints
@@ -1597,6 +1624,10 @@ def convert_part(o, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, ao_stre
                 how.append(note)
         found[idx] = roles
         groups["alpha" if op else "main"].append(idx)
+        tl = uv_tile_counts(cen[faces])
+        if len(tl) > 1 or (tl and (0, 0) not in tl):
+            result["tiles"].append({"material": base_name(mat.name), "tiles": tl,
+                                    "images": cod_listed_images(mat, mfile)})
         log(f"  {base_name(mat.name)}: " + (", ".join(how) if how else "no textures found"))
         if roles.get("missing"):
             k, n = roles["missing"]
@@ -2024,6 +2055,17 @@ def convert_textures(objs, out_dir, basename, size=2048, spec_scale=SPEC_SCALE, 
                     log(f"  texel density on the model: typical {ds[len(ds) // 2]:.0f} px/m, "
                         f"lowest {dens[low][0]:.0f} px/m ({low}); {pieces} texture piece(s), "
                         f"atlas used: {fill}")
+            for t in r.get("tiles", []):
+                k = t["images"]
+                log(f"  WARNING UV tiles: {t['material']} has faces outside the 0..1 UV square "
+                    f"({tile_text(t['tiles'])}; {'?' if k is None else k} image(s) listed). "
+                    "They are read as a repeating texture - check this material in the "
+                    "preview (docs/UV_TILES.md)")
             for nt in r["notes"]:
                 log("  NOTE " + nt)
+    tiles = [f"{r['part']}: {t['material']}" for r in res for t in r.get("tiles", [])]
+    try:
+        bpy.context.scene["cod2eft_uv_tiles"] = json.dumps(tiles)
+    except (AttributeError, TypeError):
+        pass
     return res
