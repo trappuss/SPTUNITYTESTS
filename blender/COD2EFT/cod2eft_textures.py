@@ -8,7 +8,7 @@ into ONE EFT texture set per part, laid out in an atlas:
     <name>_<Part>_g.png   gloss = Unity smoothness (white = glossy)       -> _SpecMap
     (+ <name>_<Part>_alpha_*.png for hair / lashes / fur cards that need a cut-out shader)
 Each PNG carries a tEXt chunk "COD2EFT enc=2" (see ENCODING / png_mark) so the Unity side (the
-EFT Auto Prefabber) can recognise the files - see unity/COD2EFT_TEXTURE_SPEC.md.
+EFT Auto Prefabber) can recognise the files - see docs/COD2EFT_TEXTURE_SPEC.md (the contract).
 
 What EFT does with them - read from EFT's character shaders, "p0/Reflective/Bumped Specular
 SMap(_Decal)" (decompiled copies in the WTT-SDK).  Their deferred pass writes Unity's G-buffer:
@@ -16,7 +16,7 @@ colour = _MainTex.rgb x (_DefVals.x + _DefVals.y x F), specular = _MainTex.a x _
 (_SpecVals.x + _SpecVals.y x F) / 2, smoothness = _SpecMap.r x _Specularness, with
 F = (1 - N.V)^2 / 2.  EFT renders in Gamma colour space with its own deferred lighting shader,
 so the final look of these values is not known yet.  The Unity side (the EFT Auto Prefabber's
-material fixer) owns the shader values: unity/COD2EFT_TEXTURE_SPEC.md is the hand-off.
+material fixer) sets the shader values, as docs/COD2EFT_TEXTURE_SPEC.md specifies.
 
 What COD provides (checked on the test exports of every game):
   * Infinity Ward engine games (MW2019, Vanguard, MW2, MW3, BO6, BO7, MW4 beta):
@@ -56,9 +56,9 @@ import bpy
 
 IMG_EXT = (".png", ".dds", ".tga", ".tif", ".tiff", ".jpg", ".jpeg", ".exr")
 # Texture encoding written by this version ("enc=2", stored in each PNG as a tEXt chunk so the
-# Unity side knows which encoding it gets - unity/COD2EFT_TEXTURE_SPEC.md):
+# Unity side knows which encoding it gets - docs/COD2EFT_TEXTURE_SPEC.md):
 #   _MainTex.a = specular reflectance F0 (linear, x "Specular strength"),  _SpecMap.r = gloss.
-# The hand-off to the Unity side (which owns the shader values) is unity/COD2EFT_TEXTURE_SPEC.md.
+# The Unity side sets the shader values (docs/COD2EFT_TEXTURE_SPEC.md).
 # For reference, EFT's own character materials put into the G-buffer: specular median 0.05
 # (cloth and heads), smoothness median 0.22 (cloth), 0.30 (heads) - measured over 422 materials.
 ENCODING = 2
@@ -1832,7 +1832,7 @@ def _restore_originals(o):
 
 
 # EFT's material values per part, as the Unity side (WTT-SDK Auto Prefabber) sets them -
-# unity/COD2EFT_TEXTURE_SPEC.md, "Chosen values" (2026-09-27).  Only the Blender preview uses
+# docs/COD2EFT_TEXTURE_SPEC.md, "Chosen values" (2026-09-27).  Only the Blender preview uses
 # them; keep them in step with that table.
 #          _Glossness  _Specularness  _SpecVals   _DefVals
 EFT_PART = {"Upper": (2.4, 1.0, (1.1, 2.0), (0.85, 0.7)),

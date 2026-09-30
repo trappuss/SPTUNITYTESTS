@@ -5,8 +5,8 @@ rem ============================================================================
 rem  Drag a converted <name>_EFT.fbx (from an EFT_Converted folder) onto this file.
 rem  It copies into your WTT-SDK Unity project:
 rem     <name>_EFT.fbx and <name>_<Part>_*.png   ->  Assets\COD2EFT\<name>\
-rem  Materials, prefabs and bundles are then made by the EFT Auto Prefabber in the SDK (it owns
-rem  the Unity side - see unity\COD2EFT_TEXTURE_SPEC.md).  The project folder is remembered in
+rem  Materials, prefabs and bundles are then made by the EFT Auto Prefabber in the SDK (the
+rem  contract between the two is docs\COD2EFT_TEXTURE_SPEC.md in the repo).  The project folder is remembered in
 rem  wtt_path.txt.
 rem =====================================================================================
 if "%~1"=="" (

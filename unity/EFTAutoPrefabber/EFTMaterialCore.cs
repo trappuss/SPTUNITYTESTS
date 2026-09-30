@@ -92,7 +92,7 @@ namespace EFTAutoPrefab
         };
 
         // ------------------------------------------------------------ COD2EFT 2.4+ textures (PNG tEXt Software = "COD2EFT enc=2")
-        // _d alpha = COD specular reflectance F0 (dielectrics 0.04), _g = COD gloss (see SPTModdingTools\COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md).
+        // _d alpha = COD specular reflectance F0 (dielectrics 0.04), _g = COD gloss (see docs/COD2EFT_TEXTURE_SPEC.md in the repo).
         // Used as stored; the material values map them onto what vanilla puts into the G-buffer (medians over UV-covered pixels):
         //   vanilla specular at F=0 (a * _Glossness * SpecVals.x/2): top 0.052, pants 0.045, head 0.044, hands 0.057
         //   vanilla smoothness (_SpecMap * _Specularness):            top 0.24,  pants 0.18,  head 0.29,  hands 0.27

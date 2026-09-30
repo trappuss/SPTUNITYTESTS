@@ -1,7 +1,6 @@
 # Collects what Claude needs to see from this PC and pushes it to GitHub (from_pc\<time>\):
 #  - Unity Editor.log (tail + errors), installed versions, which deployed files differ from the repo
 #  - copies of tool files that were changed on the PC (e.g. by a Cowork session) so they can be merged
-#  - the COD2EFT <-> Unity contract (COD2EFT_TEXTURE_SPEC.md) if the repo doesn't have it yet
 #  - anything dragged onto SEND_RESULTS_TO_CLAUDE.bat (reports, screenshots, logs, folders)
 #  - COD2EFT conversion reports (<COD2EFT folder>\reports\*.txt) that are new since the last send
 #  - SPT (if SPT_GAME is known): BepInEx LogOutput.log, the Inspector build log, and every file in
@@ -147,14 +146,6 @@ try {
     foreach ($f in 'blender_path.txt', 'template_path.txt', 'wtt_path.txt') {
         $p = Join-Path $cfg.COD2EFT_DIR $f
         if (Test-Path $p) { $info += "$f = $((Get-Content $p -TotalCount 1).Trim())" }
-    }
-
-    # the contract between the two sides: bring it into the repo if it's missing or newer on the PC
-    $spec = Join-Path $cfg.COD2EFT_DIR 'unity\COD2EFT_TEXTURE_SPEC.md'
-    $repoSpec = Join-Path $Repo 'blender\COD2EFT\unity\COD2EFT_TEXTURE_SPEC.md'
-    if ((Test-Path $spec) -and -not (Same-File $spec $repoSpec)) {
-        Copy-Item -LiteralPath $spec $repoSpec -Force
-        $info += 'COD2EFT_TEXTURE_SPEC.md copied into the repo (blender\COD2EFT\unity\)'
     }
 
     if ($Extra) {

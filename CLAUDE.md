@@ -6,7 +6,7 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
 - **COD2EFT** (`blender/COD2EFT/`) is a Blender add-on. It fits Call of Duty character exports onto EFT's skeleton, converts weights and textures, and exports FBX + PNG.
 - **EFT Tools** (`unity/EFTAutoPrefabber/`) are Unity 2022.3 editor scripts for the WTT-SDK: materials, prefabs, bundles and the SPT mod.
 - It used to be two separate sessions. It is **one project now**, and either side may be changed. Older text that says "the other session owns X" or "the user relays messages" is history.
-- **The contract** between the halves is `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md`: PNG channels, slot and object names, material values. Change both sides together, and record which versions go together in the compatibility table in `docs/PROJECT_CONTEXT.md`.
+- **The contract** between the halves is `docs/COD2EFT_TEXTURE_SPEC.md`: PNG channels, slot and object names, material values. Change both sides together, and record which versions go together in the compatibility table in `docs/PROJECT_CONTEXT.md`.
 
 ## The user's rules
 - **Thorough and correct beats fast.** Work from evidence. Label hunches as hunches and ask about them.

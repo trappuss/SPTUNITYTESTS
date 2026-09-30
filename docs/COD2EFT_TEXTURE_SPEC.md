@@ -1,20 +1,18 @@
-# COD2EFT → Unity hand-off (texture spec)
+# COD2EFT → Unity texture contract
 
-This file is the contract between the two tools that work on a character:
+This file is the contract between the two halves of the project:
 
-- **COD2EFT** (Blender add-on, folder `SPTModdingTools\COD2EFT`): fits the COD model to EFT and writes `<name>_EFT.fbx` + PNG texture sets.
-- **EFT Auto Prefabber** (WTT-SDK, `Assets\Editor\EFTAutoPrefabber`): Unity side — materials (its `EFTMaterialFixer`), prefabs, bundles, mod.
+- **COD2EFT** (Blender add-on, `blender/COD2EFT/`, on the PC `SPTModdingTools\COD2EFT`): fits the model to EFT and writes `<name>_EFT.fbx` + PNG texture sets.
+- **EFT Tools** (Unity editor scripts, `unity/EFTAutoPrefabber/`, on the PC `WTT-SDK-2022\Assets\Editor\EFTAutoPrefabber`): materials (`EFTMaterialFixer`), prefabs, bundles, mod.
 
-Read it before changing either side. If a change touches anything below, update this file in the same step and add a line to *Changes*.
+Both halves are one project, and either may be changed. Read this file before changing either side. If a change touches anything below, change both sides and this file in the same step, add a line to *Changes*, and record which versions go together in the compatibility table in `docs/PROJECT_CONTEXT.md`. `tools/check_contract.py` checks that the per-part material numbers in both halves match.
 
-## Who owns what
+## What each half decides
 
-| | Owner | The other side … |
-|---|---|---|
-| Everything in `SPTModdingTools\COD2EFT` (add-on, .bat files, README, this spec) | COD2EFT | doesn't edit these files |
-| Everything in the WTT-SDK project (`Assets\Editor\EFTAutoPrefabber`, materials, prefabs, bundles) | Auto Prefabber | doesn't edit or add files there |
-| **Everything in Unity** (materials: shader choice, values, texture import settings; prefabs; bundles; in-game checks) | **Auto Prefabber** | COD2EFT has no Unity code (its old material script was removed in 2.4.2). |
-| What is *in* the PNGs (colour, specular, gloss, normals, cut-outs) | COD2EFT | reads them as described below; asks for changes here rather than re-deriving the data |
+| Area | Decided by |
+|---|---|
+| What is *in* the PNGs (colour, specular, gloss, normals, cut-outs), slot and object names | COD2EFT, as described below |
+| Everything in Unity (shader choice, material values, texture import settings, prefabs, bundles) | EFT Tools. COD2EFT has no Unity code (its old material script was removed in 2.4.2); its Blender preview copies the Unity values. |
 
 ## Files (COD2EFT 2.4+)
 
@@ -126,6 +124,7 @@ Vanilla targets were measured over 393 vanilla SMap/SMap_Decal materials, counti
 
 ## Changes
 
+- 2026-09-30: moved from `blender/COD2EFT/unity/` to `docs/` (COD2EFT 2.6.8 / EFT Tools 1.7.5); the "who owns what" split between separate sessions is gone, both halves are one project.
 - 2026-09-29 COD2EFT 2.6.1 / EFT Tools 1.7.1: cut-out `_Cutoff` 0.5 → 0.3 (user's in-game check: 0.25–0.35; 0.5 hid 7–11 % of valeria's hair texels with alpha ≥ 0.25). Which materials become cut-outs is unchanged. PNGs unchanged.
 - 2026-09-29 COD2EFT 2.6.0 / EFT Tools 1.7.0: **encoding 3** (optional, default still enc=2 until the in-game A/B), see *Encoding 3*. The tag gains ` n=dx` for DirectX normal maps; Unity 1.7.0 flips those. This fixes the audit's double flip. enc=2 output is unchanged (byte-identical PNGs on the 4 test characters).
 - 2026-09-27 COD2EFT: slot naming with surface classes agreed (Auto Prefabber's proposal, *Material slots and surface classes*). COD2EFT produces `_skin` from 2.5.0; `_metal` and `_emissive` are reserved, not produced.

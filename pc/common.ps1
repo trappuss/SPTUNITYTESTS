@@ -137,7 +137,7 @@ function Get-Targets($cfg) {
     $editor = Join-Path $cfg.UNITY_PROJECT 'Assets\Editor'
     @(
         @{ Label = 'COD2EFT (Blender)'; Src = (Join-Path $Repo 'blender\COD2EFT');
-           Dst = $cfg.COD2EFT_DIR; Skip = @('unity\README.md') },
+           Dst = $cfg.COD2EFT_DIR; Skip = @() },
         @{ Label = 'EFT Tools (Unity)'; Src = (Join-Path $Repo 'unity\EFTAutoPrefabber');
            Dst = (Join-Path $editor 'EFTAutoPrefabber'); Skip = @() },
         @{ Label = 'EFT Tools folder .meta'; Src = (Join-Path $Repo 'unity');

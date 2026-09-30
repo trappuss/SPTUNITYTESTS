@@ -46,9 +46,9 @@ at it and at `docs/PROJECT_CONTEXT.md`. If Cowork edits the deployed copies dire
 ```
 blender/COD2EFT/        the add-on source folder, exactly as on the PC (bats, build/install scripts, docs)
   vendor/cod2eft_cast/  bundled Cast importer (MIT); was only inside the zip, now restored
-  unity/COD2EFT_TEXTURE_SPEC.md   the contract between the two halves
 unity/EFTAutoPrefabber/ the Unity editor scripts (+ .meta files), exactly as in Assets\Editor
 spt_mod/COD2EFTInspector/ the SPT client plugin (source only; BUILD_SPT_INSPECTOR.bat compiles it on the PC)
+docs/COD2EFT_TEXTURE_SPEC.md  the contract between the two halves (PNGs, names, material values)
 unity/README.md         what the Unity tools do (materials, prefabs, bundles, caches, SPT rules)
 CLAUDE.md               rules + setup for every Claude / Cowork session (read automatically)
 docs/PROJECT_CONTEXT.md the handoff: state, contract summary, work queue, compatibility, audit
