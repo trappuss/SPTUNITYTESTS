@@ -690,7 +690,77 @@ namespace EFTAutoPrefab
             finally { EditorUtility.ClearProgressBar(); }
             foreach (var l in log) Log(l);
             if (!ok) { Log("Bundles failed to build; the mod was not changed."); return false; }
-            return BuildMod(true);
+            bool modOk = BuildMod(true);
+            CheckBuiltBundles(keys);
+            return modOk;
+        }
+
+        /// <summary>
+        /// 1.7.5 (queue item 8): opens every freshly built bundle in the editor and looks for what breaks in game:
+        /// an empty bundle, no LoddedSkin, the Standard shader left in, a shader that is neither in the bundle nor the
+        /// game's shaders bundle, and material texture slots with no texture. Only reports - never changes or blocks.
+        /// </summary>
+        void CheckBuiltBundles(List<string> keys)
+        {
+            var problems = new List<string>();
+            int checkedCount = 0;
+            foreach (var key in keys)
+            {
+                string f = Path.Combine(BuildFolderAbs ?? "", key);
+                string name = Path.GetFileName(key);
+                try
+                {
+                    if (!File.Exists(f)) { problems.Add($"{name}: no file after the build."); continue; }
+                    if (new FileInfo(f).Length < 2048) { problems.Add($"{name}: only {new FileInfo(f).Length} bytes - an empty bundle."); continue; }
+                    // references to other files, read from the bytes (works without the game's bundles being loaded)
+                    var bi = EFTModBuilderCore.ReadBundle(f, false);
+                    bool gameShaders = bi.Error == null && bi.ExternalCabs.Contains(EFTMaterialCore.ShadersCab);
+                    if (AssetBundle.GetAllLoadedAssetBundles().Any(b => b != null && b.name == key))
+                    { problems.Add($"{name}: not checked - a bundle with this name is already loaded in the editor (restart Unity to check it)."); continue; }
+                    AssetBundle ab = null;
+                    try
+                    {
+                        ab = AssetBundle.LoadFromFile(f);
+                        if (ab == null) { problems.Add($"{name}: Unity could not open it (see the Console; a copy may already be loaded)."); continue; }
+                        checkedCount++;
+                        if (ab.GetAllAssetNames().Length == 0) { problems.Add($"{name}: contains no assets (empty bundle)."); continue; }
+                        var prefabs = ab.LoadAllAssets<GameObject>();
+                        if (!prefabs.Any(g => g != null && g.GetComponentInChildren<LoddedSkin>(true) != null))
+                            problems.Add($"{name}: no prefab with a LoddedSkin - the game can't use it as clothing / head / hands.");
+                        var mats = prefabs.Where(g => g != null)
+                                          .SelectMany(g => g.GetComponentsInChildren<Renderer>(true))
+                                          .SelectMany(r => r.sharedMaterials ?? new Material[0])
+                                          .Where(m => m != null).Distinct().ToList();
+                        foreach (var m in mats)
+                        {
+                            string sh = m.shader == null ? null : m.shader.name;
+                            if (sh == "Standard")
+                                problems.Add($"{name}: material '{m.name}' uses the Standard shader (run the material fix in EFT mode, then rebuild).");
+                            else if ((sh == null || sh.Contains("InternalErrorShader")) && !gameShaders)
+                                problems.Add($"{name}: material '{m.name}' has no shader, and the bundle does not reference the game's shaders bundle ({EFTMaterialCore.ShadersCab}).");
+                            var so = new SerializedObject(m);
+                            var envs = so.FindProperty("m_SavedProperties.m_TexEnvs");
+                            if (envs == null || !envs.isArray) continue;
+                            for (int i = 0; i < envs.arraySize; i++)
+                            {
+                                var e = envs.GetArrayElementAtIndex(i);
+                                string slot = e.FindPropertyRelative("first")?.stringValue;
+                                if (slot != "_MainTex" && slot != "_BumpMap" && slot != "_SpecMap") continue;
+                                var tex = e.FindPropertyRelative("second.m_Texture");
+                                // instance id 0 = the slot is empty ("None"); non-zero but not loaded = a texture in another bundle (fine)
+                                if (tex != null && tex.objectReferenceValue == null && tex.objectReferenceInstanceIDValue == 0)
+                                    problems.Add($"{name}: material '{m.name}' has no texture in {slot}.");
+                            }
+                        }
+                    }
+                    finally { if (ab != null) ab.Unload(true); }
+                }
+                catch (Exception e) { problems.Add($"{name}: check failed ({e.GetType().Name}: {e.Message})."); }
+            }
+            foreach (var p in problems) Log("  bundle check: " + p);
+            Log(problems.Count == 0
+                ? $"Bundle check: OK - {checkedCount} bundle(s) opened; LoddedSkin, shaders and textures present."
+                : $"Bundle check: FAIL - {problems.Count} problem(s) in {keys.Count} bundle(s), listed above.");
         }
 
         /// <summary>One-click pipeline entry (Auto Prefabber): opens this window, rescans the project and builds bundles + mod.</summary>

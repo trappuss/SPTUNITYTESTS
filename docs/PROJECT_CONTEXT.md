@@ -1,8 +1,8 @@
-# Project context: COD → EFT (SPT) pipeline, both halves (2026-09-29)
+# Project context: COD → EFT (SPT) pipeline, both halves (2026-09-30)
 
 This is **the** handoff and work queue for both halves; the Blender and Unity sides are one project now. Rules for sessions are in `CLAUDE.md`.
 Tool docs: `blender/COD2EFT/README.md` (Blender), `unity/README.md` (Unity).
-Contract: `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md`. Materials: `docs/MATERIALS_PLAN.md`.
+Contract: `docs/COD2EFT_TEXTURE_SPEC.md`. Materials: `docs/MATERIALS_PLAN.md`. UV tiles: `docs/UV_TILES.md`.
 The old per-side handoffs and backlog (2026-09-27) are in `docs/archive/`; they are history, not instructions.
 
 ## Goal
@@ -30,8 +30,8 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.6.7** (2026-09-30) | 2.6.7: *Match neck* (neck section lined up with EFT's; fixes head pushed forward / back leaning back), panel reports saved to `reports\` and sent automatically. 2.6.6: posture numbers after the fit (report + panel + regress); no fit change, the chest-shape guard was not supported by the data. 2.6.5: FBX export uses FBX Units Scale; settings presets. 2.6.4: optional Colour brightness / saturation and enc=3 Gloss match (defaults unchanged). 2.6.3: panel in sub-panels. 2.6.x: *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
-| EFT Tools | **1.7.3** (2026-09-29) | 1.7.3: optional BC7 compression. `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
+| COD2EFT | **2.6.8** (2026-09-30) | 2.6.8: UV-tile WARNING in the report + panel *Check* line (conversion unchanged, byte-identical output); findings in `docs/UV_TILES.md`. 2.6.7: *Match neck* (neck section lined up with EFT's; fixes head pushed forward / back leaning back), panel reports saved to `reports\` and sent automatically. 2.6.6: posture numbers after the fit (report + panel + regress); no fit change, the chest-shape guard was not supported by the data. 2.6.5: FBX export uses FBX Units Scale; settings presets. 2.6.4: optional Colour brightness / saturation and enc=3 Gloss match (defaults unchanged). 2.6.3: panel in sub-panels. 2.6.x: *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| EFT Tools | **1.7.5** (2026-09-30) | 1.7.5: bundle check after *Build bundles + mod* (OK/FAIL line in the log). 1.7.4: default hands (DefaultUsecHands) for tops without their own; "not built yet" is a note before the first build. 1.7.3: optional BC7 compression. `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 | COD2EFT Inspector (SPT client plugin) | **0.10.0** (2026-09-30) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.x adds photo mode (orbit camera, studio lights, turntable; safeguards from CineKit) and F12 buttons; 0.4.0 live try-on of any catalog outfit (hideout / raid) and saving a head via HeadVoiceSelector; 0.5.0 material checks, one-click A/B turntables (the material A/B, item 2 above), solo; 0.6.0 menu-preview try-on and pose turntables (game animations); 0.7.0 (user feedback on 0.6.0) Wear null fix (hunch) + per-bundle diagnosis, body diagnostics for hideout vs menu, panel blocks game input, isolated / solid / transparent background, character turn + aim, resets; 0.7.1 real Wear cause found in the log (ObjectsFactory loader needs List<PoolResourceInfo> / Pools / YieldDelegate; BundleLoader.cs builds them), resizable panel, ortho, transparent PNG verified; 0.8.0 panel redesign (Ui.cs: dark theme, tabs Try on / Photo / Meshes / Catalog, foldable sections, status bar with hover help); 0.9.0 isolate keeps gear near the character, suite top->hands pairing, hands wearable alone, stable catalog order, play mode (double-click, Esc), verified in game by the user; 0.9.1 play-mode camera option, Esc always reopens the panel; 0.10.0 Materials tab (live shader tuning + save file, texture channel view), photo presets, slow motion / freeze, in-game A/B sheet; compiled with mcs only. Stage-2 route found in Improved Customization UI (client-side preview), see `docs/SPT_INSPECTOR.md`. |
 
 ## How work reaches the PC now
@@ -42,7 +42,7 @@ The cloud session pushes to GitHub branch `claude/bold-mayer-11fzxj`. On the PC:
 See the root `README.md`. This replaces the Cowork `device_commit_files` route, which silently wrote stale files.
 
 ## The contract between the halves
-The source of truth is `blender/COD2EFT/unity/COD2EFT_TEXTURE_SPEC.md` (agreed by both sessions 2026-09-27; uploaded with the first PC send - an earlier note here that it was missing was wrong). The table below summarises it; if they disagree, the spec wins. The audit (below) checked it against the code of both sides.
+The source of truth is `docs/COD2EFT_TEXTURE_SPEC.md` (moved from `blender/COD2EFT/unity/` on 2026-09-30). The table below summarises it; if they disagree, the spec wins. The audit (below) checked it against the code of both sides.
 The material encoding (`enc=2` / `enc=3`, the PNG tag, the Unity values per encoding) is specified in the spec's `enc=3` section and in `docs/MATERIALS_PLAN.md`, "enc=3 contract" (with the measurements behind it).
 
 | Item | Agreed | Code status |
@@ -79,20 +79,21 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 - Swayback fix confirmed by the user on valeria (2.5.2): "looks better".
 
 **Waiting on the user (PC):**
+0. **brie (BO7) "face on the neck"** (`docs/UV_TILES.md`): UV tiles ruled out (repeat is right). The look reproduces only when the atlas is shown with UV layer `COD_original_UV`. Needed: a screenshot showing *Object Data > UV Maps* (which layer has the camera icon), which file was viewed, and brie's COD export.
 1. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
 2. **Material A/B (redo with 1.7.1):** the first try (from_pc/20260929-002831) showed no difference because of a Unity bug: both prefabs got the enc=2 materials (fixed in 1.7.1). Then convert one character with *Materials* enc=2 and with enc=3 (two output folders or names), run the Unity one-click build for both, and take in-game screenshots next to vanilla. Look at skin first (see the known limits in `docs/MATERIALS_PLAN.md`).
 3. **Posture (2.6.7):** re-convert Park 24_1 (or another female character) with *Match neck* on and look at the side view next to EFT. Then run `SEND_RESULTS_TO_CLAUDE.bat` (the report goes up automatically). If it still looks wrong: next are the upper-back line (the chest is deeper than EFT's, so matching the section centre puts the back about 2 cm behind EFT's) and the steps 'Head priority' / fast Re-fit.
 4. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
 
 **Queue, in order.** Each is a separate step. (The material session has pushed: 2.6.0 / 1.7.0.)
-1. **Unify the contract.** Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
+1. ✅ (2026-09-30) **Unify the contract.** Moved to `docs/`; references updated; `pc/send.ps1` no longer copies the PC's old copy into the repo. Was: Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
 2. ✅ **One source for the per-part material numbers** (2026-09-29: `tools/check_contract.py` fails when Blender's `EFT_PART` / `EFT_NEUTRAL` / `CUTOFF` and Unity's presets / `DefaultCutoff` differ; run it after touching either). Today they are hard-coded twice: `EFT_PART` in `cod2eft_textures.py` (Blender preview) and `EFTMaterialCore.cs` (Unity). Either a shared JSON that both read, or a `tools/` check that fails when they differ. enc=3 added a second set (`EFT_NEUTRAL` vs `Cod2EftNeutralPreset`) that must be covered too.
 3. **`_EFT` name suffix.** Batch export writes `<name>_EFT.fbx`, so Unity names bundles `…_eft_top`. The panel export for Park gave `…_top`. Pick one: Unity strips a trailing `_EFT`, or Blender stops adding it. Changing bundle keys breaks existing mods, so ask the user first.
 4. ✅ **Regression harness:** `tools/regress.py`, with baselines `tools/baselines/cod2eft_2.6.7.json` (enc2) and `…_2.6.7_enc3.json` (with posture + neck; older kept). Deterministic: a repeat run is identical. Usage is in CLAUDE.md.
 5. **Test data out of git.** `from_pc/` holds GBs of COD exports and bundles, and every clone downloads them. Options: a separate data repo, Git LFS, or a send script that uploads big folders elsewhere. Rewriting history to drop what's already committed needs the user's OK.
-6. **Mod Builder:** default hands for tops without their own. Pick a game hands bundle automatically; the user got stuck on this with Park.
-7. **Mod Builder:** show "has not been built" before the first build as a note, not an error.
-8. **Bundle check after build:** Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin.
+6. ✅ (1.7.4) **Mod Builder:** default hands for tops without their own. Pick a game hands bundle automatically; the user got stuck on this with Park.
+7. ✅ (1.7.4) **Mod Builder:** show "has not been built" before the first build as a note, not an error.
+8. ✅ (1.7.5, uncompiled) **Bundle check after build:** Standard shader left in, missing shaders CAB, empty bundle, no LoddedSkin.
 9. **Unity step in batch mode** (a `.bat`: COD model in, SPT mod out). Blockers are listed in the audit below. Best done once the materials settle.
 10. **SPT client mod: "COD2EFT Inspector"** (BepInEx plugin, user idea 2026-09-29). **Stage 1 built: v0.1.0**; **0.2.0** adds the read-only outfit catalog (Outfits tab), the first step of the browser (`docs/SPT_INSPECTOR.md`). Next: the user runs `BUILD_SPT_INSPECTOR.bat`, tries it in raid / hideout / menu, and sends `SEND_RESULTS_TO_CLAUDE.bat`; fix from the log. The outfit browser (below, 1) is researched and planned in `docs/SPT_INSPECTOR.md`, not built. Remaining stages:
     1. an outfit/head browser: switch to and preview any top, pants or head in game, sorted and filtered by the mod it comes from vs vanilla;
