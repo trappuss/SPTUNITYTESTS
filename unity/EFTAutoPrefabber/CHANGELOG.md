@@ -2,6 +2,11 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.4 — 2026-09-30
+- **Mod Builder: a top without hands no longer blocks the build** (you got stuck on this with Park). If the top has no matching hands bundle in this mod (`<model>_hands`, or the mod's only hands bundle), the game's **DefaultUsecHands** (`assets/content/hands/usec/usec_hands_skin.bundle`) is picked; DefaultBearHands if the game list has no USEC default. The log says so, and the top shows *Picked automatically … change it above*. Picking any other hands in the list replaces it. If the mod's own hands bundle appears later, the top switches to it by itself.
+- **Mod Builder: "has not been built" is a note before the first build.** The periodic check listed every bundle not built yet as an ERROR. For a bundle this mod has never shipped, it is now a note (`… is not built yet - 'Build bundles + mod' builds it`). *Build Mod only* stays disabled until the files exist, and the real build still checks everything. A bundle that was shipped before and whose file is gone is still an error.
+- Not compiled here; checked by reading.
+
 ## 1.7.3 — 2026-09-29
 - **Optional high-quality compression (BC7) for COD2EFT textures** (Materials options, off by default).
   - Off: Unity's default DXT5 for `_d` and DXT1 for `_g`. These are the formats vanilla uses; in all 15 vanilla bundles, `_MainTex` is DXT5, `_SpecMap` DXT1 and `_BumpMap` DXT5.

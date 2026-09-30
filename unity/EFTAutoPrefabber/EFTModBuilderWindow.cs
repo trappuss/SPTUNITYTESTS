@@ -33,6 +33,7 @@ namespace EFTAutoPrefab
         public string description = "";
         public string handsKey = "";          // tops: bundle key of the hands they use
         public bool customHands;              // handsKey typed by hand (bundle from the game or another mod)
+        public bool defaultHands;             // 1.7.4: handsKey picked automatically (the top has no hands of its own)
         public bool customSide;               // false = WTT default sides
         public bool usec = true, bear = true, savage;
         public int trader;                    // index into TraderNames, -1 = custom id
@@ -97,6 +98,7 @@ namespace EFTAutoPrefab
         bool _showMod = true, _showDefaults;
         readonly List<string> _errors = new List<string>();
         readonly List<string> _warnings = new List<string>();
+        readonly List<string> _notBuilt = new List<string>();   // 1.7.4: bundles never built yet (a note until a real build)
         double _lastValidate;
 
         static readonly string[] KindNames = { "?", "Top", "Bottom", "Head", "Hands" };
@@ -278,18 +280,56 @@ namespace EFTAutoPrefab
 
         static string Nice(string prefabName) => (prefabName ?? "").Replace('_', ' ').Trim();
 
-        /// <summary>Tops without hands get the hands bundle whose key shares the same "{model}_" prefix, if exactly one does.</summary>
+        /// <summary>
+        /// Tops without hands get the hands bundle whose key shares the same "{model}_" prefix, if exactly one does
+        /// (else the project's only hands bundle). 1.7.4: if that finds nothing, the game's default USEC hands are
+        /// picked as a default the user can change (a top without hands used to block the build). A top that got
+        /// the default switches to its own hands once a matching hands bundle appears.
+        /// </summary>
         void AutoPickHands()
         {
             var hands = _p.items.Where(i => i.kind == (int)ClothingKind.Hands && !i.missing).ToList();
-            foreach (var top in _p.items.Where(i => i.kind == (int)ClothingKind.Top && string.IsNullOrEmpty(i.handsKey)))
+            foreach (var top in _p.items.Where(i => i.kind == (int)ClothingKind.Top && !i.customHands &&
+                                                    (string.IsNullOrEmpty(i.handsKey) || i.defaultHands)))
             {
                 string stem = Stem(top.bundleKey);
                 var match = hands.Where(h => Stem(h.bundleKey) == stem).ToList();
-                if (match.Count == 1) top.handsKey = match[0].bundleKey;
-                else if (hands.Count == 1) top.handsKey = hands[0].bundleKey;
+                string own = match.Count == 1 ? match[0].bundleKey : hands.Count == 1 ? hands[0].bundleKey : null;
+                if (own != null)
+                {
+                    if (top.defaultHands) Log($"'{top.bundleKey}': now uses this mod's own hands '{own}' instead of the default.");
+                    top.handsKey = own; top.defaultHands = false;
+                }
+                else if (string.IsNullOrEmpty(top.handsKey))
+                {
+                    var def = DefaultGameHands();
+                    top.handsKey = def.Value; top.defaultHands = true;
+                    Log($"'{top.bundleKey}' has no hands bundle of its own: using the game's {def.Key} ({def.Value}) by default. " +
+                        "Change it under the top's 'Hands (arms)' if you like.");
+                }
             }
         }
+
+        // DefaultUsecHands / DefaultBearHands as the game's catalog lists them (Inspector outfit catalog, from_pc/20260929-071416)
+        const string DefaultUsecHandsPath = "assets/content/hands/usec/usec_hands_skin.bundle";
+        const string DefaultBearHandsPath = "assets/content/hands/bear/bear_hands_skin.bundle";
+
+        /// <summary>The game's plain hands: USEC's default, else BEAR's, from SPT's customization.json when it can be read.</summary>
+        KeyValuePair<string, string> DefaultGameHands()
+        {
+            var gh = GameHands();
+            foreach (var name in new[] { "DefaultUsecHands", "DefaultBearHands" })
+                foreach (var kv in gh)
+                    if (string.Equals(kv.Key, name, StringComparison.OrdinalIgnoreCase)) return kv;
+            foreach (var path in new[] { DefaultUsecHandsPath, DefaultBearHandsPath })
+                foreach (var kv in gh)
+                    if (string.Equals(kv.Value, path, StringComparison.OrdinalIgnoreCase)) return kv;
+            return new KeyValuePair<string, string>("DefaultUsecHands", DefaultUsecHandsPath);
+        }
+
+        static bool IsKnownGameHands(string key) =>
+            string.Equals(key, DefaultUsecHandsPath, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(key, DefaultBearHandsPath, StringComparison.OrdinalIgnoreCase);
 
         static string Stem(string key)
         {
@@ -315,10 +355,11 @@ namespace EFTAutoPrefab
 
         void Validate() => Validate(true);
 
-        /// <summary>requireBuilt = false: skip the checks on built bundle files (used before building them).</summary>
-        void Validate(bool requireBuilt)
+        /// <summary>requireBuilt = false: skip the checks on built bundle files (used before building them).
+        /// notBuiltAsNote = true (the window's periodic check only): bundles never built go to _notBuilt, not _errors.</summary>
+        void Validate(bool requireBuilt, bool notBuiltAsNote = false)
         {
-            _errors.Clear(); _warnings.Clear();
+            _errors.Clear(); _warnings.Clear(); _notBuilt.Clear();
             if (string.IsNullOrWhiteSpace(_p.modName)) _errors.Add("Mod name is empty.");
             if (string.IsNullOrWhiteSpace(_p.author)) _errors.Add("Author is empty.");
             if (!EFTModBuilderCore.IsValidSemVer(_p.version)) _errors.Add("Version must look like 1.0.0.");
@@ -358,18 +399,27 @@ namespace EFTAutoPrefab
                     else
                     {
                         var h = _p.items.FirstOrDefault(x => x.bundleKey == it.handsKey);
-                        if (h == null && !GameHands().Any(g => g.Value == it.handsKey))
+                        if (h == null && !IsKnownGameHands(it.handsKey) && !GameHands().Any(g => g.Value == it.handsKey))
                             _warnings.Add(label + $": hands '{it.handsKey}' is neither one of this project's bundles nor a game hands bundle - it must come from another mod (not verified).");
                         else if (h != null && h.missing) _errors.Add(label + $": hands bundle '{it.handsKey}' is missing from the project.");
                     }
                 }
             }
 
-            // files present and fresh
+            // files present and fresh. 1.7.4: a bundle this mod has never shipped and that isn't built yet is normal before the
+            // first build - the periodic check (notBuiltAsNote) lists it as a note; the real build still refuses it.
+            var shippedBefore = new HashSet<string>(_p.generatedFiles.Select(Norm));
             foreach (var it in requireBuilt ? shipped : new List<ModItemState>())
             {
                 string src = Path.Combine(BuildFolderAbs, it.bundleKey);
-                if (!File.Exists(src)) { _errors.Add($"'{it.bundleKey}' has not been built (no file at {src}). Use 'Build bundles + mod'."); continue; }
+                if (!File.Exists(src))
+                {
+                    if (notBuiltAsNote && !shippedBefore.Contains(Norm("bundles/" + it.bundleKey)))
+                        _notBuilt.Add($"'{it.bundleKey}' is not built yet - 'Build bundles + mod' builds it.");
+                    else
+                        _errors.Add($"'{it.bundleKey}' has not been built (no file at {src}). Use 'Build bundles + mod'.");
+                    continue;
+                }
                 if (!string.IsNullOrEmpty(it.prefabPath) && File.Exists(it.prefabPath) &&
                     File.GetLastWriteTimeUtc(it.prefabPath) > File.GetLastWriteTimeUtc(src))
                     _warnings.Add($"'{it.bundleKey}': the prefab changed after the bundle was built - use 'Build bundles + mod' to include the change.");
@@ -907,8 +957,9 @@ namespace EFTAutoPrefab
 
             // validation touches the disk (bundle files, other mods' bundles.json), so don't run it on every repaint
             double now = EditorApplication.timeSinceStartup;
-            if (GUI.changed || now - _lastValidate > 1.0) { Validate(); _lastValidate = now; }
+            if (GUI.changed || now - _lastValidate > 1.0) { Validate(true, true); _lastValidate = now; }
             foreach (var e in _errors) GUILayout.Label("ERROR: " + e, _err);
+            foreach (var w in _notBuilt) GUILayout.Label("note: " + w, _warn);
             foreach (var w in _warnings) GUILayout.Label("note: " + w, _warn);
 
             EditorGUI.BeginChangeCheck();
@@ -928,7 +979,7 @@ namespace EFTAutoPrefab
             {
                 GUI.enabled = _p.items.Count > 0;
                 if (GUILayout.Button(new GUIContent("Build bundles + mod", "Builds this mod's AssetBundles into the build folder, then the mod"), GUILayout.Height(30))) BuildBundlesAndMod();
-                GUI.enabled = _errors.Count == 0;
+                GUI.enabled = _errors.Count == 0 && _notBuilt.Count == 0;
                 if (GUILayout.Button(new GUIContent("Build Mod only", "Uses the bundles already in the build folder"), GUILayout.Height(30), GUILayout.Width(120))) BuildMod();
                 GUI.enabled = true;
                 if (GUILayout.Button(new GUIContent("Clean", "Removes: unused AssetBundle names; old clothing or empty bundles in the build folder whose name is no longer used (asks first); " +
@@ -1090,6 +1141,9 @@ namespace EFTAutoPrefab
                             var keys = handsOptions.ToList();
                             var labels = handsOptions.ToList();
                             foreach (var gh in gameHands) { keys.Add(gh.Value); labels.Add("Game hands/" + gh.Key); }
+                            // 1.7.4: the automatic default is listed even when the game's list can't be read (no SPT folder set)
+                            if (!it.customHands && !string.IsNullOrEmpty(it.handsKey) && !keys.Contains(it.handsKey))
+                            { keys.Add(it.handsKey); labels.Add((it.defaultHands ? "Default: " : "Current: ") + it.handsKey.Replace('/', '\\')); }
                             keys.Add(null); labels.Add("Other key...");
                             int sel = it.customHands ? keys.Count - 1 : keys.IndexOf(it.handsKey);
                             int ns = EditorGUILayout.Popup(new GUIContent("Hands (arms)", "First-person arms shown with this top"), sel, labels.ToArray());
@@ -1097,7 +1151,10 @@ namespace EFTAutoPrefab
                             {
                                 it.customHands = ns == keys.Count - 1;
                                 if (!it.customHands) it.handsKey = keys[ns];
+                                it.defaultHands = false;
                             }
+                            if (it.defaultHands)
+                                EditorGUILayout.LabelField(" ", "Picked automatically (this top has no hands of its own) - change it above if you like.", EditorStyles.miniLabel);
                             if (it.customHands)
                                 it.handsKey = EditorGUILayout.TextField(new GUIContent("Hands bundle key", "Key of a hands bundle from the game or another mod"), it.handsKey);
                         }
