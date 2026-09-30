@@ -1,0 +1,10 @@
+﻿Sent: 2026-09-29T19:59:57
+Repo commit: 1f3b950 COD2EFT Inspector 0.7.0: Wear null fix + bundle diagnosis, body diagnostics, panel blocks game input, isolated/solid/transparent photo background, character turn + aim, resets
+Repo versions: COD2EFT v2.6.5, EFT Tools v1.7.3
+
+Unity last loaded: [EFT Tools] v1.7.3 (2026-09-29) loaded
+SPT game: G:\G Games\SPT4.1\SPT4.1 Game
+BepInEx log: 2026-09-29T19:59:09, Inspector: present
+Inspector installed: v0.7.0.0, built 2026-09-29T19:49:13 (repo v0.7.0)
+COD2EFT_Screenshots: 8 new file(s) since 2026-09-29T07:14:16
+blender_path.txt = G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe

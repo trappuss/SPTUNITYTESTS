@@ -1,0 +1,29 @@
+COD2EFT Inspector v0.7.0 - screenshot 20260929-195653_mp_western_t9mi6_24_1_FBXFIX_EFT_head+mp_western_t9mi6_24_1_FBXFIX_EFT_upper+mp_western_t9mi6_24_1_FBXFIX_EFT_lower_back_alpha.png
+Time: 2026-09-29T19:56:54   Game: 1.0   Scene: CommonUIScene
+Character: You (hideout)
+Camera: FPS Camera pos (-6.23, 1.37, -5.03) rot (5.90, 52.18, 0.00) fov 35
+
+Image: 5120 x 2880 (supersize 2)
+Photo mode: yaw 187.2 pitch 5.9 distance 3.6 height 1 fov 35, studio lights on x1 (follow camera)
+
+Profile customization (ids):
+  Head = 6abc42fa4d7993b8dd375714
+  Body = 6abc42fa649e46ae5037570f
+  Feet = 6abc42fa77b6bc95a7375713
+  Hands = 6abc42fae1f7a5ab70375710
+  DogTag = 67471938bafff850080488b7
+  Voice = 5fc615110b735e7b024c76ea
+
+Body parts on the character (PlayerBody.BodySkins) and the bundles they came from:
+  Head                   mp_western_t9mi6_24_1_FBXFIX_EFT_head   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Head 'mp western t9mi6 24 1 FBXFIX EFT head' id 6abc42fa4d7993b8dd375714 bundle heads/mp_western_t9mi6_24_1_fbxfix_eft_head.bundle
+  Top                    mp_western_t9mi6_24_1_FBXFIX_EFT_upper   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Top 'mp western t9mi6 24 1 FBXFIX EFT upper' id 6abc42fa649e46ae5037570f bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_top.bundle
+  Pants                  mp_western_t9mi6_24_1_FBXFIX_EFT_lower   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Pants 'mp western t9mi6 24 1 FBXFIX EFT lower' id 6abc42fa77b6bc95a7375713 bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_bottom.bundle
+  Hands (first-person)   mp_western_t9mi6_24_1_FBXFIX_EFT_hands   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Hands 'mp western t9mi6 24 1 FBXFIX EFT upper (hands)' id 6abc42fae1f7a5ab70375710 bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_hands.bundle
+  (no loaded bundle has a prefab with these names)
+
+Hidden meshes:
+  none
