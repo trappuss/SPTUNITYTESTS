@@ -15,6 +15,7 @@ Options:
                     40 hand bones; own texture set) - from the character's COD first-person
                     arms model when it was exported, else from the arms of Upper
   --fp-hands-from third   always from the arms of Upper
+  --no-neck-fit     place only the neck joint, not the neck's cross-section (before 2.6.7)
   --no-fingertips   don't move the finger roots onto EFT's knuckles or aim the last finger
                     segments at EFT's fingertips
   --neck-lean DEG   most the neck may lean forward to line the face up (default 35)
@@ -69,7 +70,7 @@ def parse(argv):
     argv = argv[argv.index("--") + 1:] if "--" in argv else []
     o = dict(template=None, out=None, cast=False, lengths=True, fit_scale=False, join=True,
              export_fbx=False, max_inf=4, body=True, height=False, neck_lean=35.0,
-             head_forward=0.5, head_height="limited", face="eyes", tips=True, tweaks=True,
+             head_forward=0.5, neck_fit=True, head_height="limited", face="eyes", tips=True, tweaks=True,
              split=False, fp_hands=False, fp_source="AUTO", textures=True, tex_size=2048, inputs=[],
              tex=dict(normal_style="OPENGL", spec_scale=1.0, ao_strength=1.0, ao_in_spec=True,
                       uv_layout="ISLANDS", metal_keep=0.7, material_mode="ENC2",
@@ -126,6 +127,8 @@ def parse(argv):
             i += 1
         elif a == "--no-fingertips":
             o["tips"] = False
+        elif a == "--no-neck-fit":
+            o["neck_fit"] = False
         elif a == "--neck-lean":
             o["neck_lean"] = float(argv[i + 1]); i += 1
         elif a == "--head-forward":
@@ -195,7 +198,8 @@ def convert_group(char, opt):
                                basename=key, match_body=opt["body"],
                                match_height=opt["height"], neck_max_lean=opt["neck_lean"],
                                head_forward=opt["head_forward"], head_height=opt["head_height"],
-                               face_landmark=opt["face"], match_fingertips=opt["tips"])
+                               face_landmark=opt["face"], match_fingertips=opt["tips"],
+                               match_neck=opt["neck_fit"])
     results, _ = C.run_convert(rig, eft, max_influences=opt["max_inf"], join_parts=opt["join"],
                                log=log)
     if opt["fp_hands"]:

@@ -158,6 +158,11 @@ class COD2EFT_Settings(bpy.types.PropertyGroup):
         name="Head forward", default=0.5, min=0.0, max=1.0,
         description="Share of the face gap left over after the neck lean limit that the upper "
                     "spine takes up by leaning forward. 0 = off, 1 = close the gap front/back")
+    match_neck: BoolProperty(
+        name="Match neck", default=True,
+        description="Place the neck so its cross-section lines up with EFT's neck (hair left "
+                    "out). Off = only the neck joint is placed, as before 2.6.7 - the neck can "
+                    "then sit 1 - 3 cm behind EFT's and the head look pushed forward")
     match_lengths: BoolProperty(
         name="Snap limb joints to EFT", default=True,
         description="Aim and stretch COD clavicle/arm/leg/finger/neck segments so shoulders, "
@@ -452,6 +457,8 @@ def _batch_cmd(st, tp, data_dir, paths):
     if not st.match_fingertips:
         cmd.append("--no-fingertips")
     cmd += ["--neck-lean", f"{st.neck_lean:g}", "--head-forward", f"{st.head_forward:g}"]
+    if not st.match_neck:
+        cmd.append("--no-neck-fit")
     if st.convert_textures:
         cmd += ["--texture-size", st.texture_size, "--normal-style", st.tex_normals.lower(),
                 "--spec-strength", f"{st.tex_spec:g}", "--metal-colour", f"{st.tex_metal:g}",
@@ -619,7 +626,7 @@ class COD2EFT_OT_fit(bpy.types.Operator):
                       match_body=st.match_body, neck_max_lean=st.neck_lean,
                       head_forward=st.head_forward, head_height=st.head_height.lower(),
                       face_landmark=st.face_landmark.lower(),
-                      match_fingertips=st.match_fingertips)
+                      match_fingertips=st.match_fingertips, match_neck=st.match_neck)
         except Exception as ex:
             log(f"ERROR: {ex}")
             log.to_text()
@@ -678,7 +685,8 @@ SETTINGS = (("prefer_cast", "Prefer .cast"), ("match_body", "Match body volume")
             ("head_height", "Head height"), ("face_landmark", "Line up by"),
             ("neck_lean", "Neck lean limit"), ("match_fingertips", "Match fingers"),
             ("fp_hands", "First-person hands"), ("fp_source", "Hands from"),
-            ("head_forward", "Head forward"), ("match_lengths", "Snap limb joints"),
+            ("head_forward", "Head forward"), ("match_neck", "Match neck"),
+            ("match_lengths", "Snap limb joints"),
             ("fit_scale", "Best-fit scale"), ("apply_tweaks", "Apply saved tweaks"),
             ("max_influences", "Max bones / vertex"), ("join_parts", "Join parts"),
             ("split_materials", "Separate by COD material"),
@@ -1568,6 +1576,7 @@ class COD2EFT_PT_settings_fit(_Panel, bpy.types.Panel):
         sub.prop(st, "face_landmark")
         sub.prop(st, "neck_lean")
         sub.prop(st, "head_forward", slider=True)
+        sub.prop(st, "match_neck")
         sub.prop(st, "match_fingertips")
         col.prop(st, "match_lengths")
         col.prop(st, "fit_scale")

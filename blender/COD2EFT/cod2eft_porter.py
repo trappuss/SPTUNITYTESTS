@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 6)
+VERSION = (2, 6, 7)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -507,6 +507,10 @@ def _skin_spec():
                    ("Spine2", None, 0), ("Spine1", "Spine3"), 0.35, 0.10, False, False),
         "spine3": (("j_spine4", None, 0), ("j_spineupper", "j_neck"),
                    ("Spine3", None, 0), ("Spine2", "Neck"), 0.35, 0.10, False, False),
+        # 2.6.7: neck, a quarter of the way up from the neck joint to the head joint.  Measured
+        # without hair (see HAIR_MAT) - a ponytail behind the neck would pull the centre back.
+        "neck": (("j_neck", "j_head", 0.25), ("j_neck", "j_head"),
+                 ("Neck", "Head", 0.25), ("Neck", "Head"), 0.09, 0.05, False, False),
     }
     for c, e in SIDES:
         sp["knee_" + e] = ((f"j_knee_{c}", None, 0), (f"j_hip_{c}", f"j_ankle_{c}"),
@@ -541,6 +545,7 @@ EFT_SKIN = {
     "pelvis": (0.0236, 0.0000),
     "spine2": (0.0668, 0.0000),
     "spine3": (0.0833, 0.0000),
+    "neck": (0.0160, 0.0000),         # 2.6.7, Bear_head_0 + Tshirt_bear_Voin_lod0
     "knee_L": (-0.0236, -0.0096),
     "knee_R": (-0.0236, 0.0096),
     "shin_L": (0.0051, -0.0042),
@@ -569,6 +574,9 @@ COD_SKIN_PRIOR = {
 SKIN_CLAMP = 0.03
 # most the pelvis section may sit further behind the waist (spine2) section than on EFT's body (m)
 PELVIS_WAIST_SLACK = float(os.environ.get("COD2EFT_PELVIS_SLACK", "0.01"))
+# 2.6.7: most the neck section may move the neck base (m).  A collar / hood / scarf round the
+# neck moves the section centre too - beyond this it is taken for gear, not the neck.
+NECK_FIT_MAX = float(os.environ.get("COD2EFT_NECK_MAX", "0.03"))
 # EFT ground: bottom of EFT's shoe soles (m)
 EFT_FLOOR_Z = -0.0025
 
@@ -581,9 +589,14 @@ def _pt(J, spec_pt, names):
     return J[a] if not b else J[a] + t * (J[b] - J[a])
 
 
-def mesh_arrays(objs, depsgraph=None):
+# Materials left out of the neck cross-section (hair cards / shells, lashes, brows)
+HAIR_MAT = re.compile(r"hair|ponytail|braid|bun_|beard|mustache|moustache|eyelash|brow", re.I)
+
+
+def mesh_arrays(objs, depsgraph=None, skip_mat=None):
     """World-space vertex positions and triangle vertex indices of several meshes (the base
-    mesh, or the deformed one when a depsgraph is given)."""
+    mesh, or the deformed one when a depsgraph is given).  skip_mat: regex - triangles whose
+    material name matches it are left out (the vertices stay, so P is the same either way)."""
     P, T, off = [], [], 0
     for o in objs:
         ev = o.evaluated_get(depsgraph) if depsgraph else None
@@ -594,11 +607,18 @@ def mesh_arrays(objs, depsgraph=None):
         co = co.reshape(-1, 3)
         tri = np.empty(len(me.loop_triangles) * 3, dtype=np.int64)
         me.loop_triangles.foreach_get("vertices", tri)
+        tri = tri.reshape(-1, 3)
+        if skip_mat is not None and len(me.materials):
+            bad = np.array([bool(m and skip_mat.search(m.name)) for m in me.materials])
+            if bad.any():
+                mi = np.empty(len(me.loop_triangles), dtype=np.int64)
+                me.loop_triangles.foreach_get("material_index", mi)
+                tri = tri[~bad[np.clip(mi, 0, len(bad) - 1)]]
         if ev:
             ev.to_mesh_clear()
         mw = np.array(o.matrix_world)
         P.append(co @ mw[:3, :3].T + mw[:3, 3])
-        T.append(tri.reshape(-1, 3) + off)
+        T.append(tri + off)
         off += len(co)
     if not P:
         return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.int64)
@@ -639,11 +659,12 @@ def section_frame(J, key, eft_side):
     return c, axis, fw, np.cross(axis, fw)
 
 
-def skin_sections(P, T, J, eft_side):
+def skin_sections(P, T, J, eft_side, T_neck=None):
     """Cross-section centres for every SKIN_SPEC landmark: the mesh surface is cut by the plane
     across the body axis at the landmark.  P/T = vertices/triangles (EFT space, model facing
     -Y), J = joint positions, eft_side=True uses EFT bone names.  Returns {key: dict(fwd=m,
-    lat=m, fw=unit, lat_axis=unit, n=points)} for the landmarks found."""
+    lat=m, fw=unit, lat_axis=unit, n=points)} for the landmarks found.  T_neck = the triangles
+    without hair (mesh_arrays(skip_mat=HAIR_MAT)), used for the neck."""
     out = {}
     for key, spec in SKIN_SPEC.items():
         radius, midline, use_lat, own_side = spec[4:8]
@@ -651,7 +672,7 @@ def skin_sections(P, T, J, eft_side):
         if fr is None:
             continue
         c, axis, fw, lat = fr
-        Q = plane_cut(P, T, c, axis) - c
+        Q = plane_cut(P, T_neck if key == "neck" and T_neck is not None else T, c, axis) - c
         if not len(Q):
             continue
         x, y = Q @ lat, Q @ fw
@@ -847,6 +868,21 @@ class Log:
     def to_text(self, name="COD2EFT_Report"):
         txt = bpy.data.texts.get(name) or bpy.data.texts.new(name)
         txt.write(f"---- COD2EFT v{VERSION_STR} ----\n" + "\n".join(self.lines) + "\n\n")
+        # 2.6.7: the whole report also goes to <settings folder>/reports/<name>_report.txt, which
+        # SEND_RESULTS_TO_CLAUDE.bat picks up (report only - never fails the operation)
+        try:
+            key = ""
+            try:
+                key = bpy.context.scene.cod2eft.output_name.strip()
+            except Exception:
+                pass
+            key = re.sub(r'[<>:"/\\|?*]', "_", key or "COD2EFT")
+            d = os.path.join(data_dir(), "reports")
+            os.makedirs(d, exist_ok=True)
+            with open(os.path.join(d, f"{key}_report.txt"), "w", encoding="utf-8") as fh:
+                fh.write(txt.as_string())
+        except Exception as ex:
+            print(f"[COD2EFT] report file not written: {ex}")
 
 
 def np3(v):
@@ -1078,12 +1114,19 @@ def ensure_object_mode():
 # ---------------------------------------------------------------------------------------------
 # STEP 1 - FIT
 # ---------------------------------------------------------------------------------------------
+def fitted_sections(meshes, EJ):
+    """(P, T, skin_sections at EFT's landmarks) of the posed meshes, the neck without hair."""
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+    P, T = mesh_arrays(meshes, dg)
+    _, Tn = mesh_arrays(meshes, dg, skip_mat=HAIR_MAT)
+    return P, T, skin_sections(P, T, EJ, eft_side=True, T_neck=Tn)
+
+
 def log_body_match(meshes, EJ, log):
     """After the fit: COD cross-section centres at EFT's landmarks vs EFT's own, and where the
     soles ended up relative to EFT's floor."""
-    bpy.context.view_layer.update()
-    P, T = mesh_arrays(meshes, bpy.context.evaluated_depsgraph_get())
-    got = skin_sections(P, T, EJ, eft_side=True)
+    P, T, got = fitted_sections(meshes, EJ)
     res = {"body": {k: round((got[k]["fwd"] - EFT_SKIN[k][0]) * 100, 1)
                     for k in SKIN_SPEC if k in got and k in EFT_SKIN}}
     if res["body"]:
@@ -1106,31 +1149,6 @@ def side_lean(a, b):
     return math.degrees(math.atan2(float(v @ FWD), float(v[2])))
 
 
-def neck_section(P, T, EJ):
-    """Centre of the neck's cross-section a quarter of the way up from EFT's Neck joint to its
-    Head joint (plane across Neck -> Head, points within 5 cm of the centre line and 12 cm of
-    the axis), as a point, or None.  Front/back = mid of the 2nd / 98th percentile, like
-    skin_sections().  A ponytail / hood can pull it back a little."""
-    n, h = EJ.get(E("Neck")), EJ.get(E("Head"))
-    if n is None or h is None:
-        return None
-    axis = (h - n) / np.linalg.norm(h - n)
-    c = n + 0.25 * (h - n)
-    fw = FWD - axis * (FWD @ axis)
-    fw /= np.linalg.norm(fw)
-    Q = plane_cut(P, T, c, axis) - c
-    s = (np.linalg.norm(Q, axis=1) < 0.12) & (np.abs(Q @ np.cross(axis, fw)) < 0.05)
-    if s.sum() < 8:
-        return None
-    y = Q[s] @ fw
-    return c + (np.percentile(y, 98) + np.percentile(y, 2)) / 2 * fw
-
-
-# Centre of EFT's own neck section (neck_section() on Bear_head_0 + Tshirt_bear_Voin_lod0 in the
-# template), forward of the section point, m
-EFT_NECK_FWD = 0.0258
-
-
 def fit_posture(rig, EJ, meshes, face_cod, face_eft, face_what, log):
     """Side-view posture after the fit, COD vs EFT (2.6.6).  Every number is the lean of a line
     in the side view (forward / up plane), degrees from vertical, + = the upper end forward:
@@ -1141,7 +1159,8 @@ def fit_posture(rig, EJ, meshes, face_cod, face_eft, face_what, log):
               EFT_SKIN): the body as seen.  A bust / chest rig moves the chest centre forward.
       neck  = neck-base joint -> face landmark (eye centres, or the nose tip; EFT: Neck ->
               EFT_EYES / EFT_NOSE): how far the head is carried forward over the neck joint.
-      neck~ = centre of the neck section (neck_section()) -> face landmark: the neck as seen.
+      neck~ = centre of the neck section (SKIN_SPEC "neck", without hair since 2.6.7) -> face
+              landmark: the neck as seen.
     Joints and section centres (percentile mid-points of whole cuts), never single vertices.
     The eye offset itself is in "Face after fit".  Returns {line: [COD, EFT]} (degrees)."""
     pb = rig.pose.bones
@@ -1149,26 +1168,22 @@ def fit_posture(rig, EJ, meshes, face_cod, face_eft, face_what, log):
     if "j_mainroot" in pb and "j_neck" in pb:
         rows["back"] = (side_lean(np3(pb["j_mainroot"].head), np3(pb["j_neck"].head)),
                         side_lean(EJ[E("Pelvis")], EJ[E("Neck")]))
-    bpy.context.view_layer.update()
-    P, T = mesh_arrays(meshes, bpy.context.evaluated_depsgraph_get())
-    got = skin_sections(P, T, EJ, eft_side=True)
-    if "pelvis" in got and "spine3" in got:
-        cen = {}
-        for k in ("pelvis", "spine3"):
-            c, _, fw, _ = section_frame(EJ, k, True)
-            cen[k] = (c + got[k]["fwd"] * fw, c + EFT_SKIN[k][0] * fw)
+    _, _, got = fitted_sections(meshes, EJ)
+    cen = {}
+    for k in ("pelvis", "spine3", "neck"):
+        fr = section_frame(EJ, k, True)
+        if k in got and fr is not None:
+            cen[k] = (fr[0] + got[k]["fwd"] * fr[2], fr[0] + EFT_SKIN[k][0] * fr[2])
+    if "pelvis" in cen and "spine3" in cen:
         rows["back~"] = (side_lean(cen["pelvis"][0], cen["spine3"][0]),
                          side_lean(cen["pelvis"][1], cen["spine3"][1]))
     if face_cod is not None:
         if "j_neck" in pb:
             rows["neck"] = (side_lean(np3(pb["j_neck"].head), face_cod),
                             side_lean(EJ[E("Neck")], face_eft))
-        nc = neck_section(P, T, EJ)
-        if nc is not None:
-            n, h = EJ[E("Neck")], EJ[E("Head")]
-            fw = FWD - (h - n) * (FWD @ (h - n)) / ((h - n) @ (h - n))
-            ne = n + 0.25 * (h - n) + EFT_NECK_FWD * fw / np.linalg.norm(fw)
-            rows["neck~"] = (side_lean(nc, face_cod), side_lean(ne, face_eft))
+        if "neck" in cen:
+            rows["neck~"] = (side_lean(cen["neck"][0], face_cod),
+                             side_lean(cen["neck"][1], face_eft))
     if rows:
         log("Posture after fit (side view, deg from vertical, + = leaning forward): " + ", ".join(
             f"{k} COD {c:+.1f} / EFT {e:+.1f} ({abs(c - e):.1f} {'fwd' if c >= e else 'back'})"
@@ -1181,8 +1196,10 @@ def fit_posture(rig, EJ, meshes, face_cod, face_eft, face_what, log):
 def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=True, log=None,
             basename="", match_body=True, match_height=False, neck_max_lean=NECK_MAX_LEAN,
             head_forward=0.5, face_landmark="eyes", head_height=None, match_fingertips=True,
-            viewmodel=False):
-    """head_height: "off" (keep the COD height), "limited" (spine + neck stretched at most
+            viewmodel=False, match_neck=True):
+    """match_neck (2.6.7): the neck base is placed so the neck's cross-section lines up with
+    EFT's (before, only the neck joint was placed; COD necks then sat 0.3 - 2.5 cm behind EFT's
+    while the eyes sat on EFT's, so the head looked pushed forward).  head_height: "off" (keep the COD height), "limited" (spine + neck stretched at most
     +-HEAD_HEIGHT_LIMIT so the face / eyes reach EFT's height) or "full" (0.75 - 1.35);
     None = "full" if match_height else "limited".  face_landmark: "eyes" (eyeball centres, falls
     back to the nose) or "nose"."""
@@ -1313,6 +1330,8 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
 
     # --- rest frames of the fit rig ---
     FIT = fit_table()
+    if match_body and match_neck and "j_spine4" in FIT:
+        FIT["j_spine4"]["skin"] = "neck"             # neck base placed by the neck section
     # fingertips = virtual joints (".tip") that the distal finger segments aim at
     JX, EJX = dict(J), dict(EJ)
     if match_body and match_fingertips:
@@ -1394,15 +1413,23 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
     EFT_FACE, face_what = EFT_NOSE, "nose tip"
     if match_body:
         P, T = mesh_arrays(meshes)
+        _, T_neck = mesh_arrays(meshes, skip_mat=HAIR_MAT)
         # (first-person arms: no body to measure - the arm pieces are cut, so their sections
         # would mislead the shoulder placement)
-        body_sections = {} if viewmodel else skin_sections(P, T, J, eft_side=False)
+        body_sections = {} if viewmodel else skin_sections(P, T, J, eft_side=False,
+                                                           T_neck=T_neck)
         clamped = []
         for key, sec in body_sections.items():
             fr = section_frame(EJ, key, True)
             if fr is None or key not in EFT_SKIN:
                 continue
             fwd, lat = sec["fwd"], sec["lat"]
+            if key == "neck":
+                ef = EFT_SKIN["neck"][0]
+                f2 = min(max(fwd, ef - NECK_FIT_MAX), ef + NECK_FIT_MAX)
+                if abs(f2 - fwd) > 1e-6:
+                    clamped.append(f"neck ({(fwd - f2) * 100:+.1f} cm, collar / hood?)")
+                fwd = f2
             if key in COD_SKIN_PRIOR:
                 pf, pl = COD_SKIN_PRIOR[key]
                 f2 = min(max(fwd, pf - SKIN_CLAMP), pf + SKIN_CLAMP)
@@ -1599,7 +1626,7 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
                     tgt = aim_target(fi, R, h_new, mode,
                                      spine_stretch if spine_stretch is not None else 1.0)
                     if n == "j_spine4":
-                        tgt = tgt + extra["neck"]
+                        tgt = tgt + extra["neck"] + extra["neckfit"]
                     ch = fi["cod_aim"]
                     if ROOT_SKIN.get(ch, (None, None))[1] == n:
                         tgt = tgt + extra["root"].get(ch, 0.0)
@@ -1634,7 +1661,7 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
             seg[n] = (R, Sm, h_new)
         # corrections for the next pass
         nxt = {"root": dict(extra["root"]), "neck": extra["neck"].copy(), "gap0": extra["gap0"],
-               "spine": spine_ratio[0]}
+               "spine": spine_ratio[0], "neckfit": extra["neckfit"].copy()}
         for n, (key, how) in ROOT_SKIN.items():
             if n not in seg or key not in oJ:
                 continue
@@ -1672,7 +1699,7 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
         return D, desired, root_shift, nxt, face_gap
 
     face_gap = None
-    extra = {"root": {}, "neck": np.zeros(3), "gap0": None, "spine": None}
+    extra = {"root": {}, "neck": np.zeros(3), "gap0": None, "spine": None, "neckfit": np.zeros(3)}
     for _ in range(6 if match_body else 1):
         applied = extra
         D, desired, root_shift, extra, face_gap = solve(applied)
@@ -1710,16 +1737,54 @@ def run_fit(cod_arms, eft, match_lengths=True, fit_scale=False, apply_tweaks=Tru
             f"max {max(tip_err) * 100:.1f} cm ({len(tip_err)} fingers)")
 
     # --- apply pose level by level, then verify ---
-    bpy.ops.object.mode_set(mode="POSE")
-    for pb in rig.pose.bones:
-        pb.rotation_mode = "QUATERNION"
-        pb.matrix_basis = Matrix.Identity(4)
-    depth = {n: _depth(n, parent) for n in order}
-    for lvl in range(max(depth.values()) + 1):
-        for n in order:
-            if depth[n] == lvl and n in fitinfo:
-                rig.pose.bones[n].matrix = to_bl(desired[n])
-        bpy.context.view_layer.update()
+    def apply_pose(desired):
+        bpy.ops.object.mode_set(mode="POSE")
+        for pb in rig.pose.bones:
+            pb.rotation_mode = "QUATERNION"
+            pb.matrix_basis = Matrix.Identity(4)
+        depth = {n: _depth(n, parent) for n in order}
+        for lvl in range(max(depth.values()) + 1):
+            for n in order:
+                if depth[n] == lvl and n in fitinfo:
+                    rig.pose.bones[n].matrix = to_bl(desired[n])
+            bpy.context.view_layer.update()
+
+    if fitinfo.get("j_spine4", {}).get("skin") == "neck" and "neck" in oJ:
+        # Match neck (2.6.7): the neck flesh is skinned across spine / neck / head bones, so where
+        # the neck section lands is measured on the posed mesh, and the front/back rest goes onto
+        # the neck base (at most 3 rounds, NECK_FIT_MAX in all)
+        for o in meshes:
+            m = next((m for m in o.modifiers if m.type == "ARMATURE"), None) or \
+                o.modifiers.new("Armature", "ARMATURE")
+            m.object = rig
+        bpy.ops.object.mode_set(mode="OBJECT")
+        nf, sol, best = np.zeros(3), (D, desired, root_shift, face_gap), None
+        for _ in range(4):
+            apply_pose(sol[1])
+            bpy.ops.object.mode_set(mode="OBJECT")
+            _, _, got = fitted_sections(meshes, EJ)
+            if "neck" not in got:
+                break
+            d = EFT_SKIN["neck"][0] - got["neck"]["fwd"]
+            if best is not None and abs(d) >= best[0] - 0.001:
+                break          # no better (a hood / collar that doesn't move with the neck)
+            best = (abs(d), nf, sol)
+            if abs(d) < 0.002:
+                break
+            nf = nf + d * section_frame(EJ, "neck", True)[2]
+            if np.linalg.norm(nf) > NECK_FIT_MAX:
+                nf = nf * NECK_FIT_MAX / np.linalg.norm(nf)
+            D, desired, root_shift, _, face_gap = solve(dict(extra, neckfit=nf))
+            sol = (D, desired, root_shift, face_gap)
+        if best is not None:
+            _, nf, (D, desired, root_shift, face_gap) = best
+        if np.linalg.norm(nf) > 1e-4:
+            log(f"Neck: neck base moved a further {nf @ FWD * 100:+.1f} cm forward so the neck "
+                "section lines up with EFT's (Match neck)")
+            if face_gap is not None:
+                g = -face_gap * 100
+                log(f"Face after the neck match: {g @ FWD:+.1f} cm forward, {g[2]:+.1f} cm up")
+    apply_pose(desired)
     worst, worst_n = 0.0, None
     for n in order:
         err = np.abs(from_bl(rig.pose.bones[n].matrix) - desired[n]).max()

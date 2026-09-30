@@ -3,6 +3,7 @@
 #  - copies of tool files that were changed on the PC (e.g. by a Cowork session) so they can be merged
 #  - the COD2EFT <-> Unity contract (COD2EFT_TEXTURE_SPEC.md) if the repo doesn't have it yet
 #  - anything dragged onto SEND_RESULTS_TO_CLAUDE.bat (reports, screenshots, logs, folders)
+#  - COD2EFT conversion reports (<COD2EFT folder>\reports\*.txt) that are new since the last send
 #  - SPT (if SPT_GAME is known): BepInEx LogOutput.log, the Inspector build log, and every file in
 #    <SPT game>\COD2EFT_Screenshots that is new since the last send
 $Extra = $args   # files / folders dragged onto the .bat
@@ -95,6 +96,21 @@ try {
         }
     }
 
+    # COD2EFT reports (2.6.7+: every panel conversion saves <COD2EFT folder>\reports\<name>_report.txt)
+    $rmark = Join-Path $PSScriptRoot '_state\reports_last_send.txt'
+    $rdir = Join-Path $cfg.COD2EFT_DIR 'reports'
+    if (Test-Path $rdir) {
+        $rsince = if (Test-Path $rmark) { [datetime]::Parse((Get-Content $rmark -TotalCount 1).Trim(), [Globalization.CultureInfo]::InvariantCulture) } else { [datetime]::MinValue }
+        $newR = @(Get-ChildItem $rdir -File -Filter '*.txt' | Where-Object { $_.LastWriteTime -gt $rsince -and $_.Length -lt $MaxBytes })
+        if ($newR.Count) {
+            $dstR = Join-Path $out 'COD2EFT_reports'
+            New-Item -ItemType Directory -Force $dstR | Out-Null
+            foreach ($f in $newR) { Copy-Item -LiteralPath $f.FullName $dstR }
+        }
+        $info += "COD2EFT reports: $($newR.Count) new since $(if ($rsince -eq [datetime]::MinValue) { 'ever' } else { $rsince.ToString('s') })"
+        Say "   $($newR.Count) new COD2EFT report(s)"
+    }
+
     Say '== Deployed files vs repo ==' Cyan
     $pcDir = Join-Path $out 'changed_on_pc'
     foreach ($t in Get-Targets $cfg) {
@@ -112,7 +128,7 @@ try {
         if (-not $t.Only -and (Test-Path $t.Dst)) {
             Get-ChildItem $t.Dst -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
                 $_.Length -lt 2MB -and $_.Extension -in '.py', '.cs', '.md', '.bat', '.txt', '.json', '.meta' -and
-                $_.FullName -notmatch '\\(_dev|__pycache__|vendor)\\'
+                $_.FullName -notmatch '\\(_dev|__pycache__|vendor|reports)\\'
             } | ForEach-Object {
                 $rel = $_.FullName.Substring($t.Dst.Length).TrimStart('\')
                 if (-not (Test-Path (Join-Path $t.Src $rel)) -and $PcOwned -notcontains $_.Name) {
@@ -186,6 +202,7 @@ try {
         Say "   (conflict with Claude's newer work - results were pushed to branch $side instead)" Yellow
     }
     New-Item -ItemType Directory -Force (Split-Path $marker) | Out-Null
+    $sentAt.ToString('o') | Set-Content -Encoding ASCII $rmark
     $sentAt.ToString('o') | Set-Content -Encoding ASCII $marker    # next send only takes screenshots newer than this
     Say "`nSent. Tell Claude: 'check from_pc/$stamp'" Green
     exit 0

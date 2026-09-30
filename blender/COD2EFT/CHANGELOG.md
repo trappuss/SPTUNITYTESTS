@@ -2,6 +2,18 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.7 — 2026-09-30
+- **Fix: head looked pushed forward and the back leaned back** (user report, Park 24_1 / female characters).
+  - Cause (measured): only the neck *joint* was placed on EFT's. The neck itself then sat 0.3–2.5 cm behind EFT's neck, while the eyes sat exactly on EFT's eyes. Park 24_1 (your 2.6.6 report + the old Park FBX): neck about 1.5–2.5 cm behind, upper back about 2 cm behind.
+  - New **Match neck** (Settings → Fit, on by default; batch `--no-neck-fit` turns it off). The neck base is moved so the neck's cross-section (hair left out) lines up with EFT's. It is checked on the posed mesh (up to 4 rounds) and at most 3 cm (`COD2EFT_NECK_MAX`). If a round doesn't help (a hood or collar that doesn't move with the neck), the best earlier round is kept.
+  - Report: new `Neck:` line; `neck` now appears in *Body volume* and *Body match after fit*; *limited …* names `neck (… cm, collar / hood?)` when the limit applies.
+  - Test characters, neck vs EFT after fit (before → after): valeria −0.9 → −0.2 cm (back line now = EFT's, −4.2°), MW4 male −0.3 → −0.1, sunflower −0.3 → −0.1, Kleo −2.5 → −1.4 (hood; the extra rounds were rejected).
+- `neck~` in the posture line now leaves hair out and uses the tighter neck section (radius 9 cm, so it no longer catches the chin). The 2.6.6 Park value (12.4° fwd) was mostly the ponytail.
+- **Every panel conversion now also saves its report** as `<COD2EFT folder>\reports\<name>_report.txt`. `SEND_RESULTS_TO_CLAUDE.bat` sends the new ones automatically, so there's no need to copy the text block by hand.
+- Backup of 2.6.6: `backups/COD2EFT_Blender_Addon_2.6.6.zip` (Blender: Install from Disk). The sync also backs up every replaced file to `pc\_backup\<time>\`.
+- Regression vs 2.6.6: changes only in neck / posture / face numbers, the body match of Kleo (spine2 0.5 → 0.0 cm, spine3 0.7 → 0.4, upper arms 0.5 → 0.2) and PNG hashes (the atlas sizes pieces by their area on the posed model; same size and average colour). New baselines `tools/baselines/cod2eft_2.6.7*.json`.
+- Tested headless in Blender 4.4 with the template rebuilt from the FBX. Park 24_1's COD files aren't in the repo, so it isn't tested on Park.
+
 ## 2.6.6 — 2026-09-30
 - **New: posture numbers after the fit** (user report: converted characters, mostly female, look like the head and neck are pushed forward and the back leans back). The fit itself is unchanged.
   - The report has a new line `Posture after fit`, and the panel's *Last fit* box shows *Back lean* and *Neck lean* vs EFT. All values are side-view angles in degrees from vertical, + = forward, COD vs EFT's own body:
