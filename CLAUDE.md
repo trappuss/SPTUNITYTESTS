@@ -49,6 +49,19 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
 - **SPT client plugin** (`spt_mod/COD2EFTInspector/`): `tests/compile_check.sh` compiles it with mono `mcs` (`apt-get install mono-mcs`) against public Unity/BepInEx reference DLLs; `tests/run_tests.sh` runs the Unity-free tests. mcs lacks C# 7 type patterns, so avoid `x is T t`. See `docs/SPT_INSPECTOR.md`.
 - **PowerShell** (`pc/*.ps1`): must run on Windows PowerShell 5.1. Parse-check with pwsh if available. Under `$ErrorActionPreference = 'Stop'`, don't redirect native stderr (`2>$null`).
 
+## Build with the future in mind (the user, 2026-09-30)
+The project will become **SPT Character Studio Suite**: not only COD sources, parts named "SPT Character Porter / Builder /
+Inspector" (`docs/RENAME_PLAN.md`). **Parked:** nothing gets renamed until the user is fully satisfied with COD. Until then:
+- Don't rename existing files, identifiers, GUIDs or folders on your own. Renaming follows the plan's phases and migrations.
+- **New code keeps COD-specific knowledge in one place** (COD bone names, Cast / SEModel import, COD texture packing,
+  COD material names): its own function / module / table, named as COD. Game-neutral steps (fitting, weights, EFT
+  output, the contract, the in-game tools) shouldn't assume COD.
+- New user-facing text in generic features says "source" / "character", not "COD", unless it is COD-specific.
+- New identifiers in neutral code avoid a new `cod2eft` prefix where the file's own convention allows it. New GUIDs,
+  folders and settings files need a migration note in `RENAME_PLAN.md`.
+- When a change would make the later rename harder (a new PC-owned file name, a new saved setting), add a line to the
+  plan's "What a rename breaks" list.
+
 ## Known traps
 - `bpy.ops` re-uses an operator's last-used values within a session, so pass every setting explicitly (see `export_fbx`).
 - Windows MAX_PATH: COD exports have 260+ character paths. See the long-path import in `cod2eft_porter.py` and `core.longpaths` in the PC scripts.

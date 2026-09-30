@@ -1,20 +1,24 @@
 # Rename plan: COD2EFT → Character Studio (project-wide)
 
-Status: **plan only, nothing renamed yet** (2026-09-30). The user chose the name *Character Studio* and a project-wide scope.
+Status: **documented for later, parked.** Nothing gets renamed until the user is fully satisfied with the COD pipeline
+(user, 2026-09-30). Until then, new work follows the "Build with this in mind" rules in `CLAUDE.md`.
 The aim: slowly turn the pipeline into a general tool for converting and checking characters, not only COD ones.
 
-## Names
-| Part | Now | Proposed |
-|---|---|---|
-| Project | COD2EFT | **Character Studio** |
-| Blender add-on | COD2EFT Porter (`cod2eft_*.py`, operators `cod2eft.*`, `Scene.cod2eft`) | Character Studio Porter (`charstudio_*.py`, `charstudio.*`, `Scene.charstudio`) |
-| Unity editor tools | EFT Tools / EFT Auto Prefabber, EFT Mod Builder | Character Studio Builder (menu *Character Studio / Auto Prefabber*, */ Mod Builder*) |
-| SPT plugin | COD2EFT Inspector (`COD2EFTInspector.dll`, GUID `com.cod2eft.inspector`) | Character Studio (`CharacterStudio.dll`, GUID `com.characterstudio.spt`; no `_`) |
-| Contract | `COD2EFT_TEXTURE_SPEC.md` | `TEXTURE_SPEC.md` |
-| Output folder (game) | `COD2EFT_Screenshots` | `CharacterStudio_Output` |
+## Names (user's direction 2026-09-30: prefix *SPT*; "Studio" in every part may not make sense)
+The umbrella / GitHub collection is **SPT Character Studio Suite**. The parts are named by what they do, without
+"Studio" each time (suggested; the final pick is the user's when the rename starts):
 
-**Name clash:** Autodesk 3ds Max has a feature called *Character Studio* (Biped). That doesn't matter for private use. For
-publishing, *SPT Character Studio* or *Tarkov Character Studio* is easier to search for. **Question for the user.**
+| Part | Now | Proposed | Alternative |
+|---|---|---|---|
+| GitHub collection / project | COD2EFT (repo `sptunitytests`) | **SPT Character Studio Suite** | SPT Character Studio |
+| Blender add-on | COD2EFT Porter (`cod2eft_*.py`, operators `cod2eft.*`, `Scene.cod2eft`) | **SPT Character Porter** (`sptchar_*.py`, `sptchar.*`, `Scene.sptchar`) | SPT Character Studio Porter |
+| Unity editor tools | EFT Tools / EFT Auto Prefabber, EFT Mod Builder | **SPT Character Builder** (menu *SPT Character Studio / Auto Prefabber*, */ Mod Builder*) | keep "EFT Auto Prefabber" / "EFT Mod Builder" under the new menu |
+| In-game plugin | COD2EFT Inspector (`COD2EFTInspector.dll`, GUID `com.cod2eft.inspector`) | **SPT Character Inspector** (`SPTCharacterInspector.dll`, GUID `com.sptcharacterstudio.inspector`; no `_`) | SPT Character Studio Inspector |
+| Contract | `COD2EFT_TEXTURE_SPEC.md` | `TEXTURE_SPEC.md` | |
+| Output folder (game) | `COD2EFT_Screenshots` | `SPTCharacterStudio_Output` | |
+| Source profile for today's work | (everything) | **COD** profile (first of several) | |
+
+The "SPT" prefix also avoids the clash with Autodesk 3ds Max's *Character Studio* (Biped) feature.
 
 ## What a rename breaks, and the fix for each
 The sync and build never delete, so the old files stay on the PC. The user's rule: list them and ask before removing any.
@@ -60,7 +64,8 @@ Versions: a major bump each (Blender 3.0.0, Unity 2.0.0, plugin 1.0.0), recorded
    - The texture spec gets a per-profile section for how the input channels are read. The output side (EFT) stays one contract.
    - The in-game tool is already game-content agnostic, except the WTT catalog reader and the file names.
 
-## Questions for the user before phase 1
-1. *Character Studio*, or *SPT Character Studio* (clash with the 3ds Max feature)?
+## Open questions (for when the rename starts, not now)
+1. Final part names: the "Proposed" or the "Alternative" column above.
 2. Unity: keep the folder and class names (recommended), or rename and delete the old folder once?
 3. Any Blender keymaps / quick favourites on COD2EFT operators?
+4. The GitHub side: rename this repo, or start the suite as a new repo / organisation and move the parts over?
