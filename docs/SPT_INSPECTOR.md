@@ -17,7 +17,11 @@ Source: `spt_mod/COD2EFTInspector/`. Changelog there. Queue item 10 in `docs/PRO
 | F9 | panel (frees the mouse in raid / hideout; since 0.7.0 the character takes no look / aim / fire / walk input while it is open: *3. Panel / Block game input while open*) |
 | F10 | screenshot |
 
-Panel: `<` `>` switch between characters found (you, menu previews; bots only with *Include other players*).
+**Panel (0.8.0):** title bar (location, A- / A+ text size, × close; drag by the title, resize from the bottom-right corner),
+tabs *Try on* · *Photo* · *Meshes* · *Catalog*, a status bar at the bottom (hover help, last message coloured, click for the
+full text). Styles in `Ui.cs`.
+
+Meshes tab: `◄` `►` switch between characters found (you, menu previews; bots only with *Include other players*).
 Groups: Head, Top, Pants, Hands (first-person), then `Gear: <item>` and `Other: …`. The checkbox on a group line
 shows/hides the whole group; `+`/`-` folds it. *Hide gear* hides everything that is not a body part.
 Flags: `[inactive]` = the game has this mesh switched off right now (e.g. the top's armor/vest alternative mesh),

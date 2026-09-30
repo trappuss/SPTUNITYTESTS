@@ -20,7 +20,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.7.1";
+        public const string Version = "0.8.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -36,7 +36,7 @@ namespace COD2EFTInspector
         bool _allSets;
 
         bool _open, _capturing;
-        Rect _win = new Rect(40, 40, 540, 660);
+        Rect _win = new Rect(40, 40, 600, 720);
         Vector2 _scroll;
         List<Target> _targets = new List<Target>();
         int _ti;
@@ -88,8 +88,8 @@ namespace COD2EFTInspector
                 "While the panel is open (raid / hideout) the character takes no input: no look, aim, fire or walk. Given back on close.");
             _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
             _bgColor = Config.Bind("5. Photo mode", "Background colour", "#00B140", "Solid background colour for Isolate character (HTML colour; default chroma green).");
-            _winW = Config.Bind("3. Panel", "Width", 540f, "Panel width (drag the bottom-right corner of the panel to change it).");
-            _winH = Config.Bind("3. Panel", "Height", 660f, "Panel height (drag the bottom-right corner of the panel to change it).");
+            _winW = Config.Bind("3. Panel", "Width", 600f, "Panel width (drag the bottom-right corner of the panel to change it).");
+            _winH = Config.Bind("3. Panel", "Height", 720f, "Panel height (drag the bottom-right corner of the panel to change it).");
             _win.width = Mathf.Max(360f, _winW.Value); _win.height = Mathf.Max(240f, _winH.Value);
             _outDir = Path.Combine(Paths.GameRootPath, "COD2EFT_Screenshots");
             Log.LogInfo($"{PluginName} v{Version} loaded. Panel {_panelKey.Value}, screenshot {_shotKey.Value}, output {_outDir}");
@@ -135,7 +135,7 @@ namespace COD2EFTInspector
                 foreach (var c in FindObjectsOfType<Canvas>())
                     if (c != null && c.enabled && c.isRootCanvas) { c.enabled = false; _photoHud.Add(c); }
             if (!_open) TogglePanel();
-            _tab = 2;
+            _tab = 1;
         }
 
         bool MouseOverPanel()
@@ -282,6 +282,7 @@ namespace COD2EFTInspector
         {
             if (!_open || _capturing) return;
             if (_unlockCursor.Value) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+            Ui.Init();
             var m = GUI.matrix;
             float s = Mathf.Clamp(_scale.Value, 0.75f, 2.5f);
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
@@ -291,94 +292,203 @@ namespace COD2EFTInspector
                 else
                 {
                     var mp = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y) / s;
-                    _win.width = Mathf.Clamp(mp.x - _win.x + 6f, 360f, Mathf.Max(360f, Screen.width / s));
-                    _win.height = Mathf.Clamp(mp.y - _win.y + 6f, 240f, Mathf.Max(240f, Screen.height / s));
+                    _win.width = Mathf.Clamp(mp.x - _win.x + 6f, 420f, Mathf.Max(420f, Screen.width / s));
+                    _win.height = Mathf.Clamp(mp.y - _win.y + 6f, 320f, Mathf.Max(320f, Screen.height / s));
                 }
             }
-            _win = GUILayout.Window(0x0C0D2EF, _win, DrawWindow, $"{PluginName} v{Version}", GUILayout.Width(_win.width), GUILayout.Height(_win.height));
+            // keep the panel on screen (a smaller resolution or a bigger scale can push it off)
+            _win.x = Mathf.Clamp(_win.x, 0f, Mathf.Max(0f, Screen.width / s - 80f));
+            _win.y = Mathf.Clamp(_win.y, 0f, Mathf.Max(0f, Screen.height / s - 40f));
+            _win = GUILayout.Window(0x0C0D2EF, _win, DrawWindow, GUIContent.none, Ui.Window, GUILayout.Width(_win.width), GUILayout.Height(_win.height));
             GUI.matrix = m;
+        }
+
+        // ------------------------------------------------------------------ panel frame: title bar, tabs, status bar
+
+        static readonly string[] TabNames = { "Try on", "Photo", "Meshes", "Catalog" };
+        int _tab = 0;   // 0 try on (opens here), 1 photo, 2 meshes, 3 catalog
+        bool _statusOpen;
+
+        /// <summary>Where we are, in a few words (title bar): decides what Wear / photo mode act on.</summary>
+        string Where()
+        {
+            var p = Game.MainPlayer();
+            if (p != null) { var loc = Game.Location(p); return loc == "hideout" ? "Hideout" : "Raid" + (string.IsNullOrEmpty(loc) ? "" : " · " + loc); }
+            return MenuTryOn.Available ? "Main menu · preview ready" : "Main menu";
         }
 
         void DrawWindow(int id)
         {
-            try { DrawContents(); }
-            catch (Exception e) { GUILayout.Label("Panel error (see BepInEx log): " + e.Message); Game.LogOnce("gui:" + e.Message, "Panel error: " + e); }
-            if (GUI.Button(new Rect(_win.width - 26f, 2f, 22f, 16f), "X")) TogglePanel();
+            try
+            {
+                // title bar (drag area)
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("COD2EFT Inspector", Ui.Title, GUILayout.ExpandWidth(false));
+                GUILayout.Label($"v{Version}   ●  {Where()}" + (_photo.Active ? "  ·  PHOTO MODE" : ""), Ui.Chip, GUILayout.ExpandWidth(true));
+                if (GUILayout.Button(new GUIContent("A-", "Smaller text / panel"), Ui.Tiny, GUILayout.Width(28))) _scale.Value = Mathf.Clamp(_scale.Value - 0.1f, 0.75f, 2.5f);
+                if (GUILayout.Button(new GUIContent("A+", "Bigger text / panel"), Ui.Tiny, GUILayout.Width(28))) _scale.Value = Mathf.Clamp(_scale.Value + 0.1f, 0.75f, 2.5f);
+                if (GUILayout.Button(new GUIContent("×", $"Close ({_panelKey.Value})"), Ui.Tiny, GUILayout.Width(26))) TogglePanel();
+                GUILayout.EndHorizontal();
+                GUILayout.Space(4);
+                // tabs
+                GUILayout.BeginHorizontal();
+                for (int i = 0; i < TabNames.Length; i++)
+                    if (GUILayout.Button(TabNames[i], i == _tab ? Ui.TabOn : Ui.Tab, GUILayout.ExpandWidth(false))) _tab = i;
+                GUILayout.EndHorizontal();
+                Ui.Rule();
+                GUILayout.Space(4);
+                switch (_tab)
+                {
+                    case 1: DrawPhoto(); break;
+                    case 2: DrawMeshes(); break;
+                    case 3: DrawCatalog(); break;
+                    default: DrawTryOnTab(); break;
+                }
+                DrawStatusBar();
+            }
+            catch (Exception e) { GUILayout.Label("Panel error (see BepInEx log): " + e.Message, Ui.Label); Game.LogOnce("gui:" + e.Message, "Panel error: " + e); }
             // resize grip, bottom-right corner (the size is kept in the config)
-            var grip = new Rect(_win.width - 18f, _win.height - 18f, 18f, 18f);
-            GUI.Label(grip, "//");
+            var grip = new Rect(_win.width - 16f, _win.height - 16f, 16f, 16f);
+            GUI.Label(grip, "//", Ui.Small);
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && grip.Contains(Event.current.mousePosition)) { _resizing = true; Event.current.Use(); }
-            GUI.DragWindow();
+            GUI.DragWindow(new Rect(0, 0, _win.width, 30));
         }
 
-        int _tab = 1;   // 0 meshes, 1 outfits / try on (opens here), 2 photo
+        /// <summary>Bottom line: what the mouse is over (tooltip), else the last message coloured by outcome; click for the full text.</summary>
+        void DrawStatusBar()
+        {
+            GUILayout.Space(4);
+            string tip = GUI.tooltip;
+            bool busy = Wearer.Busy || MenuTryOn.Busy || _capturing;
+            string text; Color c;
+            if (!string.IsNullOrEmpty(tip)) { text = tip; c = Ui.Muted; }
+            else if (string.IsNullOrEmpty(_status)) { text = busy ? "Working ..." : "Ready. Hover over a control for help."; c = busy ? Ui.Warn : Ui.Muted; }
+            else
+            {
+                string low = _status.ToLowerInvariant();
+                c = busy ? Ui.Warn : low.Contains("fail") || low.Contains("error") || low.Contains("not found") ? Ui.Bad
+                  : low.StartsWith("note") || low.Contains("warning") ? Ui.Warn : Ui.Good;
+                int max = _statusOpen ? 2000 : 170;
+                text = _status.Length <= max ? _status : _status.Substring(0, max) + (_statusOpen ? " ..." : "  [click: more]");
+                if (_statusOpen && _status.Length > 170) text += "\n(full text also in BepInEx\\LogOutput.log)";
+            }
+            Ui.Status.normal.textColor = Ui.Status.hover.textColor = Ui.Status.active.textColor = c;
+            if (GUILayout.Button(new GUIContent("●  " + text), Ui.Status, GUILayout.ExpandWidth(true))) _statusOpen = !_statusOpen;
+        }
 
-        void DrawContents()
+        // ------------------------------------------------------------------ small layout helpers
+
+        readonly Dictionary<string, bool> _folds = new Dictionary<string, bool>();
+
+        /// <summary>A card with a clickable title (folds it) and an optional Reset button. Returns false when folded (card already closed).</summary>
+        bool BeginSection(string title, Action reset, bool openByDefault = true, string tip = null)
+        {
+            bool open;
+            if (!_folds.TryGetValue(title, out open)) open = openByDefault;
+            GUILayout.BeginVertical(Ui.CardBox);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(new GUIContent((open ? "▼  " : "►  ") + title, tip ?? (open ? "Fold" : "Unfold")), Ui.SectionHead)) _folds[title] = open = !open;
+            GUILayout.FlexibleSpace();
+            if (reset != null && GUILayout.Button(new GUIContent("Reset", "Back to the defaults of " + title.ToLowerInvariant()), Ui.Tiny, GUILayout.Width(52))) reset();
+            GUILayout.EndHorizontal();
+            if (!open) GUILayout.EndVertical();
+            return open;
+        }
+
+        static void EndSection() => GUILayout.EndVertical();
+
+        /// <summary>A row of buttons, the selected one highlighted. Returns the clicked index or -1.</summary>
+        static int Segmented(string label, string[] items, Func<int, bool> selected)
+        {
+            int hit = -1;
+            GUILayout.BeginHorizontal();
+            if (label != null) GUILayout.Label(label, Ui.Small, GUILayout.Width(64));
+            for (int i = 0; i < items.Length; i++)
+                if (GUILayout.Button(items[i], selected(i) ? Ui.SegOn : Ui.Seg)) hit = i;
+            GUILayout.EndHorizontal();
+            return hit;
+        }
+
+        /// <summary>A slider row: label, slider, value; with a default a small R puts it back.</summary>
+        static float Slider(string label, float v, float min, float max, float? def = null, string fmt = "0.##", string tip = null)
         {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(_tab == 0, " Meshes", GUILayout.Width(90))) _tab = 0;
-            if (GUILayout.Toggle(_tab == 2, " Photo", GUILayout.Width(80))) _tab = 2;
-            if (GUILayout.Toggle(_tab == 1, " Outfits / try on", GUILayout.Width(190))) _tab = 1;
+            GUILayout.Label(new GUIContent(label, tip), Ui.Label, GUILayout.Width(104));
+            v = GUILayout.HorizontalSlider(v, min, max, GUILayout.MinWidth(80));
+            GUILayout.Label(v.ToString(fmt), Ui.Value, GUILayout.Width(46));
+            if (def.HasValue) { if (GUILayout.Button(new GUIContent("R", "Reset " + label.Trim().ToLowerInvariant()), Ui.Tiny, GUILayout.Width(22))) v = def.Value; }
+            else GUILayout.Space(28);
             GUILayout.EndHorizontal();
-            if (_tab == 1) { DrawOutfits(); return; }
-            if (_tab == 2) { DrawPhoto(); return; }
+            return v;
+        }
 
+        static bool Toggle(bool v, string text, string tip = null) => GUILayout.Toggle(v, new GUIContent(" " + text, tip), Ui.Toggle);
+
+        void SupersizeRow()
+        {
+            int hit = Segmented("Supersize", new[] { "1x", "2x", "3x", "4x" }, i => _supersize.Value == i + 1);
+            if (hit >= 0) _supersize.Value = hit + 1;
+        }
+
+        // ------------------------------------------------------------------ Meshes tab
+
+        void DrawMeshes()
+        {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("<", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + _targets.Count - 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
-            GUILayout.Label(_targets.Count > 0 ? $"{_ti + 1}/{_targets.Count}  {_targets[_ti].Label}" : "No character found");
-            if (GUILayout.Button(">", GUILayout.Width(28)) && _targets.Count > 0) { _ti = (_ti + 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
-            if (GUILayout.Button("Refresh", GUILayout.Width(70))) Refresh(true);
+            if (GUILayout.Button(new GUIContent("◄", "Previous character"), Ui.Button, GUILayout.Width(32)) && _targets.Count > 0) { _ti = (_ti + _targets.Count - 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
+            GUILayout.Label(_targets.Count > 0 ? $"<b>{_targets[_ti].Label}</b>   <color=#9aa0a8>{_ti + 1} of {_targets.Count}</color>" : "No character found", Ui.Label);
+            if (GUILayout.Button(new GUIContent("►", "Next character"), Ui.Button, GUILayout.Width(32)) && _targets.Count > 0) { _ti = (_ti + 1) % _targets.Count; _scan = Run(_targets[_ti]); if (_loggedScans.Add(_scan.Signature)) LogScan(); }
+            if (GUILayout.Button(new GUIContent("Refresh", "Scan for characters again"), Ui.Button, GUILayout.Width(76))) Refresh(true);
             GUILayout.EndHorizontal();
             if (_targets.Count == 0)
-                GUILayout.Label("In raid or the hideout this lists your character. In the menu, open the Character or Inventory screen, then press Refresh.");
+                GUILayout.Label("In raid or the hideout this lists your character. In the menu, open the Character or Inventory screen, then press Refresh.", Ui.Small);
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Show all")) ShowAll();
-            if (GUILayout.Button("Hide gear")) HideGear();
-            if (GUILayout.Button($"Screenshot ({_shotKey.Value})")) TakeScreenshot();
-            if (GUILayout.Button("Material report")) MaterialReport();
+            if (GUILayout.Button(new GUIContent("Show all", "Show every mesh you hid"), Ui.Button)) ShowAll();
+            if (GUILayout.Button(new GUIContent("Hide gear", "Hide everything that is not a body part"), Ui.Button)) HideGear();
+            if (GUILayout.Button(new GUIContent("Material report", "Writes renderer -> material -> shader / textures to a .txt and checks for problems"), Ui.Button)) MaterialReport();
+            if (GUILayout.Button(new GUIContent($"Screenshot ({_shotKey.Value})", "PNG + .txt of the outfit, panel and HUD hidden"), Ui.Primary)) TakeScreenshot();
             GUILayout.EndHorizontal();
+            SupersizeRow();
+            GUILayout.Label("Checkbox = show / hide.  solo = show only that mesh.  [inactive] = switched off by the game,  [shadow only] = first-person body.", Ui.Small);
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Supersize:", GUILayout.Width(70));
-            for (int i = 1; i <= 4; i++)
-                if (GUILayout.Toggle(_supersize.Value == i, $"{i}x", GUILayout.Width(40)) && _supersize.Value != i) _supersize.Value = i;
-            GUILayout.EndHorizontal();
-            StatusLabel();
-
-            _scroll = GUILayout.BeginScrollView(_scroll);
+            _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.ExpandHeight(true));
             if (_scan != null)
             {
                 foreach (var g in _scan.Groups)
                 {
                     var live = g.Entries.Where(e => e.R != null).ToList();
+                    GUILayout.BeginVertical(Ui.CardBox);
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(g.Open ? "-" : "+", GUILayout.Width(22)))
+                    if (GUILayout.Button(g.Open ? "▼" : "►", Ui.Tiny, GUILayout.Width(24)))
                     {
                         g.Open = !g.Open;
                         if (!_flipped.Remove(g.Name)) _flipped.Add(g.Name);
                     }
                     bool allShown = live.All(e => !IsHidden(e.R));
-                    bool nv = GUILayout.Toggle(allShown, $" {g.Name}  ({live.Count})");
+                    bool nv = GUILayout.Toggle(allShown, new GUIContent($" {g.Name}", "Show / hide the whole group"), Ui.Toggle);
                     if (nv != allShown) foreach (var e in live) SetHidden(e.R, !nv);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label($"{live.Count} mesh{(live.Count == 1 ? "" : "es")}", Ui.Small, GUILayout.ExpandWidth(false));
                     GUILayout.EndHorizontal();
-                    if (!g.Open) continue;
-                    foreach (var e in live)
-                    {
-                        bool shown = !IsHidden(e.R);
-                        string flags = (e.R.gameObject.activeInHierarchy ? "" : "  [inactive]") + (e.R.enabled ? "" : "  [off]") +
-                                       (e.R.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly ? "  [shadow only]" : "");
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(30);
-                        if (GUILayout.Button("solo", GUILayout.Width(40))) Solo(e.R);
-                        bool n2 = GUILayout.Toggle(shown, " " + e.Path + flags);
-                        if (n2 != shown) SetHidden(e.R, !n2);
-                        GUILayout.EndHorizontal();
-                    }
+                    if (g.Open)
+                        foreach (var e in live)
+                        {
+                            bool shown = !IsHidden(e.R);
+                            string flags = (e.R.gameObject.activeInHierarchy ? "" : "  [inactive]") + (e.R.enabled ? "" : "  [off]") +
+                                           (e.R.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly ? "  [shadow only]" : "");
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(26);
+                            if (GUILayout.Button(new GUIContent("solo", "Show only this mesh (Show all brings the rest back)"), Ui.Tiny, GUILayout.Width(40))) Solo(e.R);
+                            bool n2 = GUILayout.Toggle(shown, " " + e.Path + flags, Ui.Toggle);
+                            if (n2 != shown) SetHidden(e.R, !n2);
+                            GUILayout.EndHorizontal();
+                        }
+                    GUILayout.EndVertical();
                 }
             }
             GUILayout.EndScrollView();
-            GUILayout.Label($"Files: {_outDir}");
+            GUILayout.Label("Files: " + _outDir, Ui.Small);
         }
 
         // ------------------------------------------------------------------ outfit catalog (stage 2 groundwork)
@@ -518,74 +628,98 @@ namespace COD2EFTInspector
             WearItems(set.Pieces);
         }
 
-        void DrawTryOn(Catalog cat)
+        // ------------------------------------------------------------------ Try on tab
+
+        void DrawTryOnTab()
         {
-GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or Inventory screen preview). Not saved. Newest mod first:");
-            var sets = cat.ModSets();
+            var cat = GetCatalog();
             bool can = CanWear();
-            int n = 0;
-            foreach (var set in sets)
-            {
-                if (!_allSets && n++ >= 6) break;
-                GUILayout.BeginHorizontal();
-                GUI.enabled = can;
-                if (GUILayout.Button("Wear", GUILayout.Width(55))) WearItems(set.Pieces);
-                GUI.enabled = true;
-                GUILayout.Label($"[{set.Source}] {set.Name}   " + string.Join(" + ", set.Pieces.Select(o => o.Part)));
-                GUILayout.EndHorizontal();
-            }
-            var head = Worn().Select(id => cat.ById(id)).FirstOrDefault(o => o != null && o.Part == "Head");
-            if (Wearer.HasOriginal && head != null)
-            {
-                GUILayout.BeginHorizontal();
-                GUI.enabled = cat.HasHeadVoiceSelector && !Wearer.Busy;
-                if (GUILayout.Button("Save this head to my profile", GUILayout.Width(200)))
-                    StartCoroutine(Wearer.SaveHead(head.Id, msg => _status = msg));
-                GUI.enabled = true;
-                GUILayout.Label(cat.HasHeadVoiceSelector ? $"{head.Name} (kept after restart)" : "needs the WTT HeadVoiceSelector server mod");
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.BeginHorizontal();
-            if (sets.Count > 6) _allSets = GUILayout.Toggle(_allSets, $" all {sets.Count} mod outfits");
             bool inMenu = Game.MainPlayer() == null;
+            _scroll3 = GUILayout.BeginScrollView(_scroll3, GUILayout.ExpandHeight(true));
+
+            GUILayout.BeginVertical(Ui.CardBox);
+            GUILayout.Label(inMenu ? (MenuTryOn.Available ? "Wear dresses the <b>Character / Inventory screen preview</b>." : "Open the <b>Character or Inventory screen</b> once, then Wear dresses its preview.")
+                                   : "Wear dresses <b>your character</b> (and the inventory preview, if open).", Ui.Label);
+            GUILayout.Label("Client-side only, nothing is saved: the next load shows your real outfit. Tops bring their first-person hands.", Ui.Small);
+            GUILayout.BeginHorizontal();
             GUI.enabled = can && (inMenu || Wearer.HasOriginal);
-            if (GUILayout.Button("Restore my outfit", GUILayout.Width(140)))
+            if (GUILayout.Button(new GUIContent("Restore my outfit", "Put your real outfit back"), Ui.Button))
             {
                 if (inMenu) StartCoroutine(MenuTryOn.Reshow(msg => { _status = msg; Refresh(true); }));
                 else WearItems(Wearer.OriginalOutfit(cat));
             }
+            GUI.enabled = !inMenu;
+            if (GUILayout.Button(new GUIContent(_photo.Active ? "Photo mode: on" : "Open photo mode", "Orbit camera and studio lights around your character"), Ui.Button))
+            { if (!_photo.Active) TogglePhoto(); _tab = 1; }
             GUI.enabled = true;
-            if (GUILayout.Button("Log all bodies", GUILayout.Width(110))) { BodyScan.LogBodies(null); _status = "Every PlayerBody written to the BepInEx log (hideout vs menu check)"; }
             GUILayout.EndHorizontal();
-            if (!can && !Wearer.Busy && !MenuTryOn.Busy) GUILayout.Label("(Wear needs your character (hideout / raid) or, in the menu, the Character or Inventory screen opened once.)");
+            GUILayout.EndVertical();
+
+            var sets = cat.ModSets();
+            if (BeginSection($"Mod outfits ({sets.Count}), newest first", null))
+            {
+                if (sets.Count == 0) GUILayout.Label("No mod outfit found. Build and install the mod with the Mod Builder, then press Reload in the Catalog tab.", Ui.Small);
+                int n = 0;
+                foreach (var set in sets)
+                {
+                    if (!_allSets && n++ >= 8) break;
+                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginVertical();
+                    GUILayout.Label($"<b>{set.Name}</b>", Ui.Label);
+                    GUILayout.Label($"{set.Source}  ·  {string.Join(" + ", set.Pieces.Select(o => o.Part))}", Ui.Small);
+                    GUILayout.EndVertical();
+                    GUILayout.FlexibleSpace();
+                    if (set.Pieces.Any(IsWorn)) Ui.Pill("WORN", Ui.Good);
+                    GUI.enabled = can;
+                    if (GUILayout.Button(new GUIContent("Wear", "Try this outfit on (not saved)"), Ui.Primary, GUILayout.Width(70))) WearItems(set.Pieces);
+                    GUI.enabled = true;
+                    GUILayout.EndHorizontal();
+                    Ui.Rule();
+                }
+                if (sets.Count > 8) _allSets = Toggle(_allSets, $"Show all {sets.Count}");
+                EndSection();
+            }
+
+            var head = Worn().Select(id => cat.ById(id)).FirstOrDefault(o => o != null && o.Part == "Head");
+            if (Wearer.HasOriginal && head != null && BeginSection("Keep this head", null, false))
+            {
+                GUILayout.Label(cat.HasHeadVoiceSelector ? $"Saves <b>{head.Name}</b> to your PMC profile (kept after restart)." : "Needs the WTT HeadVoiceSelector server mod.", Ui.Label);
+                GUI.enabled = cat.HasHeadVoiceSelector && !Wearer.Busy;
+                if (GUILayout.Button("Save this head to my profile", Ui.Button)) StartCoroutine(Wearer.SaveHead(head.Id, msg => _status = msg));
+                GUI.enabled = true;
+                EndSection();
+            }
+
+            if (BeginSection("Diagnostics", null, false))
+            {
+                GUILayout.Label("For a report to Claude: writes every character body (owner, what it shows) to the BepInEx log.", Ui.Small);
+                if (GUILayout.Button("Log all bodies", Ui.Button)) { BodyScan.LogBodies(null); _status = "Every PlayerBody written to the BepInEx log"; }
+                EndSection();
+            }
+            GUILayout.EndScrollView();
         }
 
-        void DrawOutfits()
+        // ------------------------------------------------------------------ Catalog tab
+
+        void DrawCatalog()
         {
             var cat = GetCatalog();
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Reload", GUILayout.Width(70))) cat = GetCatalog(true);
-            if (GUILayout.Button("Write catalog to file", GUILayout.Width(160))) WriteCatalog(cat);
-            GUILayout.Label($"{cat.Items.Count} entries, {cat.Items.Count(o => o.BundleFound == false)} missing bundle");
+            GUILayout.Label(new GUIContent("Search", "Name, id or bundle path"), Ui.Label, GUILayout.Width(52));
+            _filter = GUILayout.TextField(_filter ?? "", Ui.Field, GUILayout.MinWidth(140));
+            if (_filter.Length > 0 && GUILayout.Button(new GUIContent("×", "Clear the search"), Ui.Tiny, GUILayout.Width(24))) _filter = "";
             GUILayout.EndHorizontal();
-            StatusLabel();
-            DrawTryOn(cat);
-            foreach (var n in cat.Notes.Where(n => n.StartsWith("Server") || n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(4))
-                GUILayout.Label(n);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Filter:", GUILayout.Width(45));
-            _filter = GUILayout.TextField(_filter ?? "", GUILayout.Width(170));
-            foreach (var p in new[] { "All", "Top", "Pants", "Head", "Hands" })
-                if (GUILayout.Toggle(_part == p, p, GUILayout.Width(52)) && _part != p) { _part = p; _lastFilter = null; }
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
+            var parts = new[] { "All", "Top", "Pants", "Head", "Hands" };
+            int hp = Segmented("Part", parts, i => _part == parts[i]);
+            if (hp >= 0 && _part != parts[hp]) { _part = parts[hp]; _lastFilter = null; }
             var sources = new List<string> { "All", "Mods only" };
             sources.AddRange(cat.Sources);
             int si = Math.Max(0, sources.IndexOf(_source));
-            if (GUILayout.Button("<", GUILayout.Width(28))) { _source = sources[(si + sources.Count - 1) % sources.Count]; _lastFilter = null; }
-            GUILayout.Label("From: " + _source);
-            if (GUILayout.Button(">", GUILayout.Width(28))) { _source = sources[(si + 1) % sources.Count]; _lastFilter = null; }
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("From", Ui.Small, GUILayout.Width(64));
+            if (GUILayout.Button("◄", Ui.Seg, GUILayout.Width(28))) { _source = sources[(si + sources.Count - 1) % sources.Count]; _lastFilter = null; }
+            GUILayout.Label($"<b>{_source}</b>", Ui.Label, GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("►", Ui.Seg, GUILayout.Width(28))) { _source = sources[(si + 1) % sources.Count]; _lastFilter = null; }
             GUILayout.EndHorizontal();
 
             string key = _filter + "|" + _part + "|" + _source;
@@ -602,20 +736,34 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
                     .OrderByDescending(IsWorn).ThenBy(o => o.Source == "vanilla").ThenBy(o => o.Source, StringComparer.OrdinalIgnoreCase)
                     .ThenBy(o => o.Part).ThenBy(o => o.Name, StringComparer.OrdinalIgnoreCase).ToList();
             }
-            GUILayout.Label($"{_shown.Count} shown" + (_shown.Count > 300 ? " (first 300; narrow the filter)" : "") +
-                            ". Wear = try on (tops bring their hands).");
-            _scroll2 = GUILayout.BeginScrollView(_scroll2);
+            int missing = cat.Items.Count(o => o.BundleFound == false);
+            GUILayout.Label($"{_shown.Count} of {cat.Items.Count} shown" + (_shown.Count > 300 ? " (first 300: narrow the search)" : "") +
+                            (missing > 0 ? $"  ·  {missing} with a missing bundle" : ""), Ui.Small);
+            foreach (var n in cat.Notes.Where(n => n.Contains("not found") || n.Contains("failed") || n.Contains("not readable")).Take(3))
+                GUILayout.Label(n, Ui.Small);
+
+            _scroll2 = GUILayout.BeginScrollView(_scroll2, GUILayout.ExpandHeight(true));
             bool canWear = CanWear();
             foreach (var o in _shown.Take(300))
             {
                 GUILayout.BeginHorizontal();
                 GUI.enabled = canWear && o.Part != "Hands" && o.BundleFound != false;
-                if (GUILayout.Button("Wear", GUILayout.Width(50))) WearItems(new List<Outfit> { o });
+                if (GUILayout.Button(new GUIContent("Wear", o.Part == "Hands" ? "Hands come with their top" : "Try on (not saved)"), Ui.Button, GUILayout.Width(58))) WearItems(new List<Outfit> { o });
                 GUI.enabled = true;
-                GUILayout.Label($"{(IsWorn(o) ? "WORN  " : "")}[{o.Source}] {o.Part}: {o.Name}   {o.Id}" + (o.BundleFound == false ? "   BUNDLE MISSING" : ""));
+                GUILayout.BeginVertical();
+                GUILayout.Label($"<b>{o.Name}</b>", Ui.Label);
+                GUILayout.Label($"{o.Part}  ·  {o.Source}  ·  {o.Id}", Ui.Small);
+                GUILayout.EndVertical();
+                GUILayout.FlexibleSpace();
+                if (IsWorn(o)) Ui.Pill("WORN", Ui.Good);
+                if (o.BundleFound == false) Ui.Pill("BUNDLE MISSING", Ui.Bad);
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(new GUIContent("Reload", "Read the server's outfit files again (after installing a mod)"), Ui.Button)) { cat = GetCatalog(true); _lastFilter = null; }
+            if (GUILayout.Button(new GUIContent("Write catalog to file", "A .txt of every entry with notes, for a report"), Ui.Button)) WriteCatalog(cat);
+            GUILayout.EndHorizontal();
         }
 
         void WriteCatalog(Catalog cat)
@@ -657,118 +805,106 @@ GUILayout.Label("Try on (hideout / raid: your character; menu: the Character or 
         {
             var ph = _photo;
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(ph.Active ? "Photo mode OFF (back to first person)" : "Photo mode ON")) TogglePhoto();
-            if (GUILayout.Button($"Screenshot ({_shotKey.Value})", GUILayout.Width(150))) TakeScreenshot();
-            if (GUILayout.Button("Reset all", GUILayout.Width(80))) ResetAll();
+            if (GUILayout.Button(new GUIContent(ph.Active ? "Exit photo mode" : "Start photo mode",
+                    ph.Active ? "Back to first person; camera, lights, background and character are restored" : "Orbit camera around your character (raid / hideout)"),
+                    ph.Active ? Ui.Button : Ui.Primary, GUILayout.MinWidth(150))) TogglePhoto();
+            GUI.enabled = ph.Active;
+            if (GUILayout.Button(new GUIContent($"Screenshot ({_shotKey.Value})", "PNG + .txt, panel and HUD hidden"), Ui.Primary)) TakeScreenshot();
+            GUI.enabled = true;
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(new GUIContent("Reset all", "Photo mode off and everything as before: camera, lights, background, character, pose, meshes, outfit"), Ui.Button)) ResetAll();
             GUILayout.EndHorizontal();
-            StatusLabel();
             if (!ph.Active)
             {
-                GUILayout.Label("Photo mode puts the camera around your own character (raid or hideout) and stops the character taking input. " +
-                                "For the same light every time, use the hideout and the studio lights. In the main menu, use the game's own character preview.");
+                GUILayout.BeginVertical(Ui.CardBox);
+                GUILayout.Label("Photo mode puts the camera around your own character (raid or hideout). The character takes no input while it is on.", Ui.Label);
+                GUILayout.Label("For the same light every time: the hideout, studio lights on, background isolated. In the main menu, use the game's own preview.", Ui.Small);
+                GUILayout.EndVertical();
+                GUILayout.FlexibleSpace();
                 return;
             }
-            GUILayout.Label("Outside this panel: right drag = orbit the camera, left drag = turn the character / aim, wheel = zoom.");
-            _scroll3 = GUILayout.BeginScrollView(_scroll3);
+            GUILayout.Label("Mouse outside the panel:  right drag = orbit   ·   left drag = turn character / aim   ·   wheel = zoom", Ui.Small);
+            _scrollPhoto = GUILayout.BeginScrollView(_scrollPhoto, GUILayout.ExpandHeight(true));
 
-            Section("Camera", ph.ResetCamera);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle:", GUILayout.Width(50));
-            foreach (var a in PhotoMode.Angles) if (GUILayout.Button(a.Name)) ph.Yaw = ph.YawFor(a.Yaw);
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Framing:", GUILayout.Width(60));
-            foreach (var f in PhotoMode.Framings) if (GUILayout.Button(f.Name)) { ph.Height = f.Height; ph.Distance = f.Distance; }
-            GUILayout.EndHorizontal();
-            ph.Yaw = Slider("Yaw", ph.Yaw, 0f, 360f, ph.YawFor(0f));
-            ph.Pitch = Slider("Pitch", ph.Pitch, -60f, 80f, PhotoMode.DefPitch);
-            ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f, PhotoMode.DefDistance);
-            ph.Height = Slider("Height", ph.Height, 0f, 2.2f, PhotoMode.DefHeight);
-            ph.Fov = Slider("FOV", ph.Fov, 10f, 90f, PhotoMode.DefFov);
-            ph.Ortho = GUILayout.Toggle(ph.Ortho, " Orthographic (no perspective; the view size follows distance and FOV)");
-
-            Section("Character", () => { ph.ResetCharacter(); if (_pose != "Stand") SetPose("Stand"); });
-            ph.CharYaw = Slider("Turn", ph.CharYaw, -180f, 180f, 0f);
-            ph.CharPitch = Slider("Aim up/down", ph.CharPitch, -60f, 60f, 0f);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Pose:", GUILayout.Width(40));
-            foreach (var pn in Poses.Names)
+            if (BeginSection("Camera", ph.ResetCamera))
             {
-                GUI.enabled = _pose != pn;
-                if (GUILayout.Button(pn)) SetPose(pn);
-                GUI.enabled = true;
+                int a = Segmented("Angle", PhotoMode.Angles.Select(x => x.Name).ToArray(), i => Mathf.Abs(Mathf.DeltaAngle(ph.Yaw, ph.YawFor(PhotoMode.Angles[i].Yaw))) < 0.5f);
+                if (a >= 0) ph.Yaw = ph.YawFor(PhotoMode.Angles[a].Yaw);
+                int f = Segmented("Framing", PhotoMode.Framings.Select(x => x.Name).ToArray(),
+                                  i => Mathf.Abs(ph.Height - PhotoMode.Framings[i].Height) < 0.01f && Mathf.Abs(ph.Distance - PhotoMode.Framings[i].Distance) < 0.01f);
+                if (f >= 0) { ph.Height = PhotoMode.Framings[f].Height; ph.Distance = PhotoMode.Framings[f].Distance; }
+                ph.Yaw = Slider("Orbit", ph.Yaw, 0f, 360f, ph.YawFor(0f), "0", "Camera angle around the character (0 = front)");
+                ph.Pitch = Slider("Tilt", ph.Pitch, -60f, 80f, PhotoMode.DefPitch, "0", "Camera height angle");
+                ph.Distance = Slider("Distance", ph.Distance, 0.3f, 12f, PhotoMode.DefDistance, "0.00", "Metres from the character (wheel)");
+                ph.Height = Slider("Aim height", ph.Height, 0f, 2.2f, PhotoMode.DefHeight, "0.00", "The point the camera looks at, metres above the feet");
+                ph.Fov = Slider("Field of view", ph.Fov, 10f, 90f, PhotoMode.DefFov, "0", "Lower = more telephoto, less distortion");
+                ph.Ortho = Toggle(ph.Ortho, "Orthographic", "No perspective (for reference sheets); the view size follows distance and field of view");
+                EndSection();
             }
-            GUILayout.EndHorizontal();
 
-            Section("Lights", () => { ph.ResetLights(); _lightStrength.Value = 1f; });
-            GUILayout.BeginHorizontal();
-            bool li = GUILayout.Toggle(ph.Lights, " Studio lights (key / fill / rim)");
-            if (li != ph.Lights) ph.SetLights(li);
-            ph.LightsFollowCamera = GUILayout.Toggle(ph.LightsFollowCamera, " follow the camera");
-            GUILayout.EndHorizontal();
-            _lightStrength.Value = Slider("Light strength", _lightStrength.Value, 0f, 4f, 1f);
-
-            Section("Background", () => { ph.ResetBackground(); _transparent = false; _bgColor.Value = "#00B140"; });
-            ph.Isolate = GUILayout.Toggle(ph.Isolate, " Isolate character (hide the world; only you and what you wear / hold)");
-            if (ph.Isolate)
+            if (BeginSection("Character", () => { ph.ResetCharacter(); if (_pose != "Stand") SetPose("Stand"); }))
             {
-                Color bc;
-                if (ColorUtility.TryParseHtmlString(_bgColor.Value, out bc) && !_colourLoaded) { ph.BgColor = bc; _colourLoaded = true; }
+                int p = Segmented("Pose", Poses.Names, i => _pose == Poses.Names[i]);
+                if (p >= 0 && _pose != Poses.Names[p]) SetPose(Poses.Names[p]);
+                ph.CharYaw = Slider("Turn", ph.CharYaw, -180f, 180f, 0f, "0", "Turns the character (left drag sideways)");
+                ph.CharPitch = Slider("Aim up / down", ph.CharPitch, -60f, 60f, 0f, "0", "Where the character looks / aims (left drag up / down; F12 can invert)");
+                EndSection();
+            }
+
+            if (BeginSection("Lights", () => { ph.ResetLights(); _lightStrength.Value = 1f; }))
+            {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Colour", GUILayout.Width(50));
-                var r = GUILayoutUtility.GetRect(36, 18, GUILayout.Width(36));
-                var old = GUI.color; GUI.color = ph.BgColor; GUI.DrawTexture(r, Texture2D.whiteTexture); GUI.color = old;
-                foreach (var c in new[] { ("Green", PhotoMode.DefaultBg), ("Blue", new Color(0f, 0.28f, 0.73f)), ("White", Color.white), ("Grey", new Color(0.5f, 0.5f, 0.5f)), ("Black", Color.black) })
-                    if (GUILayout.Button(c.Item1)) ph.BgColor = c.Item2;
+                bool li = Toggle(ph.Lights, "Studio lights", "Key, fill and rim spot lights");
+                if (li != ph.Lights) ph.SetLights(li);
+                ph.LightsFollowCamera = Toggle(ph.LightsFollowCamera, "Follow the camera", "Off: the lights stay fixed to the character's front");
                 GUILayout.EndHorizontal();
-                float cr = Slider("  Red", ph.BgColor.r, 0f, 1f, PhotoMode.DefaultBg.r), cg = Slider("  Green", ph.BgColor.g, 0f, 1f, PhotoMode.DefaultBg.g),
-                      cb = Slider("  Blue", ph.BgColor.b, 0f, 1f, PhotoMode.DefaultBg.b);
-                ph.BgColor = new Color(cr, cg, cb);
-                string hex = "#" + ColorUtility.ToHtmlStringRGB(ph.BgColor);
-                if (hex != _bgColor.Value) _bgColor.Value = hex;
-                ph.NoFog = GUILayout.Toggle(ph.NoFog, " Fog / sky / scattering off (they tint the background)");
-                ph.NoPost = GUILayout.Toggle(ph.NoPost, " All post effects off (exact colour; the character looks less 'in game')");
-                ph.WorldLightsOff = GUILayout.Toggle(ph.WorldLightsOff, " World lights off (studio lights only)");
-                _transparent = GUILayout.Toggle(_transparent, " Transparent PNG (2 captures: black + grey background; max supersize 2x)");
+                _lightStrength.Value = Slider("Strength", _lightStrength.Value, 0f, 4f, 1f, "0.00");
+                EndSection();
             }
 
-            Section("Captures", null);
-            if (GUILayout.Button("Turntable: 4 screenshots (front, left, back, right)")) { if (!_capturing) StartCoroutine(Turntable()); }
-            if (GUILayout.Button("Pose turntables: 4 angles in each pose (clipping check)")) { if (!_capturing && !Wearer.Busy) StartCoroutine(PoseTurntables()); }
-            var newest = GetCatalog().ModSets().FirstOrDefault();
-            if (newest != null && GUILayout.Button($"A/B: turntable every outfit of [{newest.Source}] + your own outfit"))
-                { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
+            if (BeginSection("Background", () => { ph.ResetBackground(); _transparent = false; _bgColor.Value = "#00B140"; }))
+            {
+                ph.Isolate = Toggle(ph.Isolate, "Isolate character", "Hide the world: only you and what you wear / hold, on a solid colour");
+                if (ph.Isolate)
+                {
+                    Color bc;
+                    if (ColorUtility.TryParseHtmlString(_bgColor.Value, out bc) && !_colourLoaded) { ph.BgColor = bc; _colourLoaded = true; }
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Colour", Ui.Small, GUILayout.Width(64));
+                    var r = GUILayoutUtility.GetRect(44, 22, GUILayout.Width(44));
+                    GUI.DrawTexture(r, Ui.Tex1(new Color(ph.BgColor.r, ph.BgColor.g, ph.BgColor.b, 1f)));
+                    foreach (var c in new[] { ("Green", PhotoMode.DefaultBg), ("Blue", new Color(0f, 0.28f, 0.73f)), ("White", Color.white), ("Grey", new Color(0.5f, 0.5f, 0.5f)), ("Black", Color.black) })
+                        if (GUILayout.Button(c.Item1, ph.BgColor == c.Item2 ? Ui.SegOn : Ui.Seg)) ph.BgColor = c.Item2;
+                    GUILayout.EndHorizontal();
+                    float cr = Slider("Red", ph.BgColor.r, 0f, 1f, null, "0.00"), cg = Slider("Green", ph.BgColor.g, 0f, 1f, null, "0.00"), cb = Slider("Blue", ph.BgColor.b, 0f, 1f, null, "0.00");
+                    ph.BgColor = new Color(cr, cg, cb);
+                    string hex = "#" + ColorUtility.ToHtmlStringRGB(ph.BgColor);
+                    if (hex != _bgColor.Value) _bgColor.Value = hex;
+                    GUILayout.Label(hex, Ui.Small);
+                    ph.NoFog = Toggle(ph.NoFog, "No fog / sky haze", "Switches off camera effects that tint the background");
+                    ph.NoPost = Toggle(ph.NoPost, "No post effects", "Exact colours; the character looks less 'in game'");
+                    ph.WorldLightsOff = Toggle(ph.WorldLightsOff, "Studio lights only", "Switches the world's lights off");
+                    _transparent = Toggle(_transparent, "Transparent PNG", "Screenshots get an alpha channel (2 captures: black + grey; max 2x supersize)");
+                }
+                EndSection();
+            }
+
+            if (BeginSection("Captures", null))
+            {
+                SupersizeRow();
+                if (GUILayout.Button(new GUIContent("Turntable", "4 screenshots: front, left, back, right"), Ui.Button)) { if (!_capturing) StartCoroutine(Turntable()); }
+                if (GUILayout.Button(new GUIContent("Pose turntables", "4 angles in each of the 5 poses (clipping check)"), Ui.Button)) { if (!_capturing && !Wearer.Busy) StartCoroutine(PoseTurntables()); }
+                var newest = GetCatalog().ModSets().FirstOrDefault();
+                if (newest != null && GUILayout.Button(new GUIContent($"A/B turntables: {newest.Source}", "A turntable of every outfit of the newest mod, then of your own outfit, same camera and lights"), Ui.Button))
+                    { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
+                GUILayout.Label("Files: " + _outDir, Ui.Small);
+                EndSection();
+            }
             GUILayout.EndScrollView();
         }
 
         bool _colourLoaded;
-
-        static void Section(string title, Action reset)
-        {
-            GUILayout.Space(4);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("<b>" + title + "</b>");
-            if (reset != null && GUILayout.Button("Reset " + title.ToLowerInvariant(), GUILayout.Width(140))) reset();
-            GUILayout.EndHorizontal();
-        }
-
-        /// <summary>A labelled slider; with a default it gets a small "R" button that puts the default back.</summary>
-        /// <summary>The last message, shortened to a few lines (the full text is in the BepInEx log).</summary>
-        void StatusLabel()
-        {
-            if (string.IsNullOrEmpty(_status)) return;
-            GUILayout.Label(_status.Length <= 320 ? _status : _status.Substring(0, 320) + " ... (full text in BepInEx\\LogOutput.log)");
-        }
-
-        static float Slider(string label, float v, float min, float max, float? def = null)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"{label} {v:0.##}", GUILayout.Width(120));
-            v = GUILayout.HorizontalSlider(v, min, max);
-            if (def.HasValue && GUILayout.Button("R", GUILayout.Width(22))) v = def.Value;
-            GUILayout.EndHorizontal();
-            return v;
-        }
+        Vector2 _scrollPhoto;
 
         IEnumerator Turntable() { return Turntable(""); }
 

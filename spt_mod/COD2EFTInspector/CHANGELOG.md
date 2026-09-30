@@ -3,6 +3,21 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.8.0 (2026-09-30)
+Panel redesign (user: hard to see and navigate). No change to what the buttons do. Compiled with mcs only; the look is unchecked in game.
+- New `Ui.cs`: one dark theme, bigger text (13 px base), flat buttons, accent colour for the main action, cards for sections.
+- Title bar: where you are (Hideout / Raid / Main menu, PHOTO MODE), **A- / A+** text size, **×** close. Drag it by the title
+  bar; resize from the bottom-right corner. The panel stays on screen.
+- Four tabs: **Try on** (opens first: what Wear acts on, Restore, open photo mode, the newest mod outfits as rows with a Wear
+  button and a WORN tag; head saving and diagnostics folded), **Photo**, **Meshes**, **Catalog** (search box, part buttons,
+  source selector; entries show name, part · source · id and WORN / BUNDLE MISSING tags; Reload / Write to file below).
+- Photo tab: Start / Screenshot / Reset all always on top, sections as cards you can fold (Camera, Character, Lights,
+  Background, Captures), each with *Reset*. Angle, framing, pose and background colour are button rows with the current
+  one highlighted. Sliders show their value and have an *R* reset.
+- Status bar at the bottom: hover help for the control under the mouse, otherwise the last message in green / amber / red.
+  Click it for the full text.
+- Default panel size 600 x 720.
+
 ## 0.7.1 (2026-09-30)
 From the 0.7.0 log (from_pc/20260929-195957):
 - **Wear, the real cause**: the plugin found only `EFT.ObjectsFactory.LoadBundlesAndCreatePools(Pools, List<PoolResourceInfo>,
