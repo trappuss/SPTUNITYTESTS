@@ -6,12 +6,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace COD2EFTInspector
 {
@@ -20,12 +22,12 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.9.1";
+        public const string Version = "0.10.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
 
-        ConfigEntry<KeyboardShortcut> _panelKey, _shotKey;
+        ConfigEntry<KeyboardShortcut> _panelKey, _shotKey, _freezeKey, _slowKey;
         ConfigEntry<int> _supersize;
         ConfigEntry<bool> _hideHud, _others, _unlockCursor;
         ConfigEntry<float> _scale;
@@ -71,6 +73,8 @@ namespace COD2EFTInspector
                 "Shows / hides the inspector panel. Set to None to use only the F12 button.");
             _shotKey = Config.Bind("1. Hotkeys", "Screenshot", new KeyboardShortcut(KeyCode.F10),
                 "Saves a screenshot (panel and HUD hidden). Set to None to use only the panel button.");
+            _freezeKey = Config.Bind("1. Hotkeys", "Freeze (photo mode)", new KeyboardShortcut(KeyCode.F7), "Stops / restarts the game while photo mode is on (also in play mode).");
+            _slowKey = Config.Bind("1. Hotkeys", "Slow motion (photo mode)", new KeyboardShortcut(KeyCode.F8), "Cycles 1x / 0.5x / 0.25x / 0.1x while photo mode is on.");
             _supersize = Config.Bind("2. Screenshot", "Supersize", 2,
                 new ConfigDescription("Resolution multiplier (1 = screen size).", new AcceptableValueRange<int>(1, 4)));
             _hideHud = Config.Bind("2. Screenshot", "Hide HUD", true,
@@ -157,6 +161,7 @@ namespace COD2EFTInspector
         {
             try
             {
+                TimeTick();
                 _photo.PlayCameraTurns = _playCamTurns.Value;   // F12 changes apply at once, also during play mode
                 // play mode (photo mode with full control): Esc or the panel key goes back
                 if (_photo.Play && (!_photo.Active || Input.GetKeyDown(KeyCode.Escape) || _panelKey.Value.IsDown())) SetPlay(false);
@@ -319,7 +324,7 @@ namespace COD2EFTInspector
                 Ui.Init();
                 var r = new Rect(Screen.width / 2f - 170f, 18f, 340f, 30f);
                 GUI.DrawTexture(r, Ui.Tex1(new Color(0f, 0f, 0f, 0.6f)));
-                GUI.Label(r, "PLAY MODE  ·  Esc to leave", Ui.Banner);
+                GUI.Label(r, "PLAY MODE  ·  Esc to leave" + (_frozen ? "  ·  FROZEN" : _speed < 1f ? $"  ·  {_speed:0.##}x" : ""), Ui.Banner);
                 return;
             }
             if (!_open || _capturing) return;
@@ -347,7 +352,7 @@ namespace COD2EFTInspector
 
         // ------------------------------------------------------------------ panel frame: title bar, tabs, status bar
 
-        static readonly string[] TabNames = { "Try on", "Photo", "Meshes", "Catalog" };
+        static readonly string[] TabNames = { "Try on", "Photo", "Materials", "Meshes", "Catalog" };
         int _tab = 0;   // 0 try on (opens here), 1 photo, 2 meshes, 3 catalog
         bool _statusOpen;
 
@@ -382,8 +387,9 @@ namespace COD2EFTInspector
                 switch (_tab)
                 {
                     case 1: DrawPhoto(); break;
-                    case 2: DrawMeshes(); break;
-                    case 3: DrawCatalog(); break;
+                    case 2: DrawMaterials(); break;
+                    case 3: DrawMeshes(); break;
+                    case 4: DrawCatalog(); break;
                     default: DrawTryOnTab(); break;
                 }
                 DrawStatusBar();
@@ -591,6 +597,7 @@ namespace COD2EFTInspector
             // your own outfit last, as the reference (known once something was worn)
             Log.LogInfo($"A/B: {runs.Count} outfit(s) of [{newest.Source}] + your own outfit");
             int done = 0;
+            var sheetRows = new List<KeyValuePair<string, List<string>>>();
             for (int i = 0; i <= runs.Count; i++)
             {
                 List<Outfit> items;
@@ -604,10 +611,20 @@ namespace COD2EFTInspector
                 if (msg == null || msg.StartsWith("Try-on failed")) { Log.LogWarning($"A/B: skipped '{label}': {msg}"); continue; }
                 yield return new WaitForSecondsRealtime(1.5f);   // textures stream in
                 Refresh(true);
+                int before = _captured.Count;
                 yield return StartCoroutine(Turntable());
+                sheetRows.Add(new KeyValuePair<string, List<string>>(label, _captured.Skip(before).ToList()));
                 done++;
             }
             _status = $"A/B done: {done} turntable(s) of 4 screenshots in {_outDir}";
+            _status += " | making the comparison sheet ...";
+            yield return null;
+            try
+            {
+                var sheet = Sheet.Make(Path.Combine(_outDir, $"{Stamp()}_AB_sheet_{newest.Source}.png"), $"A/B  {newest.Source}  {DateTime.Now:yyyy-MM-dd HH:mm}", sheetRows);
+                _status = $"A/B done: {done} turntable(s); sheet: {(sheet != null ? Path.GetFileName(sheet) : "none")}";
+            }
+            catch (Exception e) { _status = "A/B done; the comparison sheet failed: " + e.Message; Log.LogError("Sheet failed: " + e); }
             Log.LogInfo(_status);
         }
 
@@ -618,6 +635,7 @@ namespace COD2EFTInspector
         {
             if (!CanWear() || items == null || items.Count == 0) return;
             var all = WithHands(items);
+            _tuner.ClearView();   // the body is rebuilt: the view's material swap would point at old renderers
             _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
             Action<string> done = msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } };
             if (Game.MainPlayer() != null) StartCoroutine(WearPlayerAndPreview(all, done));
@@ -651,6 +669,8 @@ namespace COD2EFTInspector
             _photo.ResetCamera(); _photo.ResetCharacter(); _photo.ResetLights(); _photo.ResetBackground();
             _lightStrength.Value = 1f;
             _transparent = false;
+            ResetTime();
+            _tuner.ClearView();
             string outfit = "";
             if (Game.MainPlayer() != null && Wearer.HasTryOn && CanWear()) { WearItems(Wearer.OriginalOutfit(GetCatalog())); outfit = ", outfit being restored"; }
             else if (Game.MainPlayer() == null && MenuTryOn.Available && !MenuTryOn.Busy) { StartCoroutine(MenuTryOn.Reshow(m => _status = m)); outfit = ", menu preview re-shown"; }
@@ -946,6 +966,8 @@ namespace COD2EFTInspector
                 EndSection();
             }
 
+            DrawTime();
+            DrawPresets();
             if (BeginSection("Captures", null))
             {
                 SupersizeRow();
@@ -1085,6 +1107,7 @@ namespace COD2EFTInspector
                                         (_photo.LightsFollowCamera ? " (follow camera)" : " (fixed to character)")
                                       : "Photo mode: off"));
                     _status = $"Saved {Path.GetFileName(png)} ({w}x{h})";
+                    _captured.Add(png);
                     Log.LogInfo($"Screenshot saved: {png} ({w}x{h}, supersize {ss}, {canvases.Count} HUD canvases hidden, {_hidden.Count} meshes hidden)");
                 }
                 catch (Exception e) { _status = "Screenshot info failed: " + e.Message; Log.LogError("Screenshot .txt failed: " + e); }
@@ -1092,6 +1115,286 @@ namespace COD2EFTInspector
             else _status = "Screenshot failed: " + err;
         }
 
-        void OnDestroy() { try { ShowAll(); _photo.Exit(); InputBlock.Release(); Camera.onPreCull -= OnPreCullCamera; } catch { } }
+        readonly List<string> _captured = new List<string>();   // every screenshot saved this session (turntables -> sheet)
+
+        // ------------------------------------------------------------------ Materials tab (0.10.0)
+
+        readonly MaterialTuner _tuner = new MaterialTuner();
+        Material _selMat;
+        bool _matGear, _matSameShader;
+        Vector2 _scrollMat;
+        readonly Dictionary<string, Vector2> _ranges = new Dictionary<string, Vector2>();
+
+        List<Renderer> TunerRenderers() =>
+            _scan == null ? new List<Renderer>() :
+            _scan.Groups.Where(g => _matGear || g.Kind == "body").SelectMany(g => g.Entries).Select(e => e.R).Where(r => r != null).Distinct().ToList();
+
+        /// <summary>renderer -> its real materials (the channel view swaps them for unlit copies).</summary>
+        IEnumerable<Material> RealMaterials(Renderer r) => _tuner.Saved(r) ?? r.sharedMaterials;
+
+        string UsedBy(Material m) =>
+            string.Join(", ", TunerRenderers().Where(r => RealMaterials(r).Contains(m)).Select(r => r.name).Distinct().Take(4));
+
+        void DrawMaterials()
+        {
+            if (_scan == null) { GUILayout.Label("No character. In raid / the hideout this shows your outfit's materials; in the menu open the Character screen and press Refresh on the Meshes tab.", Ui.Label); return; }
+            var rends = TunerRenderers();
+            var mats = rends.SelectMany(RealMaterials).Where(m => m != null).Distinct().ToList();
+
+            // channel view
+            var slots = MaterialTuner.TextureSlots(mats);
+            var names = new List<string> { "Normal" };
+            names.AddRange(slots.Select(MaterialTuner.Pretty));
+            int v = Segmented("View", names.ToArray(), i => i == 0 ? _tuner.View == null : _tuner.View == slots[i - 1]);
+            if (v == 0) _tuner.ClearView();
+            else if (v > 0) _tuner.SetView(slots[v - 1], rends);
+            GUILayout.BeginHorizontal();
+            _matGear = Toggle(_matGear, "Gear too", "Also list / view the materials of gear, not only body parts");
+            _matSameShader = Toggle(_matSameShader, "Change all with this shader", "A change goes to every listed material using the same shader");
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _tuner.ChangedCount > 0;
+            if (GUILayout.Button(new GUIContent("Reset all", "Every material back to the bundle's values"), Ui.Button)) _tuner.ResetAll();
+            if (GUILayout.Button(new GUIContent($"Save tuning ({_tuner.ChangedCount})", "Writes the changed values (new and was) to a .txt for the converter"), Ui.Primary)) SaveTuning();
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+
+            _scrollMat = GUILayout.BeginScrollView(_scrollMat, GUILayout.ExpandHeight(true));
+            if (!mats.Contains(_selMat)) _selMat = mats.FirstOrDefault();
+            foreach (var m in mats)
+            {
+                bool sel = m == _selMat;
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button(new GUIContent((sel ? "▼  " : "►  ") + m.name.Replace(" (Instance)", ""), "Used by " + UsedBy(m)), sel ? Ui.SegOn : Ui.Seg)) _selMat = sel ? null : m;
+                if (_tuner.Changed(m)) Ui.Pill("CHANGED", Ui.Warn);
+                GUILayout.EndHorizontal();
+                if (sel) DrawMaterialEditor(m, mats);
+            }
+            GUILayout.EndScrollView();
+        }
+
+        void DrawMaterialEditor(Material m, List<Material> all)
+        {
+            GUILayout.BeginVertical(Ui.CardBox);
+            GUILayout.Label($"shader <b>{m.shader?.name}</b>   ·   render queue {m.renderQueue}   ·   used by {UsedBy(m)}", Ui.Small);
+            var targets = _matSameShader ? all.Where(x => x.shader == m.shader).ToList() : new List<Material> { m };
+            foreach (var p in MaterialTuner.Props(m))
+            {
+                string key = m.GetInstanceID() + p.Name;
+                switch (p.Type)
+                {
+                    case ShaderPropertyType.Float:
+                    case ShaderPropertyType.Range:
+                    {
+                        float cur = m.GetFloat(p.Name);
+                        Vector2 rg;
+                        if (!_ranges.TryGetValue(key, out rg))
+                        {
+                            var o = _tuner.Original(m, p.Name) as float? ?? cur;
+                            rg = p.Type == ShaderPropertyType.Range ? new Vector2(p.Min, p.Max) : new Vector2(Mathf.Min(0f, o * 2f), Mathf.Max(1f, o * 2f));
+                            _ranges[key] = rg;
+                        }
+                        float nv = PropSlider(m, p.Name, cur, rg.x, rg.y);
+                        if (!Mathf.Approximately(nv, cur)) foreach (var t in targets) if (t.HasProperty(p.Name)) _tuner.SetFloat(t, p.Name, nv);
+                        break;
+                    }
+                    case ShaderPropertyType.Color:
+                    {
+                        var c = m.GetColor(p.Name);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label(new GUIContent(p.Name, m.shader.GetPropertyDescription(m.shader.FindPropertyIndex(p.Name))), _tuner.Changed(m, p.Name) ? Ui.H : Ui.Label, GUILayout.Width(150));
+                        var r = GUILayoutUtility.GetRect(28, 18, GUILayout.Width(28));
+                        GUI.DrawTexture(r, Ui.Tex1(new Color(c.r, c.g, c.b, 1f)));
+                        float max = Mathf.Max(1f, c.maxColorComponent);
+                        var n = new Color(GUILayout.HorizontalSlider(c.r, 0f, max, GUILayout.MinWidth(40)), GUILayout.HorizontalSlider(c.g, 0f, max, GUILayout.MinWidth(40)),
+                                          GUILayout.HorizontalSlider(c.b, 0f, max, GUILayout.MinWidth(40)), GUILayout.HorizontalSlider(c.a, 0f, 1f, GUILayout.MinWidth(30)));
+                        ResetButton(m, p.Name, targets);
+                        GUILayout.EndHorizontal();
+                        if (n != c) foreach (var t in targets) if (t.HasProperty(p.Name)) _tuner.SetColor(t, p.Name, n);
+                        break;
+                    }
+                    case ShaderPropertyType.Vector:
+                    {
+                        var vv = m.GetVector(p.Name);
+                        GUILayout.Label($"{p.Name}   {vv.x:0.###}, {vv.y:0.###}, {vv.z:0.###}, {vv.w:0.###}", Ui.Small);
+                        break;
+                    }
+                    case ShaderPropertyType.Texture:
+                    {
+                        var tex = m.GetTexture(p.Name);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"{p.Name}   " + (tex != null ? $"<b>{tex.name}</b>  {tex.width}x{tex.height}" : "<color=#9aa0a8>(empty)</color>"), Ui.Small);
+                        GUILayout.FlexibleSpace();
+                        if (tex != null && GUILayout.Button(new GUIContent("view", "Show this texture slot on the whole outfit"), Ui.Tiny, GUILayout.Width(44))) _tuner.SetView(p.Name, TunerRenderers());
+                        GUILayout.EndHorizontal();
+                        break;
+                    }
+                }
+            }
+            GUILayout.BeginHorizontal();
+            GUI.enabled = _tuner.Changed(m);
+            if (GUILayout.Button(new GUIContent("Reset this material", "Back to the bundle's values"), Ui.Button)) _tuner.Reset(m);
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+        }
+
+        float PropSlider(Material m, string prop, float v, float min, float max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(new GUIContent(prop, m.shader.GetPropertyDescription(m.shader.FindPropertyIndex(prop))), _tuner.Changed(m, prop) ? Ui.H : Ui.Label, GUILayout.Width(150));
+            v = GUILayout.HorizontalSlider(v, min, max, GUILayout.MinWidth(80));
+            GUILayout.Label(v.ToString("0.###"), Ui.Value, GUILayout.Width(50));
+            ResetButton(m, prop, null);
+            GUILayout.EndHorizontal();
+            return v;
+        }
+
+        void ResetButton(Material m, string prop, List<Material> targets)
+        {
+            GUI.enabled = _tuner.Changed(m, prop);
+            if (GUILayout.Button(new GUIContent("R", "Back to " + (_tuner.Original(m, prop) ?? "?")), Ui.Tiny, GUILayout.Width(22)))
+                foreach (var t in (IEnumerable<Material>)targets ?? new[] { m }) _tuner.ResetProp(t, prop);
+            GUI.enabled = true;
+        }
+
+        void SaveTuning()
+        {
+            try
+            {
+                Directory.CreateDirectory(_outDir);
+                var f = Path.Combine(_outDir, $"{Stamp()}_{BodyScan.OutfitNames(_scan)}_material_tuning.txt");
+                File.WriteAllText(f, _tuner.Report(BodyScan.OutfitNames(_scan), UsedBy));
+                _status = "Material tuning saved: " + Path.GetFileName(f);
+                Log.LogInfo("Material tuning written: " + f);
+            }
+            catch (Exception e) { _status = "Saving the tuning failed: " + e.Message; Log.LogError("Tuning save failed: " + e); }
+        }
+
+        // ------------------------------------------------------------------ photo presets + time (0.10.0)
+
+        static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
+        string PresetFile => Path.Combine(Paths.ConfigPath, "COD2EFTInspector_photo_presets.txt");
+        List<KeyValuePair<string, string>> _presets;
+        string _presetName = "";
+
+        List<KeyValuePair<string, string>> Presets()
+        {
+            if (_presets != null) return _presets;
+            _presets = new List<KeyValuePair<string, string>>();
+            try
+            {
+                if (File.Exists(PresetFile))
+                    foreach (var line in File.ReadAllLines(PresetFile))
+                    {
+                        int i = line.IndexOf('|');
+                        if (i > 0) _presets.Add(new KeyValuePair<string, string>(line.Substring(0, i), line.Substring(i + 1)));
+                    }
+            }
+            catch (Exception e) { Log.LogWarning("Photo presets not readable: " + e.Message); }
+            return _presets;
+        }
+
+        void SavePresets()
+        {
+            try { File.WriteAllLines(PresetFile, _presets.Select(kv => kv.Key + "|" + kv.Value).ToArray()); }
+            catch (Exception e) { _status = "Saving presets failed: " + e.Message; }
+        }
+
+        string PresetString()
+        {
+            var p = _photo;
+            Func<float, string> f = x => x.ToString("0.####", Inv);
+            return string.Join(";", new[]
+            {
+                "Yaw=" + f(p.Yaw - p.CharYaw), "Pitch=" + f(p.Pitch), "Distance=" + f(p.Distance), "Height=" + f(p.Height), "Fov=" + f(p.Fov),
+                "Ortho=" + p.Ortho, "CharYaw=" + f(p.CharYaw), "CharPitch=" + f(p.CharPitch), "Pose=" + _pose,
+                "Lights=" + p.Lights, "Follow=" + p.LightsFollowCamera, "Strength=" + f(_lightStrength.Value),
+                "Isolate=" + p.Isolate, "Bg=" + ColorUtility.ToHtmlStringRGB(p.BgColor), "NoFog=" + p.NoFog, "NoPost=" + p.NoPost,
+                "WorldOff=" + p.WorldLightsOff, "Transparent=" + _transparent, "Speed=" + f(_speed),
+            });
+        }
+
+        void ApplyPreset(string s)
+        {
+            var d = new Dictionary<string, string>();
+            foreach (var kv in s.Split(';')) { int i = kv.IndexOf('='); if (i > 0) d[kv.Substring(0, i)] = kv.Substring(i + 1); }
+            Func<string, float, float> F = (k, def) => { string v; float x; return d.TryGetValue(k, out v) && float.TryParse(v, NumberStyles.Float, Inv, out x) ? x : def; };
+            Func<string, bool, bool> B = (k, def) => { string v; bool x; return d.TryGetValue(k, out v) && bool.TryParse(v, out x) ? x : def; };
+            var p = _photo;
+            p.CharYaw = F("CharYaw", p.CharYaw); p.CharPitch = F("CharPitch", p.CharPitch);
+            p.Yaw = Mathf.Repeat(F("Yaw", 0f) + p.CharYaw, 360f); p.Pitch = F("Pitch", p.Pitch); p.Distance = F("Distance", p.Distance);
+            p.Height = F("Height", p.Height); p.Fov = F("Fov", p.Fov); p.Ortho = B("Ortho", p.Ortho);
+            p.SetLights(B("Lights", p.Lights)); p.LightsFollowCamera = B("Follow", p.LightsFollowCamera); _lightStrength.Value = F("Strength", 1f);
+            p.Isolate = B("Isolate", p.Isolate); p.NoFog = B("NoFog", p.NoFog); p.NoPost = B("NoPost", p.NoPost); p.WorldLightsOff = B("WorldOff", p.WorldLightsOff);
+            _transparent = B("Transparent", false); _speed = Mathf.Clamp(F("Speed", 1f), 0.05f, 1f);
+            string bg; Color c;
+            if (d.TryGetValue("Bg", out bg) && ColorUtility.TryParseHtmlString("#" + bg, out c)) { p.BgColor = c; _bgColor.Value = "#" + bg; _colourLoaded = true; }
+            string pose;
+            if (d.TryGetValue("Pose", out pose) && Poses.Names.Contains(pose) && pose != _pose) SetPose(pose);
+        }
+
+        void DrawPresets()
+        {
+            if (!BeginSection("Presets", null, true, "Save / load the whole setup: camera, character, pose, lights, background, speed")) return;
+            GUILayout.BeginHorizontal();
+            _presetName = GUILayout.TextField(_presetName ?? "", Ui.Field, GUILayout.MinWidth(120));
+            GUI.enabled = !string.IsNullOrEmpty(_presetName?.Trim());
+            if (GUILayout.Button(new GUIContent("Save", "Save the current setup under this name (same name = overwrite)"), Ui.Primary, GUILayout.Width(60)))
+            {
+                string n = _presetName.Trim().Replace("|", "/");
+                Presets().RemoveAll(kv => kv.Key == n);
+                _presets.Add(new KeyValuePair<string, string>(n, PresetString()));
+                SavePresets();
+                _status = "Preset saved: " + n;
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+            foreach (var kv in Presets().ToList())
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(kv.Key, Ui.Label);
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(new GUIContent("Load", "Apply this setup"), Ui.Button, GUILayout.Width(60))) { ApplyPreset(kv.Value); _presetName = kv.Key; _status = "Preset loaded: " + kv.Key; }
+                if (GUILayout.Button(new GUIContent("×", "Delete this preset"), Ui.Tiny, GUILayout.Width(24))) { _presets.Remove(kv); SavePresets(); }
+                GUILayout.EndHorizontal();
+            }
+            if (Presets().Count == 0) GUILayout.Label("No presets yet. Set up a shot, type a name, Save. Stored in BepInEx\\config\\COD2EFTInspector_photo_presets.txt.", Ui.Small);
+            EndSection();
+        }
+
+        float _speed = 1f, _timeOrig = 1f;
+        bool _frozen, _timeTouched;
+        static readonly float[] SlowSteps = { 1f, 0.5f, 0.25f, 0.1f };
+
+        /// <summary>Photo mode time: slow motion / freeze (also in play mode, by hotkey). Given back when photo mode ends.</summary>
+        void TimeTick()
+        {
+            if (_photo.Active)
+            {
+                if (_freezeKey.Value.IsDown()) { _frozen = !_frozen; _status = _frozen ? "Frozen" : "Running"; }
+                if (_slowKey.Value.IsDown()) { int i = Array.FindIndex(SlowSteps, x => Mathf.Approximately(x, _speed)); _speed = SlowSteps[(i + 1) % SlowSteps.Length]; _frozen = false; _status = $"Speed {_speed:0.##}x"; }
+                if (_capturing) return;   // the transparent capture stops time itself
+                float want = _frozen ? 0f : _speed;
+                if (!Mathf.Approximately(Time.timeScale, want))
+                {
+                    if (!_timeTouched) { _timeOrig = Time.timeScale; _timeTouched = true; }
+                    Time.timeScale = want;
+                }
+            }
+            else if (_timeTouched) { Time.timeScale = _timeOrig; _timeTouched = false; _frozen = false; _speed = 1f; }
+        }
+
+        void ResetTime() { _frozen = false; _speed = 1f; if (_timeTouched) { Time.timeScale = _timeOrig; _timeTouched = false; } }
+
+        void DrawTime()
+        {
+            if (!BeginSection("Time", ResetTime, false, "Slow motion / freeze, for catching animations (reload, inspect) mid-motion")) return;
+            _speed = Slider("Speed", _speed, 0.05f, 1f, 1f, "0.00", "Game speed while photo mode is on");
+            _frozen = Toggle(_frozen, $"Freeze ({_freezeKey.Value})", "Stops the game; the camera still moves");
+            GUILayout.Label($"Hotkeys, also in play mode: {_freezeKey.Value} = freeze,  {_slowKey.Value} = 1x / 0.5x / 0.25x / 0.1x.", Ui.Small);
+            EndSection();
+        }
+
+        void OnDestroy() { try { ShowAll(); _tuner.ClearView(); _tuner.ResetAll(); ResetTime(); _photo.Exit(); InputBlock.Release(); Camera.onPreCull -= OnPreCullCamera; } catch { } }
     }
 }

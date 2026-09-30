@@ -3,6 +3,29 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.10.0 (2026-09-30)
+The five suggestions, all added (compiled with mcs only, untested in game):
+- **Materials tab** (new, between Photo and Meshes):
+  - Every material of the worn outfit (*Gear too* adds gear), each shader value as a live slider or colour. The changed
+    name turns bold, *R* puts one value back, plus *Reset this material* and *Reset all*. *Change all with this shader*
+    applies an edit to every listed material using that shader.
+  - **Save tuning** writes `<time>_<outfit>_material_tuning.txt` (`property = new (was: bundle value)` per material) to
+    the screenshot folder, so `SEND_RESULTS_TO_CLAUDE.bat` sends it, and the values can go into the converter / Unity
+    material settings.
+  - Old values are stored at the first change, so reset is exact. Edits change the loaded material until the game restarts.
+- **Texture channel view** (Materials tab, *View*): *Normal* or one texture slot (Colour, Normal, Specular, ... as the
+  outfit's shaders have them) shown unlit on the whole outfit; a slot a material lacks shows purple. The original materials
+  come back on *Normal*, on Wear, on *Reset all* and when the plugin unloads. The unlit shader is found by name
+  (`Unlit/Texture`, else `Legacy Shaders/Diffuse`, `UI/Default`); which one is logged.
+- **Photo presets** (Photo tab, *Presets*): save / load / delete named setups: camera, orthographic, character turn / aim,
+  pose, lights, background (colour, isolate, fog / post / world lights, transparent), speed. File:
+  `BepInEx\config\COD2EFTInspector_photo_presets.txt`.
+- **Slow motion and freeze** (Photo tab, *Time*; hotkeys **F7** freeze, **F8** 1x / 0.5x / 0.25x / 0.1x, also in play
+  mode, where the banner shows the speed). Only while photo mode is on; the game's speed comes back when photo mode ends
+  or on *Reset all*. The camera still moves while frozen.
+- **Comparison sheet**: after *A/B turntables* the plugin writes `<time>_AB_sheet_<mod>.png`: one row per outfit (label in
+  a built-in pixel font), 4 angles, transparent shots on grey. Done in game, no cloud step.
+
 ## 0.9.1 (2026-09-30)
 User: 0.9.0 checked in game and working (isolate with gear, hands, catalog order, play mode).
 - **Play mode: camera turns with the character** (Photo tab under *Play mode*, and F12 *5. Photo mode*; on by default). Off:

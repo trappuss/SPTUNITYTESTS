@@ -70,6 +70,13 @@ to the player (`InputBlock` released, cursor locked). The photo camera keeps orb
 Esc / F9 returns to photo mode and re-bases the character's facing (`PhotoMode.Rebase`). Hands: `Catalog.HandsOfTop`
 (vanilla suites `_props.Body` -> `_props.Hands`, WTT topId -> handsId).
 
+**Materials tab (0.10.0, `MaterialTuner.cs`):** shader properties via `Shader.GetPropertyCount/Name/Type/RangeLimits`, edits on the
+loaded material with the old value stored at the first change. *Save tuning* -> `<time>_<outfit>_material_tuning.txt` in
+`COD2EFT_Screenshots` (sent by SEND_RESULTS). This is the in-game route for tuning the values in `COD2EFT_TEXTURE_SPEC.md`
+(copy the numbers into the converter / EFT Tools; not automatic). Channel view = unlit copies with one texture slot as `_MainTex`.
+**Photo tab (0.10.0):** *Time* (F7 freeze / F8 slow motion, `Time.timeScale`, restored on exit), *Presets*
+(`BepInEx\config\COD2EFTInspector_photo_presets.txt`, one `name|key=value;...` line each). A/B writes `<time>_AB_sheet_<mod>.png` (`Sheet.cs`).
+
 **Try-on diagnostics (0.7.0):** a Wear logs its target body, the loader arguments with types, per-bundle results on failure, and
 every `PlayerBody` in the scene (owner, active, what it shows). If the game rebuilds your body afterwards, a warning says so.
 *Log all bodies* button in the try-on section.
