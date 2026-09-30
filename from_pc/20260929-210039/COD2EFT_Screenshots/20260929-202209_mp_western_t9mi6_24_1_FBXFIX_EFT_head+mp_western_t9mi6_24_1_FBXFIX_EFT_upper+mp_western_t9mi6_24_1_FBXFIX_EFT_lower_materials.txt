@@ -1,0 +1,749 @@
+COD2EFT Inspector v0.8.0 - material report
+Time: 2026-09-29T20:22:09   Game: 1.0   Scene: CommonUIScene
+Character: You (hideout)
+Camera: FPS Camera pos (-3.91, 1.50, 6.40) rot (8.00, 56.42, 0.00) fov 35
+
+Profile customization (ids):
+  Head = 6abc42fa4d7993b8dd375714
+  Body = 6abc42fa649e46ae5037570f
+  Feet = 6abc42fa77b6bc95a7375713
+  Hands = 6abc42fae1f7a5ab70375710
+  DogTag = 67471938bafff850080488b7
+  Voice = 5fc615110b735e7b024c76ea
+
+Body parts on the character (PlayerBody.BodySkins) and the bundles they came from:
+  Head                   mp_western_t9mi6_24_1_FBXFIX_EFT_head   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Head 'mp western t9mi6 24 1 FBXFIX EFT head' id 6abc42fa4d7993b8dd375714 bundle heads/mp_western_t9mi6_24_1_fbxfix_eft_head.bundle
+  Top                    mp_western_t9mi6_24_1_FBXFIX_EFT_upper   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Top 'mp western t9mi6 24 1 FBXFIX EFT upper' id 6abc42fa649e46ae5037570f bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_top.bundle
+  Pants                  mp_western_t9mi6_24_1_FBXFIX_EFT_lower   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Pants 'mp western t9mi6 24 1 FBXFIX EFT lower' id 6abc42fa77b6bc95a7375713 bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_bottom.bundle
+  Hands (first-person)   mp_western_t9mi6_24_1_FBXFIX_EFT_hands   (1 renderers)
+      catalog: [RCTA_ClothingMod_Test] Hands 'mp western t9mi6 24 1 FBXFIX EFT upper (hands)' id 6abc42fae1f7a5ab70375710 bundle clothing/mp_western_t9mi6_24_1_fbxfix_eft_hands.bundle
+  (no loaded bundle has a prefab with these names)
+
+Checks (shader, stencil, texture slots and sizes; values are not judged):
+  ERROR [gear] AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/MuzzleJetCombinedMesh: no mesh
+  ERROR [gear] XYZ_1: no mesh
+  ERROR [gear] Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Left/XYZ_1 (1): no mesh
+  ERROR [gear] Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Right/XYZ_1: no mesh
+
+=== Head: mp_western_t9mi6_24_1_FBXFIX_EFT_head  [body]
+  mp_western_t9mi6_24_1_Head  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_western_t9mi6_24_1_Head' 23778 verts, 58 bones
+    [0] material 'mp_western_t9mi6_24_1_Head_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        *_StencilType     0
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'mp_western_t9mi6_24_1_Head_alpha_d' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Head_alpha_n' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_Cutoff          0.5
+        *_SpecVals        vector (0.35, 2, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _Factor          0
+         _Units           0
+    [1] material 'mp_western_t9mi6_24_1_Head'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_western_t9mi6_24_1_Head_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       2.2
+        *_Specularness    0.6
+        *_ReflectColor    color (0.9, 0.9, 0.9, 0.5)
+         _MainTex         'mp_western_t9mi6_24_1_Head_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Head_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 3, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0, 1, 2, 0)
+
+=== Top: mp_western_t9mi6_24_1_FBXFIX_EFT_upper  [body]
+  mp_western_t9mi6_24_1_Upper  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_western_t9mi6_24_1_Upper' 22439 verts, 58 bones
+    [0] material 'mp_western_t9mi6_24_1_Upper'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_western_t9mi6_24_1_Upper_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       2.4
+        *_Specularness    1
+        *_ReflectColor    color (0.87, 0.87, 0.87, 0.5)
+         _MainTex         'mp_western_t9mi6_24_1_Upper_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Upper_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.85, 0.7, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0.1, 1, 1, 0)
+    [1] material 'mp_western_t9mi6_24_1_Upper_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        *_StencilType     0
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'mp_western_t9mi6_24_1_Upper_alpha_d' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Upper_alpha_n' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_Cutoff          0.5
+        *_SpecVals        vector (0.35, 2, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _Factor          0
+         _Units           0
+
+=== Pants: mp_western_t9mi6_24_1_FBXFIX_EFT_lower  [body]
+  mp_western_t9mi6_24_1_Lower  <SkinnedMeshRenderer> active=True enabled=True shadows=On mesh 'mp_western_t9mi6_24_1_Lower' 13714 verts, 58 bones
+    [0] material 'mp_western_t9mi6_24_1_Lower'  shader 'p0/Reflective/Bumped Specular SMap_Decal'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     1
+         _Color           color (1, 1, 1, 1)
+         _SpecMap         'mp_western_t9mi6_24_1_Lower_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       2
+        *_Specularness    0.75
+        *_ReflectColor    color (0.61, 0.61, 0.61, 0.5)
+         _MainTex         'mp_western_t9mi6_24_1_Lower_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Lower_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.85, 0.7, 0, 0)
+         _BumpTiling      1
+         _DecalPower      0
+         _DecalsTex       none
+         _Temperature     vector (0.1, 1, 1, 0)
+    [1] material 'mp_western_t9mi6_24_1_Lower_alpha'  shader 'p0/Cutout/Bumped Diffuse'  queue 2450
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        *_StencilType     0
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'mp_western_t9mi6_24_1_Lower_alpha_d' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Lower_alpha_n' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_Cutoff          0.5
+        *_SpecVals        vector (0.35, 2, 0, 0)
+        *_DefVals         vector (0.8, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _Factor          0
+         _Units           0
+
+=== Hands (first-person): mp_western_t9mi6_24_1_FBXFIX_EFT_hands  [body]
+  mp_western_t9mi6_24_1_Hands  <SkinnedMeshRenderer> active=True enabled=False shadows=Off mesh 'mp_western_t9mi6_24_1_Hands' 14726 verts, 58 bones
+    [0] material 'mp_western_t9mi6_24_1_Hands (Instance)'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USERAIN
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (1, 1, 1, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'mp_western_t9mi6_24_1_Hands_g' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (1, 1, 1, 1)
+        *_Glossness       2.6
+        *_Specularness    0.8
+        *_ReflectColor    color (0.55, 0.55, 0.55, 0.5)
+         _MainTex         'mp_western_t9mi6_24_1_Hands_d' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mp_western_t9mi6_24_1_Hands_n' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1.1, 2, 0, 0)
+        *_DefVals         vector (0.8, 0.7, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 1, 2, 0)
+         _RippleTexScale  0.25
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 1
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+
+=== Gear: weapon_holster  [gear]
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/MuzzleJetCombinedMesh  <MeshRenderer> active=True enabled=False shadows=On
+    [0] material 'MuzzleFlashTest'  shader 'Custom/Additive'  queue 3000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        _SpecVals        (not on this material)
+        _DefVals         (not on this material)
+        _Cutoff          (not on this material)
+        _StencilType     (not on this material)
+         _TintColor       color (1, 0.4625, 0.2647, 1)
+         _MainTex         'Untitled 14' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _InvFade         2.4173
+         _InvWindowSize   1.3699
+         _RandomizePhase  2
+         _HDR             1.2
+         _ZShift          0.9411
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/barrel_9a91_kbp_vsk94_180mm_9x39_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'barrel_9a91_kbp_vsk94_180mm_9x39_LOD0' 8595 verts
+    [0] material 'barrel_9a91_kbp_vsk94_180mm_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USEHEAT
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.901, 0.901, 0.901, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'barrel_9a91_kbp_9a91_std_LOD0_gloss' 1024x1024 DXT1 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.796, 0.796, 0.796, 1)
+        *_Glossness       1
+        *_Specularness    1.05
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'barrel_9a91_kbp_9a91_std_LOD0_diff' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'barrel_9a91_kbp_9a91_std_LOD0_nrm' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/barrel_9a91_kbp_vsk94_180mm_9x39_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'barrel_9a91_kbp_vsk94_180mm_9x39_LOD1' 529 verts
+    [0] material 'barrel_9a91_kbp_vsk94_180mm_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000  keywords USEHEAT
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.8019, 0.8019, 0.8019, 1)
+         _SpecColor       color (1, 1, 1, 1)
+         _SpecPower       1
+         _Shininess       0.62
+        *_ReflectColor    color (0.514, 0.514, 0.514, 0.5)
+         _MainTex         'barrel_9a91_kbp_vsk94_180mm_9x39_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/mod_handguard/handguard_9a91_kbp_vsk94_std(Clone)/handguard_9a91_kbp_vsk94_std_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'handguard_9a91_kbp_vsk94_std_LOD0' 1531 verts
+    [0] material 'handguard_9a91_kbp_vsk94_std_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USEHEAT
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (1, 1, 1, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'handguard_9a91_kbp_vsk94_std_LOD0_gloss' 1024x1024 DXT1 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.845, 0.845, 0.845, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.599, 0.599, 0.599, 0.5)
+         _MainTex         'handguard_9a91_kbp_vsk94_std_LOD0_diff' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'handguard_9a91_kbp_vsk94_std_LOD0_nrm' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/mod_handguard/handguard_9a91_kbp_vsk94_std(Clone)/handguard_9a91_kbp_vsk94_std_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'handguard_9a91_kbp_vsk94_std_LOD1' 252 verts
+    [0] material 'handguard_9a91_kbp_vsk94_std_LOD1'  shader 'p0/Reflective/Specular'  queue 2000  keywords USEHEAT
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (1, 1, 1, 1)
+         _SpecColor       color (0.838, 0.838, 0.838, 1)
+         _SpecPower       1
+         _Shininess       0.68
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'handguard_9a91_kbp_vsk94_std_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/mod_muzzle/silencer_9a91_kbp_9a91_silencer_9x39(Clone)/silencer_9a91_kbp_9a91_silencer_9x39_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'silencer_9a91_kbp_9a91_silencer_9x39_LOD0' 1078 verts
+    [0] material 'silencer_9a91_kbp_9a91_silencer_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000  keywords USEHEAT
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.901, 0.901, 0.901, 1)
+         _BaseTintColor   color (0.6038, 0.6038, 0.6038, 1)
+         _SpecMap         'silencer_9a91_kbp_9a91_silencer_9x39_LOD0_gloss' 2048x1024 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.803, 0.803, 0.803, 1)
+        *_Glossness       1
+        *_Specularness    1.1
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'silencer_9a91_kbp_9a91_silencer_9x39_LOD0_diff' 2048x1024 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'silencer_9a91_kbp_9a91_silencer_9x39_LOD0_nrm' 2048x1024 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_barrel/barrel_9a91_kbp_vsk94_180mm_9x39(Clone)/mod_muzzle/silencer_9a91_kbp_9a91_silencer_9x39(Clone)/silencer_9a91_kbp_9a91_silencer_9x39_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'silencer_9a91_kbp_9a91_silencer_9x39_LOD1' 222 verts
+    [0] material 'silencer_9a91_kbp_9a91_silencer_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000  keywords USEHEAT
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.783, 0.783, 0.783, 1)
+         _SpecColor       color (0.7358, 0.7358, 0.7358, 1)
+         _SpecPower       1
+         _Shininess       0.63
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'silencer_9a91_kbp_9a91_silencer_9x39_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          1
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_magazine/mag_ppsh_zis_std_762x25_35(Clone)/mag_ppsh_zis_std_762x25_35_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'mag_ppsh_zis_std_762x25_35_LOD0' 3380 verts
+    [0] material 'mag_ppsh_zis_std_762x25_35_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.5849, 0.5849, 0.5849, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'mag_ppsh_zis_std_762x25_35_LOD0_gloss' 1024x1024 DXT1 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.783, 0.783, 0.783, 1)
+        *_Glossness       2
+        *_Specularness    1.23
+        *_ReflectColor    color (0.5094, 0.5094, 0.5094, 0.5)
+         _MainTex         'mag_ppsh_zis_std_762x25_35_LOD0_diff' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'mag_ppsh_zis_std_762x25_35_LOD0_nrm' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 1, 1, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_magazine/mag_ppsh_zis_std_762x25_35(Clone)/mag_ppsh_zis_std_762x25_35_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'mag_ppsh_zis_std_762x25_35_LOD1' 66 verts
+    [0] material 'mag_ppsh_zis_std_762x25_35_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.8302, 0.8302, 0.8302, 1)
+         _SpecColor       color (0.717, 0.717, 0.717, 1)
+         _SpecPower       1
+         _Shininess       1
+        *_ReflectColor    color (1, 1, 1, 0.5)
+         _MainTex         'mag_ppsh_zis_std_762x25_35_LOD1_diff' 128x128 DXT5 mips 8 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall_matte' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 1, 1, 0)
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_release/weapon_kbp_vsk94_release_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_vsk94_release_LOD0' 200 verts
+    [0] material 'weapon_kbp_vsk94_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.901, 0.901, 0.901, 1)
+         _BaseTintColor   color (0.7925, 0.7925, 0.7925, 1)
+         _SpecMap         'weapon_kbp_vsk94_9x39_LOD0_gloss' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.803, 0.803, 0.803, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'weapon_kbp_vsk94_9x39_LOD0_diff' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'weapon_kbp_vsk94_9x39_LOD0_nrm' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_stock/stock_vsk94_kbp_vsk94_std(Clone)/stock_vsk94_kbp_vsk94_std_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'stock_vsk94_kbp_vsk94_std_LOD0' 3309 verts
+    [0] material 'stock_vsk94_kbp_vsk94_std_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.803, 0.803, 0.803, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'stock_vsk94_kbp_vsk94_std_LOD0_gloss' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.796, 0.796, 0.796, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.599, 0.599, 0.599, 0.5)
+         _MainTex         'stock_vsk94_kbp_vsk94_std_LOD0_diff' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'stock_vsk94_kbp_vsk94_std_LOD0_nrm' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/mod_stock/stock_vsk94_kbp_vsk94_std(Clone)/stock_vsk94_kbp_vsk94_std_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'stock_vsk94_kbp_vsk94_std_LOD1' 351 verts
+    [0] material 'stock_vsk94_kbp_vsk94_std_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.8679, 0.8679, 0.8679, 1)
+         _SpecColor       color (1, 1, 1, 1)
+         _SpecPower       1
+         _Shininess       0.73
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'stock_vsk94_kbp_vsk94_std_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_bolt/weapon_bolt_charge/weapon_kbp_9a91_bolt_rotation_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_bolt_rotation_LOD0' 767 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.874, 0.874, 0.874, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'weapon_kbp_9a91_internals_9x39_LOD0_gloss' 1024x1024 DXT1 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.796, 0.796, 0.796, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'weapon_kbp_9a91_internals_9x39_LOD0_diff' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'weapon_kbp_9a91_internals_9x39_LOD0_nrm' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_bolt/weapon_bolt_larva/weapon_kbp_9a91_bolt_larva_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_bolt_larva_LOD0' 1546 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_bolt/weapon_bolt_larva/weapon_kbp_9a91_bolt_larva_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_bolt_larva_LOD1' 319 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.923, 0.923, 0.923, 1)
+         _SpecColor       color (0.8868, 0.8868, 0.8868, 1)
+         _SpecPower       1
+         _Shininess       0.57
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'weapon_kbp_9a91_internals_9x39_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_bolt/weapon_kbp_9a91_bolt_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_bolt_LOD0' 2403 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_bolt/weapon_kbp_9a91_bolt_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_bolt_LOD1' 567 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_kbp_vsk94_9x39_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_vsk94_9x39_LOD0' 4105 verts
+    [0] material 'weapon_kbp_vsk94_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_kbp_vsk94_9x39_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_vsk94_9x39_LOD1' 882 verts
+    [0] material 'weapon_kbp_vsk94_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.958, 0.958, 0.958, 1)
+         _SpecColor       color (1, 1, 1, 1)
+         _SpecPower       1
+         _Shininess       0.65
+        *_ReflectColor    color (0.486, 0.486, 0.486, 0.5)
+         _MainTex         'weapon_kbp_vsk94_9x39_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_reciever/reciever_9a91_kbp_vsk94_std_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'reciever_9a91_kbp_vsk94_std_LOD0' 11571 verts
+    [0] material 'reciever_9a91_kbp_vsk94_std_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.901, 0.901, 0.901, 1)
+         _BaseTintColor   color (1, 1, 1, 1)
+         _SpecMap         'reciever_9a91_kbp_vsk94_std_LOD0_gloss' 2048x2048 DXT1 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _SpecColor       color (0.803, 0.803, 0.803, 1)
+        *_Glossness       1
+        *_Specularness    1
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'reciever_9a91_kbp_vsk94_std_LOD0_diff' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _HasTint         0
+         _TintMask        none
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _BumpMap         'reciever_9a91_kbp_vsk94_std_LOD0_nrm' 2048x2048 DXT5 mips 12 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 0.3, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _BumpTiling      1
+         _NormalIntensity 1
+         _NormalUVMultiplier 1
+         _Factor          0
+         _Units           0
+         _DropsSpec       128
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         _RippleTexScale  4
+         _RippleFakeLightIntensityOffset 0.7
+         _NightRippleFakeLightOffset 0.2
+         _NdotLOffset     0.4
+         _USERAIN         0
+         _SkinnedMeshMaterial 0
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_reciever/reciever_9a91_kbp_vsk94_std_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'reciever_9a91_kbp_vsk94_std_LOD1' 582 verts
+    [0] material 'reciever_9a91_kbp_vsk94_std_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _Cutoff          (not on this material)
+        *_StencilType     2
+         _Color           color (0.908, 0.908, 0.908, 1)
+         _SpecColor       color (1, 1, 1, 1)
+         _SpecPower       1
+         _Shininess       0.65
+        *_ReflectColor    color (0.5, 0.5, 0.5, 0.5)
+         _MainTex         'reciever_9a91_kbp_vsk94_std_LOD1_diff' 256x256 DXT5 mips 9 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Cube            'patron_cubemap_metall' 256x256 <Cubemap> filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+        *_SpecVals        vector (1, 1, 0, 0)
+        *_DefVals         vector (1, 1, 0, 0)
+         _Temperature     vector (0.1, 0.3, 0.5, 0)
+         USEHEAT          0
+         _HeatVisible     1
+         _HeatColor1      color (1, 0, 0, 1)
+         _HeatColor2      color (1, 0.34, 0, 1)
+         _HeatCenter      vector (0, 0, 0, 1)
+         _HeatSize        vector (0.02, 0.04, 0.02, 1)
+         _HeatTemp        0
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_trigger_group/weapon_hammer/weapon_kbp_9a91_hammer_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_hammer_LOD1' 390 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_trigger_group/weapon_kbp_9a91_trigger_group_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_trigger_group_LOD0' 1348 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_trigger_group/weapon_kbp_9a91_trigger_group_LOD1  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_trigger_group_LOD1' 758 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD1'  shader 'p0/Reflective/Specular'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_trigger_group/weapon_selector/weapon_kbp_9a91_selector_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_selector_LOD0' 622 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/weapon_trigger_group/weapon_trigger/weapon_kbp_9a91_trigger_LOD0  <MeshRenderer> active=True enabled=False shadows=On mesh 'weapon_kbp_9a91_trigger_LOD0' 585 verts
+    [0] material 'weapon_kbp_vsk94_internals_9x39_LOD0'  shader 'p0/Reflective/Bumped Specular SMap'  queue 2000
+        (same material as listed above)
+  AlternativeFirstPrimaryHolster/weapon_kbp_vsk94_9x39_container(Clone)/weapon_kbp_vsk94_9x39_model.generated(Clone)/Weapon_root/Weapon_root_anim/weapon/MuzzleJetCombinedMesh  <MeshRenderer> active=True enabled=False shadows=On mesh 'MuzzleJet UpdateOrCreateMesh' 0 verts
+    [0] material 'MuzzleFlashTest'  shader 'Custom/Additive'  queue 3000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        _SpecVals        (not on this material)
+        _DefVals         (not on this material)
+        _Cutoff          (not on this material)
+        _StencilType     (not on this material)
+         _TintColor       color (1, 0.4625, 0.2647, 1)
+         _MainTex         'Untitled 14' 1024x1024 DXT5 mips 11 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _InvFade         2.4173
+         _InvWindowSize   1.3699
+         _RandomizePhase  2
+         _HDR             1.2
+         _ZShift          0.9411
+
+=== Gear: Weapon_root_3rd_anim  [gear]
+  XYZ_1  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        _Glossness       (not on this material)
+        _Specularness    (not on this material)
+        _ReflectColor    (not on this material)
+        _SpecVals        (not on this material)
+        _DefVals         (not on this material)
+        _Cutoff          (not on this material)
+        _StencilType     (not on this material)
+         _Color           color (1, 1, 1, 1)
+         _MainTex         'XYZ' 512x512 DXT1 mips 10 filter Bilinear scale (1.00, 1.00) offset (0.00, 0.00)
+         _Temperature     vector (0.1, 0.2, 0.25, 0)
+
+=== Other: Bend_Goal_Left  [other]
+  Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Left/XYZ_1 (1)  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        (same material as listed above)
+
+=== Other: Bend_Goal_Right  [other]
+  Player/Root_Joint/Base HumanPelvis/Base HumanSpine1/Base HumanSpine2/Base HumanSpine3/Bend_Goal_Right/XYZ_1  <MeshRenderer> active=False enabled=True shadows=On
+    [0] material 'XYZ'  shader 'Diffuse'  queue 2000
+        (same material as listed above)
+
+(* = a value the COD2EFT pipeline sets)

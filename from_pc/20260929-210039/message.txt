@@ -1,0 +1,1 @@
+﻿b07 model where the head diffuse looks correct but the rest look incorrect, possibly missaligned uv's or something. solve this so it doesn't happen with other models
