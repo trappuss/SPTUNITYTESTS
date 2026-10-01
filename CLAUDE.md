@@ -1,6 +1,6 @@
 # CLAUDE.md: COD → EFT (SPT) character pipeline
 
-**Working in Cowork on the user's PC?** Start with `docs/COWORK_HANDOFF.md` (paths, how to work, sessions so far, test list).
+**Working in Cowork on the user's PC?** Start with `docs/COWORK_HANDOFF.md` (paths, how to work, sessions so far, test list). On the PC this repo is `Downloads\Claude Current\SPTModdingTools\SPTUNITYTESTS`, inside the user's workspace folder; that folder's `CLAUDE.md`/`README.md` (copies in `pc/workspace_root/`) cover the Cowork mechanics.
 
 Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, version compatibility, known facts, the audit. Then read only what the task needs.
 
@@ -36,7 +36,7 @@ Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, ve
   pip install wheels/bpy-*.whl "numpy<2" pillow UnityPy
   ```
   Headless `import bpy` works. Rendering does not (no EGL); plot with PIL instead.
-- **Template:** rebuild it from `from_pc/20260928-231514/attached/EFT BASIC [Template].fbx` with `bpy.ops.import_scene.fbx(filepath=..., ignore_leaf_bones=True)`. It must give 58 bones on `Body EFT Armature`. Save it as `EFT BASIC [Template].blend`. It is not byte-identical to the user's .blend, so say so when reporting.
+- **Template:** rebuild it from `from_pc/20260928-231514/attached/EFT BASIC [Template].fbx` with `bpy.ops.import_scene.fbx(filepath=..., ignore_leaf_bones=True)`. It must give 58 bones on `Body EFT Armature`. Save it as `EFT BASIC [Template].blend`. It is not byte-identical to the user's .blend, so say so when reporting. The user's real one is on the PC at `SPTModdingTools\Testing\CUSTOM\EFT BASIC [Template].blend` (77 MB, not in git); ask for it via `SEND_RESULTS_TO_CLAUDE.bat` when a test needs it.
 - **Running the add-on:**
   1. Copy `blender/COD2EFT/*.py` and `vendor/` into a folder `cod2eft/`, with `addon_init.py` renamed to `__init__.py`.
   2. Put its parent folder on `sys.path`.

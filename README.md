@@ -18,7 +18,7 @@ GitHub is the bridge. Claude (in the cloud) pushes to branch `claude/bold-mayer-
 
 **Once:** download [`GET_STARTED.bat`](GET_STARTED.bat) (open it on GitHub, then **Download raw file**)
 and double-click it. It installs Git if needed, clones this repo to
-`%USERPROFILE%\Downloads\Claude Current\SPTUNITYTESTS` and runs the first sync. The first time
+`%USERPROFILE%\Downloads\Claude Current\SPTModdingTools\SPTUNITYTESTS` and runs the first sync. The first time
 Git talks to GitHub, it may open a browser for you to sign in.
 
 **After that, two buttons:**

@@ -1,12 +1,15 @@
-# Cowork handoff (2026-10-01)
+# Cowork handoff (2026-10-01, updated after the first Cowork session)
 
 For the Cowork session on the user's PC. Read `CLAUDE.md` first (rules), then this file, then `docs/PROJECT_CONTEXT.md` (the full queue, facts and audit).
+
+**Workspace (since 2026-10-01):** everything is in `C:\Users\notso\Downloads\Claude Current\SPTModdingTools`; connect that one folder in Cowork. Its own `CLAUDE.md` + `README.md` (copies kept in `pc/workspace_root/`) are the folder map and the Cowork mechanics: VM limits, git lock files, no push from the VM, Editor.log access, big copies.
 
 ## Where everything is (on the PC)
 | What | Path |
 |---|---|
-| **This repo (the source of truth)** | `%USERPROFILE%\Downloads\Claude Current\SPTUNITYTESTS`, branch `claude/bold-mayer-11fzxj` |
-| COD2EFT, deployed (Blender live install) | `C:\Users\notso\Downloads\Claude Current\SPTModdingTools\COD2EFT` |
+| **This repo (the source of truth)** | `%USERPROFILE%\Downloads\Claude Current\SPTModdingTools\SPTUNITYTESTS`, branch `claude/bold-mayer-11fzxj` |
+| COD2EFT, deployed (Blender live install) | `C:\Users\notso\Downloads\Claude Current\SPTModdingTools\COD2EFT` (conversion reports in `reports\`) |
+| The user's real EFT template | `...\SPTModdingTools\Testing\CUSTOM\EFT BASIC [Template].blend` (also `EFT GEAR [Template].blend`, `EFT BASIC [Template].fbx`) |
 | Blender | `G:\G Apps\Blender Builds\stable\blender-4.4.3-stable.802179c51ccc\blender.exe` |
 | Unity project | `C:\Users\notso\Desktop\RIP\EFT2\Tools\WTT-SDK-2022` (tools in `Assets\Editor\EFTAutoPrefabber`) |
 | Unity log | `%LOCALAPPDATA%\Unity\Editor\Editor.log` |
@@ -28,8 +31,8 @@ For the Cowork session on the user's PC. Read `CLAUDE.md` first (rules), then th
 ## Current versions (in the repo)
 | Part | Version | Verified |
 |---|---|---|
-| COD2EFT (Blender) | **2.6.8** | headless Blender 4.4 + regression harness; the user last ran 2.6.6 |
-| EFT Tools (Unity) | **1.7.5** | not compiled (cloud); the user last loaded 1.7.3 |
+| COD2EFT (Blender) | **2.6.9** | export fix tested headless (Blender 4.4 + 5.0, real template, full Park 24_1 conversion); the user runs 2.6.8 |
+| EFT Tools (Unity) | **1.7.6** | not compiled; the user loaded 1.7.5 (Editor.log 2026-10-01) |
 | COD2EFT Inspector (SPT plugin) | **0.10.0** | compiled with mono against reference DLLs; the user built and ran 0.10.0 |
 
 ## Sessions so far and what each is waiting for
@@ -44,13 +47,20 @@ All cloud sessions are idle. Their work is in the repo, and nothing is in flight
 | Blender panel tidy-up | 2.6.3 sub-panels | the user's look at the layout in real Blender |
 | No-PC work | 2.6.8 UV-tile warning + `docs/UV_TILES.md`; 1.7.4 default hands + "not built" note; 1.7.5 bundle check after build; contract moved to `docs/COD2EFT_TEXTURE_SPEC.md` | the checks below |
 
+## Results of the first Cowork session (2026-10-01)
+- **Step 1 done:** sync OK, `[EFT Tools] v1.7.5 loaded`, Inspector 0.10.0 built and loaded.
+- **Step 2 answered:** brie's render UV is `map1` (UV0) and the face is right; the face-on-neck look appears only with `COD_original_UV` as render UV. Left: 39 head faces cross a texture repeat (grey stretched strip under the jaw) - not looked at yet.
+- **Step 3 blocked → fixed:** Unity's Scan found 0 skinned meshes in Park's enc2 FBX because the FBX had **no armature**: Blender's exporter skips hidden objects and the `EFT_Template` collection was hidden. COD2EFT 2.6.9 makes everything visible for the export and checks the written FBX; EFT Tools 1.7.6 explains an unskinned FBX. The enc3 FBX (exported while visible) is fine but wasn't scanned yet.
+- **Step 7:** the dark ring at Park's neck is in her own texture (nothing to do). The real template is located (table above).
+- **Commit `0bd79fa` (2.6.9 / 1.7.6) and the reorganisation commit are NOT on GitHub yet**: the VM has no GitHub login. `SEND_RESULTS_TO_CLAUDE.bat` pushes them; the sync deploys them meanwhile.
+
 ## Test list for the user (in this order; Cowork can drive most of it)
-1. **Sync and build.** Close Blender, run `SYNC_TO_MY_PC.bat`, then `BUILD_SPT_INSPECTOR.bat`. Expect COD2EFT 2.6.8, EFT Tools 1.7.5 (`[EFT Tools] v1.7.5 loaded` in Editor.log) and Inspector 0.10.0.
-2. **brie "face on the neck".** In Blender, select brie's Upper and check which UV map has the *camera* (render) icon in Object Data → UV Maps.
+1. ✅ (2026-10-01) **Sync and build.** Close Blender, run `SYNC_TO_MY_PC.bat`, then `BUILD_SPT_INSPECTOR.bat`. Expect COD2EFT 2.6.8, EFT Tools 1.7.5 (`[EFT Tools] v1.7.5 loaded` in Editor.log) and Inspector 0.10.0.
+2. ✅ (answered, see above) **brie "face on the neck".** In Blender, select brie's Upper and check which UV map has the *camera* (render) icon in Object Data → UV Maps.
    - `docs/UV_TILES.md` reproduces the face-on-neck look **only** when `COD_original_UV` is the one used.
    - If that's the case in the user's file, it's a display/UV-map selection issue: find out how it got set (an old file, a join?) and make COD2EFT enforce UV0.
    - Still useful: brie's COD export folder plus its report (reports are now saved automatically to `COD2EFT\reports\`).
-3. **Unity on Park**, using *Build bundles + mod*:
+3. **Unity on Park** (next). First `SYNC_TO_MY_PC.bat` (2.6.9 / 1.7.6), re-export the enc2 FBX from Blender (its log line must end with `3 skinned meshes + armature …`), copy both into `Assets\COD2EFT\enc2|enc3`, Scan each. Then *Build bundles + mod*:
    - the default hands are picked automatically;
    - the new bundle-check line reads OK/FAIL;
    - the export now uses *FBX Units Scale* (since 2.6.5), so there should be no paper-thin character.
@@ -65,7 +75,7 @@ All cloud sessions are idle. Their work is in the repo, and nothing is in flight
    - isolate / backdrop / transparent background;
    - aim drag and reset buttons;
    - the Materials tab.
-7. **Still open:** the dark ring at Park's neck; the user's real `EFT BASIC [Template].blend` (cloud tests use one rebuilt from the FBX).
+7. ✅ Dark ring: part of Park's texture. Real template: found (see the paths table).
 
 ## Decisions only the user can make
 - **`_EFT` suffix:** batch export names bundles `…_eft_top`, the panel export `…_top`. Changing this renames existing bundles.

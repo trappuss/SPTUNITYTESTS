@@ -157,13 +157,9 @@ COD2EFT Inspector (`spt_mod/`) is independent of the texture tag: 0.1.0 reads wh
 - MW2019 split exports deliberately lack the packed `X_n&Y_g` image.
 
 ## Missing from the repo (upload if possible)
-- The Blender dev harness `COD2EFT\_dev\`:
-  - `runall2.py`, `runsel.py`, `cmpall.py`;
-  - `ui/uitest4.py`;
-  - `mat/codhist.py` + `codhist.json`, `mat/skindet.py`.
-  Needed for regressions and for the skin detector.
+- ✅ (2026-10-01) The old Blender dev harness is now in `tools/dev_harness/` (historical, cloud paths hard-coded; see its README).
 - Test characters (the `Testing\` folder, COD exports). Too big for git (GitHub caps files at 100 MB), so send single characters as needed.
-- `EFT BASIC [Template].blend`. Only the `.fbx` is here (from_pc/20260928-231514); the cloud sessions rebuild the .blend from it (see CLAUDE.md).
+- `EFT BASIC [Template].blend`. Only the `.fbx` is here (from_pc/20260928-231514); the cloud sessions rebuild the .blend from it (see CLAUDE.md). The real one is on the PC at `SPTModdingTools\Testing\CUSTOM\` (77 MB).
 - The Unity side's unit tests (parser, materials, bundle reader) and its compile setup (84 Unity module DLLs). Without these, C# can only be checked by reading it.
 
 ## Audit (2026-09-29, by reading the code; Blender and Unity were not available to run)

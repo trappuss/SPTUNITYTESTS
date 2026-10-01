@@ -3,9 +3,9 @@ setlocal
 title First-time setup: SPTUNITYTESTS on this PC
 rem Download ONLY this file from GitHub and double-click it. It:
 rem   1. installs Git if it is missing (winget),
-rem   2. clones the repo to  %USERPROFILE%\Downloads\Claude Current\SPTUNITYTESTS,
+rem   2. clones the repo to  %USERPROFILE%\Downloads\Claude Current\SPTModdingTools\SPTUNITYTESTS,
 rem   3. runs SYNC_TO_MY_PC.bat there.
-set "DEST=%USERPROFILE%\Downloads\Claude Current\SPTUNITYTESTS"
+set "DEST=%USERPROFILE%\Downloads\Claude Current\SPTModdingTools\SPTUNITYTESTS"
 set "BRANCH=claude/bold-mayer-11fzxj"
 set "GIT=git"
 where git >nul 2>nul && goto :have_git
