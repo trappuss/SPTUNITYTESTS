@@ -244,7 +244,14 @@ namespace EFTAutoPrefab
                 }
 
                 if (src.Rows.Count == 0)
-                    AppendLog($"'{go.name}': no SkinnedMeshRenderers found under it.");
+                {
+                    int plain = go.GetComponentsInChildren<MeshRenderer>(true).Length;
+                    if (plain > 0)
+                        AppendLog($"'{go.name}': {plain} mesh(es) but none of them skinned - the FBX has no armature. " +
+                                  "COD2EFT before 2.6.9 left the armature out when it was hidden in Blender: export again with 2.6.9 or newer.");
+                    else
+                        AppendLog($"'{go.name}': no SkinnedMeshRenderers found under it.");
+                }
                 _sources.Add(src);
             }
             AppendLog($"Scanned {picked.Count} object(s), {_sources.Sum(s => s.Rows.Count)} skinned mesh(es).");

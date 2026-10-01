@@ -2,6 +2,9 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.6 — 2026-10-01
+- **Scan: clear message for an FBX without skinning.** When a model has meshes but no SkinnedMeshRenderers (an FBX exported without its armature), the log now says so and points to COD2EFT 2.6.9, instead of only "no SkinnedMeshRenderers found". User report: Park 24_1 enc2 FBX scanned as 0 meshes; the FBX had no armature (COD2EFT export bug, fixed in 2.6.9).
+
 ## 1.7.5 — 2026-09-30
 - **Mod Builder: bundle check after *Build bundles + mod*.** Each bundle it just built is opened in the editor (`AssetBundle.LoadFromFile`, then unloaded) and checked for:
   - an empty bundle (under 2 KB, or no assets);

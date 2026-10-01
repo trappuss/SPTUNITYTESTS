@@ -2,6 +2,12 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.9 — 2026-10-01
+- **Fix: *Export FBX for Unity* could write an FBX with no armature and no skinning** (user report: Park 24_1 enc2, Unity's Scan found 0 skinned meshes). Blender's FBX exporter skips objects that aren't visible, so a hidden `Body EFT Armature` (eye or monitor icon on it or on its `EFT_Template` collection, or the collection excluded) was silently left out. Reproduced in Blender 4.4 and 5.0 for all four ways of hiding it.
+  - The armature and the meshes are now made visible and selectable for the export (object and collections), and put back exactly as they were afterwards.
+  - The written FBX is checked: if it has fewer skinned meshes than were exported, the export stops with an error instead of handing Unity a broken file. The log line now ends with `(N skinned meshes + armature …)`.
+- Tested headless (Blender 4.4.3 bpy and 5.0.1) with a minimal armature + mesh scene in each hidden state: before, 0 skin deformers in 4 of 5 cases (one raised an error); now 1 in all 5, and the hide states are restored. Not yet run on a full character export on the PC.
+
 ## 2.6.8 — 2026-09-30
 - **UV tiles check** (user report on BO7 brie: "face on the neck"). The report now prints `WARNING UV tiles: <material> …` for every COD material with faces outside the 0..1 UV square: the faces per tile and how many images the export lists. The panel's *Last fit* box shows `Check: N material(s) use UV tiles outside 0..1`. The conversion itself is unchanged. Regression (enc2 and enc3, 4 characters): fit numbers, parts and mesh counts are identical. Three `_d` PNG hashes differ from the 2.6.7 baseline, but unchanged 2.6.7 code gives the same new hashes in this cloud environment (checked on MW4 Beta Male), so that difference comes from library versions, not from 2.6.8.
 - Findings in `docs/UV_TILES.md`: COD uses tiles as a *repeating* texture (e.g. brie's left and right gloves one tile apart), which is what the conversion already does. The mirror rule matched 0 of 992 tile seams on the test characters. The face on the neck appears only when the atlas is shown with the second UV layer `COD_original_UV` instead of UV0. Please send a screenshot showing *UV Maps* and brie's COD export.

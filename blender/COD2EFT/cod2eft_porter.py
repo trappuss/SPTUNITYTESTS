@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 8)
+VERSION = (2, 6, 9)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -2407,14 +2407,23 @@ def export_fbx(eft, objs, path, log):
     n = TL.clear_outside_colors(objs)
     if n:
         log(f"Removed the gear-clipping colours from {n} mesh(es) before export")
+    # The FBX exporter only writes *visible* selected objects. A hidden armature (eye / monitor icon on it
+    # or its collection, or an excluded collection) was silently left out, so the meshes came out with no
+    # skin at all and Unity found no SkinnedMeshRenderers (user report 2026-10-01, Park 24_1 enc2: the
+    # EFT_Template collection was hidden).  2.6.9: everything exported is made visible for the export and
+    # put back afterwards, and the written file is checked.
+    unhide = _export_make_visible([eft] + list(objs))
     for o in bpy.context.scene.objects:
         o.select_set(False)
-    eft.hide_set(False)
     eft.select_set(True)
     for o in objs:
-        o.hide_set(False)
         o.select_set(True)
     bpy.context.view_layer.objects.active = eft
+    sel = set(bpy.context.selected_objects)
+    missing = [o.name for o in [eft] + list(objs) if o not in sel]
+    if missing:
+        unhide()
+        raise RuntimeError("could not select for export (hidden or not in this view layer): " + ", ".join(missing))
     # Every setting written out: bpy.ops re-uses an operator's LAST values in a session, so a hand-made
     # FBX export would otherwise leak into this one.  Scale = "FBX Units Scale" (2.6.5): every object
     # keeps scale 1 and the scene's unit goes into the FBX header (UnitScaleFactor 100 for metres, 1
@@ -2438,7 +2447,67 @@ def export_fbx(eft, objs, path, log):
                                  bake_anim=True, path_mode="AUTO", embed_textures=False)
     finally:
         restore()
-    log(f"Exported {path}")
+        unhide()
+    skinned = [o for o in objs if o.type == "MESH" and
+               any(m.type == "ARMATURE" and m.object == eft for m in o.modifiers)]
+    n_def = _fbx_skin_count(path)
+    if skinned and n_def is not None and n_def < len(skinned):
+        raise RuntimeError(f"the FBX has {n_def} skinned mesh(es) instead of {len(skinned)} - Unity would get "
+                           "unskinned meshes. Please send the report.")
+    log(f"Exported {path}" + (f" ({n_def} skinned meshes + armature '{eft.name}')" if n_def is not None else ""))
+
+
+def _export_make_visible(objs):
+    """Makes `objs` visible and selectable in the current view layer (object and every collection on the
+    way down), returns a function that puts everything back."""
+    undo = []
+    vl = bpy.context.view_layer
+
+    def chains(lc, path):
+        path = path + [lc]
+        yield path
+        for c in lc.children:
+            yield from chains(c, path)
+    for o in objs:
+        for path in chains(vl.layer_collection, []):
+            if o.name not in path[-1].collection.objects:
+                continue
+            for lc in path:
+                for attr in ("exclude", "hide_viewport"):
+                    if getattr(lc, attr):
+                        undo.append((lc, attr, True)); setattr(lc, attr, False)
+                for attr in ("hide_viewport", "hide_select"):
+                    if getattr(lc.collection, attr):
+                        undo.append((lc.collection, attr, True)); setattr(lc.collection, attr, False)
+            break
+        for attr in ("hide_viewport", "hide_select"):
+            if getattr(o, attr):
+                undo.append((o, attr, True)); setattr(o, attr, False)
+        if o.hide_get():
+            undo.append((o, "hide_get", True)); o.hide_set(False)
+
+    def restore():
+        for owner, attr, val in reversed(undo):
+            try:
+                if attr == "hide_get":
+                    owner.hide_set(val)
+                else:
+                    setattr(owner, attr, val)
+            except (ReferenceError, RuntimeError):
+                pass
+    return restore
+
+
+def _fbx_skin_count(path):
+    """Number of skin deformers in a binary FBX written by Blender (one per skinned mesh), or None."""
+    try:
+        with open(path, "rb") as fh:
+            b = fh.read()
+    except OSError:
+        return None
+    if not b.startswith(b"Kaydara FBX Binary"):
+        return None
+    return b.count(b"\x00\x01Deformer")          # (not "SubDeformer": that is per bone)
 
 
 # ---------------------------------------------------------------------------------------------
