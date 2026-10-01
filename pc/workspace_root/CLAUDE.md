@@ -23,6 +23,9 @@ never delete or overwrite another SPT mod's files.
 - git in the VM: `git -c safe.directory='*' ...`. Git must be able to delete `.git/index.lock`: ask for delete
   permission on this folder once per session (device_request_delete_permission), or every git command leaves a lock
   that blocks the user's sync.
+- **Pushing:** run `SPTUNITYTESTS/PUSH_TO_GITHUB.bat` (no prompts, uses the user's Git login; result in
+  `_xfer/push_result.txt`). With computer use you can start it yourself: File Explorer is grantable at the *click* tier,
+  so open the repo folder and double-click the .bat (bring Explorer to the front first). Tested 2026-10-01.
 - **Commits can't be pushed from the VM.** The sync deploys from the local clone anyway (it does `pull --rebase`, which
   keeps local commits). `SEND_RESULTS_TO_CLAUDE.bat` pushes them. Tell the user when a commit is still unpushed.
 - To test exactly what is in the PC clone (including unpushed commits) in the cloud container: `git bundle` (see
