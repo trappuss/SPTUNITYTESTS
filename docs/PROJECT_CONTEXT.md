@@ -112,7 +112,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
     - calibration heads A/B/C against a vanilla head;
     - ✅ Park 24_1's head wasn't paired with its body: pairs now (checked 2026-10-01: batch log `--- mp_western_t9mi6_24_1: body_…_lod1_LOD0.cast, head_…_LOD0.cast`);
     - ✅ audit leftovers fixed (2.6.2 / 1.7.2): Mod Builder overwrite guard, `install_addon.py` template path encoding, `COD2EFT_To_Unity.bat` PNG glob.
-12. **Later (parked): rename to SPT Character Studio Suite and support more than COD.** Plan: `docs/RENAME_PLAN.md`
+12. **Later (parked): rename to SPT Character Studio Suite and support more than COD.** First the split into source profiles (`docs/PROFILES_PLAN.md`: what moves where, how the regression proves nothing changed), then the rename: `docs/RENAME_PLAN.md`
     (names, migrations, phases, source profiles). Starts only when the user is fully satisfied with COD. Until then,
     follow "Build with the future in mind" in `CLAUDE.md`.
 

@@ -16,3 +16,5 @@ pc/_build/
 pc/_state/
 spt_mod/**/bin/
 spt_mod/**/obj/
+# Claude transfer folder (git bundles between the PC clone and a cloud workspace)
+_xfer/
