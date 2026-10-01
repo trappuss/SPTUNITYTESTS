@@ -29,9 +29,6 @@ def build(out=os.path.join(HERE, "COD2EFT_Blender_Addon.zip")):
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for src, dst in FILES.items():
             z.write(os.path.join(HERE, src), f"{PKG}/{dst or src}")
-        for f in sorted(os.listdir(os.path.join(HERE, "unity"))):
-            if f.endswith(".cs"):
-                z.write(os.path.join(HERE, "unity", f), f"{PKG}/unity/{f}")
         vend = os.path.join(HERE, "vendor", "cod2eft_cast")
         for f in sorted(os.listdir(vend)):
             if f.endswith((".py", ".txt")):
