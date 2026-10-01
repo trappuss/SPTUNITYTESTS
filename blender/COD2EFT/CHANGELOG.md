@@ -2,6 +2,11 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.11 — 2026-10-01
+- **The FBX now has only the atlas UVs.** The second UV map `COD_original_UV` (COD's own UVs, kept so the textures can be converted again) used to be exported as UV1. Unity imported it as an unused extra channel, and any viewer that shows UV1 draws the atlas in the wrong places (one of the "face on the neck" looks, `docs/UV_TILES.md`). It is taken off for the export and put back unchanged afterwards, so converting textures again still works. (Queue item: *drop `COD_original_UV` from the FBX*.)
+- Tested headless (Blender 4.4) on brie: the FBX has one UV map per mesh, and the Blender meshes keep `COD_original_UV` byte-identical with the same active / render UV map.
+- Regression (4 characters, `--export-fbx`) vs 2.6.9: fit numbers, parts and mesh counts identical. 3 `_d` PNG hashes changed, by 1 step of 8 bits in the alpha of 3, 2 and 71 pixels (of 4.2 M). The PNGs are written before the export and `cod2eft_textures.py` is byte-identical to 2.6.10, so this is run-to-run float noise, not this change: the regression is **not** fully deterministic at the last bit (see PROJECT_CONTEXT).
+
 ## 2.6.10 — 2026-10-01
 - **Fix: BO7 brie's head got its wrinkle map instead of its normal/gloss map** (likely the grey, shiny neck and the "face on the neck": see `docs/UV_TILES.md`, update at the top). Skin materials can carry a *wrinkle map*: a 2 × 2 tile of four expression versions of the face. Until now the picker skipped it only when its gloss was a flat 1.0; brie's varies a little (0.92 ± 0.05), so it won. Result: skin gloss 0.95 instead of 0.44, and a normal map with four small faces, one over the neck.
   - New check: a NOG map whose four quadrants repeat (correlation ≥ 0.8) is a wrinkle map and loses to any other NOG. Measured on all 494 NOG-like maps of the test exports: wrinkle maps 0.91–1.0 (11), every other map ≤ 0.61.

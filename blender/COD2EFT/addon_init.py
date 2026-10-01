@@ -1,7 +1,7 @@
 bl_info = {
     "name": "COD2EFT Porter",
     "author": "minmaxmaxminnning + Claude",
-    "version": (2, 6, 10),              # = VERSION in cod2eft_porter.py
+    "version": (2, 6, 11),              # = VERSION in cod2eft_porter.py
     "blender": (4, 2, 0),
     "location": "View3D > Sidebar (N) > COD2EFT",
     "description": "Import Call of Duty (.fbx/.cast) characters, auto-pose them onto the EFT "

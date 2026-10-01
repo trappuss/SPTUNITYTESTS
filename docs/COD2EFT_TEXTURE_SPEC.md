@@ -43,7 +43,7 @@ Slot name = `<name>_<Part>[_<class>]`. `<name>` can contain underscores, so read
 - The split is per face, by COD material: a COD material goes wholly into one class.
 - A part may have only its main slot. An unknown class suffix → treat as the main slot.
 - **First-person hands:** mesh `<name>_Hands` (after *Separate by COD material*: `<name>_Hands_<material>`), every face on a `<name>_Hands…` slot, texture set `<name>_Hands_d/_n/_g`. Checked on 2.4.3 with MW2 Kleo: all 33467 faces of `mp_kleo_iw9_3_1_Hands` on `mp_kleo_iw9_3_1_Hands`, its UV channel 0 inside the Hands atlas, and the FBX references `mp_kleo_iw9_3_1_Hands_d/_n.png`.
-- **UV channels:** channel 0 = the atlas UVs. Channel 1 (`COD_original_UV`) is COD's own UVs, kept so the textures can be converted again; ignore it.
+- **UV channels:** channel 0 = the atlas UVs, the only channel in the FBX since COD2EFT 2.6.11. Before that, channel 1 (`COD_original_UV`, COD's own UVs) was exported too; ignore it in older FBX. In Blender the layer stays on the mesh so textures can be converted again.
 - `Testing\WARZONE 2 - MW2 Female\EFT_Converted\kleo_empty_.fbx` is a hand-edited export: its `kleo_empty_arms` object uses `mp_kleo_iw9_3_1_Upper` with UVs in the Upper atlas, and COD2EFT's `mp_kleo_iw9_3_1_Hands` object isn't in the file. Converting again with *First-person hands* on gives the right one.
 
 **Tag:** every PNG carries a PNG `tEXt` chunk `Software` = `COD2EFT enc=2`, right after the header (first 4 KB of the file). No tag = older COD2EFT (≤ 2.3.x), whose `_d` alpha means something else (see *Changes*).
@@ -124,6 +124,7 @@ Vanilla targets were measured over 393 vanilla SMap/SMap_Decal materials, counti
 
 ## Changes
 
+- 2026-10-01 COD2EFT 2.6.11: the FBX has only UV0 (the atlas UVs); `COD_original_UV` is no longer exported. PNGs and slot names unchanged.
 - 2026-09-30: moved from `blender/COD2EFT/unity/` to `docs/` (COD2EFT 2.6.8 / EFT Tools 1.7.5); the "who owns what" split between separate sessions is gone, both halves are one project.
 - 2026-09-29 COD2EFT 2.6.1 / EFT Tools 1.7.1: cut-out `_Cutoff` 0.5 → 0.3 (user's in-game check: 0.25–0.35; 0.5 hid 7–11 % of valeria's hair texels with alpha ≥ 0.25). Which materials become cut-outs is unchanged. PNGs unchanged.
 - 2026-09-29 COD2EFT 2.6.0 / EFT Tools 1.7.0: **encoding 3** (optional, default still enc=2 until the in-game A/B), see *Encoding 3*. The tag gains ` n=dx` for DirectX normal maps; Unity 1.7.0 flips those. This fixes the audit's double flip. enc=2 output is unchanged (byte-identical PNGs on the 4 test characters).

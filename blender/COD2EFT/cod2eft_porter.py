@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 10)
+VERSION = (2, 6, 11)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -2435,6 +2435,7 @@ def export_fbx(eft, objs, path, log):
     except ImportError:
         import cod2eft_textures as TX
     restore = TX.fbx_colour_links(objs)
+    hidden_uv = _export_drop_cod_uv(objs)
     try:
         bpy.ops.export_scene.fbx(filepath=path, use_selection=True, object_types={"ARMATURE", "MESH"},
                                  global_scale=1.0, apply_unit_scale=True,
@@ -2446,6 +2447,7 @@ def export_fbx(eft, objs, path, log):
                                  use_armature_deform_only=False, armature_nodetype="NULL",
                                  bake_anim=True, path_mode="AUTO", embed_textures=False)
     finally:
+        _export_restore_cod_uv(hidden_uv)
         restore()
         unhide()
     skinned = [o for o in objs if o.type == "MESH" and
@@ -2455,6 +2457,41 @@ def export_fbx(eft, objs, path, log):
         raise RuntimeError(f"the FBX has {n_def} skinned mesh(es) instead of {len(skinned)} - Unity would get "
                            "unskinned meshes. Please send the report.")
     log(f"Exported {path}" + (f" ({n_def} skinned meshes + armature '{eft.name}')" if n_def is not None else ""))
+
+
+def _export_drop_cod_uv(objs):
+    """2.6.11: the FBX gets only the atlas UVs.  The second UV layer `COD_original_UV` (COD's own UVs,
+    kept so textures can be converted again) used to go into the FBX as UV1: Unity imported it as an
+    unused channel, and any viewer that shows UV1 put the atlas on the wrong places (the "face on the
+    neck" look, docs/UV_TILES.md).  It is taken off for the export and put back unchanged after."""
+    saved = []
+    for o in objs:
+        if o.type != "MESH" or "COD_original_UV" not in o.data.uv_layers:
+            continue
+        me = o.data
+        lay = me.uv_layers["COD_original_UV"]
+        uv = np.empty(len(me.loops) * 2, np.float32)
+        lay.data.foreach_get("uv", uv)
+        idx = list(me.uv_layers).index(lay)
+        act = me.uv_layers.active.name if me.uv_layers.active else None
+        ren = next((u.name for u in me.uv_layers if u.active_render), None)
+        me.uv_layers.remove(lay)
+        saved.append((me, uv, idx, act, ren))
+    return saved
+
+
+def _export_restore_cod_uv(saved):
+    for me, uv, idx, act, ren in saved:
+        try:
+            lay = me.uv_layers.new(name="COD_original_UV", do_init=False)
+            lay.data.foreach_set("uv", uv)
+            if act and act in me.uv_layers:
+                me.uv_layers.active = me.uv_layers[act]
+            if ren and ren in me.uv_layers:
+                me.uv_layers[ren].active_render = True
+            me.update()
+        except (ReferenceError, RuntimeError):
+            pass
 
 
 def _export_make_visible(objs):

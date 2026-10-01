@@ -32,7 +32,7 @@ COD export (.fbx/.cast, Greyhound etc.)
 ## Current versions (in this repo)
 | Side | Version | Status |
 |---|---|---|
-| COD2EFT | **2.6.10** (2026-10-01) | 2.6.10: wrinkle maps (2 × 2 expression tiles) are no longer taken as a skin's normal/gloss map (BO7 brie). 2.6.9: FBX export no longer drops a hidden armature (meshes came out unskinned); the written FBX is checked. 2.6.8: UV-tile WARNING in the report + panel *Check* line (conversion unchanged, byte-identical output); findings in `docs/UV_TILES.md`. 2.6.7: *Match neck* (neck section lined up with EFT's; fixes head pushed forward / back leaning back), panel reports saved to `reports\` and sent automatically. 2.6.6: posture numbers after the fit (report + panel + regress); no fit change, the chest-shape guard was not supported by the data. 2.6.5: FBX export uses FBX Units Scale; settings presets. 2.6.4: optional Colour brightness / saturation and enc=3 Gloss match (defaults unchanged). 2.6.3: panel in sub-panels. 2.6.x: *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
+| COD2EFT | **2.6.11** (2026-10-01) | 2.6.11: FBX has only the atlas UVs (`COD_original_UV` stays in Blender). 2.6.10: wrinkle maps (2 × 2 expression tiles) are no longer taken as a skin's normal/gloss map (BO7 brie). 2.6.9: FBX export no longer drops a hidden armature (meshes came out unskinned); the written FBX is checked. 2.6.8: UV-tile WARNING in the report + panel *Check* line (conversion unchanged, byte-identical output); findings in `docs/UV_TILES.md`. 2.6.7: *Match neck* (neck section lined up with EFT's; fixes head pushed forward / back leaning back), panel reports saved to `reports\` and sent automatically. 2.6.6: posture numbers after the fit (report + panel + regress); no fit change, the chest-shape guard was not supported by the data. 2.6.5: FBX export uses FBX Units Scale; settings presets. 2.6.4: optional Colour brightness / saturation and enc=3 Gloss match (defaults unchanged). 2.6.3: panel in sub-panels. 2.6.x: *Materials: enc=3* (classes + baked gloss curves, default still enc=2); normal style in the PNG tag. Tested headless in Blender 4.4, not yet on the PC |
 | EFT Tools | **1.7.6** (2026-10-01) | 1.7.6: Scan says when an FBX has meshes but no skinning. 1.7.5: bundle check after *Build bundles + mod* (OK/FAIL line in the log). 1.7.4: default hands (DefaultUsecHands) for tops without their own; "not built yet" is a note before the first build. 1.7.3: optional BC7 compression. `enc=3` → neutral values; tag `n=dx` → Flip Green. Checked by reading + a Python mirror of the tag parser; not compiled |
 | COD2EFT Inspector (SPT client plugin) | **0.10.0** (2026-09-30) | 0.2.0 verified on the PC (raid, hideout, menu previews, catalog; from_pc/20260929-071416). 0.3.x adds photo mode (orbit camera, studio lights, turntable; safeguards from CineKit) and F12 buttons; 0.4.0 live try-on of any catalog outfit (hideout / raid) and saving a head via HeadVoiceSelector; 0.5.0 material checks, one-click A/B turntables (the material A/B, item 2 above), solo; 0.6.0 menu-preview try-on and pose turntables (game animations); 0.7.0 (user feedback on 0.6.0) Wear null fix (hunch) + per-bundle diagnosis, body diagnostics for hideout vs menu, panel blocks game input, isolated / solid / transparent background, character turn + aim, resets; 0.7.1 real Wear cause found in the log (ObjectsFactory loader needs List<PoolResourceInfo> / Pools / YieldDelegate; BundleLoader.cs builds them), resizable panel, ortho, transparent PNG verified; 0.8.0 panel redesign (Ui.cs: dark theme, tabs Try on / Photo / Meshes / Catalog, foldable sections, status bar with hover help); 0.9.0 isolate keeps gear near the character, suite top->hands pairing, hands wearable alone, stable catalog order, play mode (double-click, Esc), verified in game by the user; 0.9.1 play-mode camera option, Esc always reopens the panel; 0.10.0 Materials tab (live shader tuning + save file, texture channel view), photo presets, slow motion / freeze, in-game A/B sheet; compiled with mcs only. Stage-2 route found in Improved Customization UI (client-side preview), see `docs/SPT_INSPECTOR.md`. |
 
@@ -81,11 +81,12 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 - Swayback fix confirmed by the user on valeria (2.5.2): "looks better".
 
 **Waiting on the user (PC):**
-0. **brie (BO7) "face on the neck"** (`docs/UV_TILES.md`): UV tiles ruled out (repeat is right). The look reproduces only when the atlas is shown with UV layer `COD_original_UV`. Needed: a screenshot showing *Object Data > UV Maps* (which layer has the camera icon), which file was viewed, and brie's COD export.
-1. In game on Park 24_1: is there a dark ring at the neck, where head meets top?
+0. **brie (BO7):** answered 2026-10-01: render UV was UV0 (`map1`). Real cause found: his skin took the 2 × 2 *wrinkle map* as normal/gloss (fixed 2.6.10). Waiting: the user's look at brie re-converted with 2.6.10.
+1. ✅ Park 24_1's dark neck ring: part of her own texture (user, 2026-10-01). Nothing to do.
+1b. **Unity Scan on Park (2.6.9 / 1.7.6):** the enc2 FBX had no armature (hidden `EFT_Template` at export, fixed 2.6.9). Waiting: scan the enc3 FBX, re-export + scan enc2, then *Build bundles + mod*.
 2. **Material A/B (redo with 1.7.1):** the first try (from_pc/20260929-002831) showed no difference because of a Unity bug: both prefabs got the enc=2 materials (fixed in 1.7.1). Then convert one character with *Materials* enc=2 and with enc=3 (two output folders or names), run the Unity one-click build for both, and take in-game screenshots next to vanilla. Look at skin first (see the known limits in `docs/MATERIALS_PLAN.md`).
 3. **Posture (2.6.7):** re-convert Park 24_1 (or another female character) with *Match neck* on and look at the side view next to EFT. Then run `SEND_RESULTS_TO_CLAUDE.bat` (the report goes up automatically). If it still looks wrong: next are the upper-back line (the chest is deeper than EFT's, so matching the section centre puts the back about 2 cm behind EFT's) and the steps 'Head priority' / fast Re-fit.
-4. Optional: the real `EFT BASIC [Template].blend`. Cloud tests currently use one rebuilt from the FBX.
+4. ✅ The real `EFT BASIC [Template].blend` is at `SPTModdingTools\Testing\CUSTOM\` on the PC (not in git, 77 MB).
 
 **Queue, in order.** Each is a separate step. (The material session has pushed: 2.6.0 / 1.7.0.)
 1. ✅ (2026-09-30) **Unify the contract.** Moved to `docs/`; references updated; `pc/send.ps1` no longer copies the PC's old copy into the repo. Was: Move `COD2EFT_TEXTURE_SPEC.md` to `docs/` and update every reference to it: code comments in `cod2eft_textures.py`, `COD2EFT_To_Unity.bat`, the READMEs, the CHANGELOGs' pointers. Remove its "who owns what / separate sessions" wording.
@@ -107,15 +108,17 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
     Constraints: it must be compiled on the PC against the user's own SPT/EFT assemblies, through a `.bat`. Never commit game DLLs. Calibrate in raid or hideout lighting, not the menu preview. First check the SPT hub for existing freecam / photo-mode / outfit-preview mods to reuse.
 11. **Smaller items:**
     - the neck ring (if confirmed);
-    - drop `COD_original_UV` from the FBX;
+    - ✅ (2.6.11) drop `COD_original_UV` from the FBX;
     - calibration heads A/B/C against a vanilla head;
-    - Park 24_1's head wasn't paired with its body (no `head_…` found);
+    - ✅ Park 24_1's head wasn't paired with its body: pairs now (checked 2026-10-01: batch log `--- mp_western_t9mi6_24_1: body_…_lod1_LOD0.cast, head_…_LOD0.cast`);
     - ✅ audit leftovers fixed (2.6.2 / 1.7.2): Mod Builder overwrite guard, `install_addon.py` template path encoding, `COD2EFT_To_Unity.bat` PNG glob.
 12. **Later (parked): rename to SPT Character Studio Suite and support more than COD.** Plan: `docs/RENAME_PLAN.md`
     (names, migrations, phases, source profiles). Starts only when the user is fully satisfied with COD. Until then,
     follow "Build with the future in mind" in `CLAUDE.md`.
 
 **Superseded:** the `_skin` slot plan (Blender 2.5.0 / Unity 1.7.0 per-class values) is replaced by the enc=3 plan. The version numbers 2.5.x went to other fixes.
+
+**Regression noise (found 2026-10-01):** two runs of the same code can differ by 1 step of 8 bits in `_d` alpha on a few to ~70 pixels of a 2048² atlas (seen on Kleo Head, milsim Upper, valeria Upper). A changed PNG hash in `tools/regress.py` therefore needs a pixel check (max difference > 1, or many pixels) before it counts as a real change.
 
 ## Version compatibility
 | Texture tag | Blender (COD2EFT) | Unity (EFT Tools) |
