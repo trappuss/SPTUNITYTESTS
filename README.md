@@ -37,8 +37,8 @@ Your own per-PC files are never overwritten: `blender_path.txt`, `template_path.
 `wtt_path.txt`, `cod2eft_bonemap.json`, `cod2eft_pose_tweaks.json`, and the spec on the PC.
 The folder locations are asked once and kept in `pc\config.local.txt`.
 
-**Working in Cowork (after Thursday):** the clone on your PC is a normal folder. Point Cowork
-at it and at `docs/PROJECT_CONTEXT.md`. If Cowork edits the deployed copies directly, run
+**Working in Cowork:** the clone on your PC is a normal folder. Point Cowork at it and at
+[`docs/COWORK_HANDOFF.md`](docs/COWORK_HANDOFF.md). If Cowork edits the deployed copies directly, run
 `SEND_RESULTS_TO_CLAUDE.bat`: it picks up every file that differs from the repo, so nothing is lost.
 
 ## Layout

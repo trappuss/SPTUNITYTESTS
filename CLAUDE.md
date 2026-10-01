@@ -1,5 +1,7 @@
 # CLAUDE.md: COD → EFT (SPT) character pipeline
 
+**Working in Cowork on the user's PC?** Start with `docs/COWORK_HANDOFF.md` (paths, how to work, sessions so far, test list).
+
 Read `docs/PROJECT_CONTEXT.md` first: current state, the work queue in order, version compatibility, known facts, the audit. Then read only what the task needs.
 
 ## The project

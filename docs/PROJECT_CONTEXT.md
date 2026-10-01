@@ -1,5 +1,7 @@
 # Project context: COD → EFT (SPT) pipeline, both halves (2026-09-30)
 
+**2026-10-01: moving to Cowork.** `docs/COWORK_HANDOFF.md` has every session's state, the test list in order, and the open decisions.
+
 This is **the** handoff and work queue for both halves; the Blender and Unity sides are one project now. Rules for sessions are in `CLAUDE.md`.
 Tool docs: `blender/COD2EFT/README.md` (Blender), `unity/README.md` (Unity).
 Contract: `docs/COD2EFT_TEXTURE_SPEC.md`. Materials: `docs/MATERIALS_PLAN.md`. UV tiles: `docs/UV_TILES.md`.
