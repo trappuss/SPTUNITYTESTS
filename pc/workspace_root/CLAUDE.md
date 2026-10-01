@@ -16,6 +16,8 @@ never delete or overwrite another SPT mod's files.
 - Anything you clear out goes to `_archive/<date>_<reason>/`, not the bin.
 
 ## Cowork mechanics (learned 2026-10-01)
+- **First command of a session:** `python3 SPTUNITYTESTS/tools/pc_status.py` (in `$HOME/mnt/SPTModdingTools`): unpushed
+  commits, repo vs deployed versions, Unity's last load / compile errors, newest send and report.
 - `device_bash` runs in a Linux VM; this folder is `$HOME/mnt/SPTModdingTools`. It cannot run `.bat`/PowerShell, has
   no Blender (`bpy` doesn't install on its Python 3.10) and no GitHub login.
 - git in the VM: `git -c safe.directory='*' ...`. Git must be able to delete `.git/index.lock`: ask for delete
