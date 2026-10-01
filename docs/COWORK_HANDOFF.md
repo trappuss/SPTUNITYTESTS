@@ -54,6 +54,12 @@ All cloud sessions are idle. Their work is in the repo, and nothing is in flight
 - **Step 7:** the dark ring at Park's neck is in her own texture (nothing to do). The real template is located (table above).
 - **Commit `0bd79fa` (2.6.9 / 1.7.6) and the reorganisation commit are NOT on GitHub yet**: the VM has no GitHub login. `SEND_RESULTS_TO_CLAUDE.bat` pushes them; the sync deploys them meanwhile.
 
+## Done unattended later on 2026-10-01 (user away)
+- 2.6.10 brie wrinkle-map fix; 2.6.11 FBX without `COD_original_UV`; 2.6.12 material classes checked against 259 hand-labelled materials (81 → 90 % on sure labels).
+- `tools/regress.py` tolerates 1-bit float noise (block-mean signatures). New tools: `tools/convert.py`, `tools/check_addon_zip.py`, `tools/material_labels.py`, `tools/pc_status.py` (run it first in a Cowork session).
+- PC ↔ cloud without GitHub: `git bundle` via `_xfer/` (CLAUDE.md). Tested both ways.
+- Decision (user, 2026-10-01): finish and refine COD first, then split into source profiles: design in `docs/PROFILES_PLAN.md`.
+
 ## Test list for the user (in this order; Cowork can drive most of it)
 1. ✅ (2026-10-01) **Sync and build.** Close Blender, run `SYNC_TO_MY_PC.bat`, then `BUILD_SPT_INSPECTOR.bat`. Expect COD2EFT 2.6.8, EFT Tools 1.7.5 (`[EFT Tools] v1.7.5 loaded` in Editor.log) and Inspector 0.10.0.
 2. ✅ (answered, see above) **brie "face on the neck".** In Blender, select brie's Upper and check which UV map has the *camera* (render) icon in Object Data → UV Maps.
