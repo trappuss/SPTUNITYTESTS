@@ -991,6 +991,15 @@ def classify_alpha(roles, uv, weights):
     mean = float((a * w).sum())
     std = float(np.sqrt(((a - mean) ** 2 * w).sum()))
     if std < 0.004 and mean >= 0.9:
+        # 2.6.12: Cold War packs "default_black_0&<name>_s": the albedo is black and the RGB is
+        # the specular colour, so an alpha of 1 everywhere means all metal, not "no alpha" (the
+        # four in the test exports: a steel zipper pull 0.71, brass 0.69/0.57/0.38, a gold
+        # sunglasses frame and a button - all bright metal F0).  Read as no alpha they were grey
+        # or gold *paint* with a dielectric F0 of 0.04.
+        if re.match(r"default_black[^&~]*&(?!default)[^~]*_s(~|$)",
+                    os.path.splitext(os.path.basename(roles["color"]))[0], re.I):
+            roles["alpha_kind"] = "metal_mask"
+            return "colour alpha: all metal (black albedo + a spec map: the colour is the metal's)"
         roles["alpha_kind"] = "no_alpha"
         return "colour alpha: none (colour map without alpha) - non-metal"
     # a colour-less (grey) colour map whose alpha is a copy of it: MW2 Kleo's jacket (colour
@@ -1379,10 +1388,18 @@ CLASS_LABEL = {"cloth": "cloth", "skin": "skin", "leather": "leather / rubber / 
                "metal": "metal", "glass": "glass / lens", "cutout": "hair / cut-out"}
 # name words (whole words of the COD material name; most IW names are hashed, so these only
 # catch the readable ones - "handcuffs" is not "hand", "armor" is not "arm")
-GLASS_WORDS = {"glass", "lens", "lenses", "visor", "goggle", "goggles"}
+# 2.6.12 (labelled check of 259 materials, docs/MATERIALS_PLAN.md): "goggle" names the frame
+# (usa_goggle_01) as often as the lens (usa_goggle_01_transparent), so it moved to leather and
+# "transparent" marks the lens; "straps" were webbing (cloth) in all 4 labelled cases;
+# headsets / headphones / ear comms / knee pads are hard plastic.  A cloth word wins over the
+# leather words (headset_wrap is cloth).
+GLASS_WORDS = {"glass", "lens", "lenses", "visor", "transparent"}
 LEATHER_WORDS = {"leather", "glove", "gloves", "boot", "boots", "shoe", "shoes", "holster",
-                 "plastic", "rubber", "rubberband", "strap", "straps", "ziptie", "handcuff",
-                 "handcuffs", "sole", "soles"}
+                 "plastic", "rubber", "rubberband", "strap", "ziptie", "handcuff",
+                 "handcuffs", "sole", "soles", "goggle", "goggles", "headset", "headsets",
+                 "headphone", "headphones", "comm", "kneepad", "kneepads", "elbowpad",
+                 "elbowpads"}
+CLOTH_WORDS = {"wrap", "cloth", "fabric"}
 SKIN_WORDS = {"skin", "arm", "arms", "hand", "hands", "viewarm", "viewarms", "teeth",
               "mouth", "lips", "tongue"}
 # hunch (to validate on labelled materials): a non-metal whose median COD gloss is this high is a
@@ -1448,7 +1465,7 @@ def classify_material(names, st, cutout=False):
     if st["metal"] > 0.5:
         return "metal", f"{st['metal']:.0%} metal"
     hit = sorted(words & LEATHER_WORDS)
-    if hit:
+    if hit and not words & CLOTH_WORDS:
         return "leather", f"name '{hit[0]}'"
     hit = sorted(words & SKIN_WORDS)
     if hit:

@@ -2,6 +2,15 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.12 — 2026-10-01
+- **Material classes (enc=3) checked against hand labels, and three rule fixes.** 259 COD materials of 12 characters were labelled by eye on contact sheets (166 of them sure) (`docs/material_labels_2026-10-01.json`; only materials with their textures in the cloud copy). On the 163 materials with a *sure* label in both runs, accuracy went from **81 % to 90 %**:
+  - **Cold War all-metal parts** (`default_black_0&<name>_s` colour maps: the RGB is the metal's specular colour, the alpha is 1 everywhere) were read as "no alpha", i.e. grey or gold paint. They are metal now: a steel zipper pull, a brass part, a gold sunglasses frame, a button. This also changes their **enc=2** `_d` (metal F0 instead of 0.04) on the Park characters.
+  - Name words: `headset`, `headphone(s)`, `comm`, `kneepad(s)`, `elbowpad(s)` and `goggle(s)` (the frame) are leather / hard plastic; `transparent` marks a lens (glass); `straps` (webbing) is no longer leather; `wrap`, `cloth`, `fabric` win over the leather words (a headset *wrap* is cloth).
+  - Per class, 2.6.11 → 2.6.12 (precision / recall): leather 55 % / 57 % → 70 % / 90 %, metal 89 % / 38 % → 93 % / 62 %, cloth 79 % / 92 % → 90 % / 92 %, skin 98 % / 93 % → 98 % / 98 %, glass 80 % / 100 % → 100 % / 100 %.
+  - **Honest caveat:** the fixes were designed after looking at these same labels, so the 90 % is optimistic; a fresh set of characters is needed for an unbiased number. The labels are by eye from texture crops, not from the model in game.
+  - Still wrong (listed in `docs/MATERIALS_PLAN.md`): Cold War bullets / bracelets / pistols whose colour map has no metal mask; IR patches (glossy, read as leather); one BO7 patch whose colour alpha is 1 except the lettering, read as 80 % metal - in **enc=2 too**.
+- Regression: enc2 identical to 2.6.11 (the 4 regression characters have no `default_black` maps); enc3 changes one PNG (`mp_milsim_us_sf_1_1_Head_g`: `m_headset_rail_adapter` is now leather). New baseline `tools/baselines/cod2eft_2.6.12_enc3.json`.
+
 ## 2.6.11 — 2026-10-01
 - **The FBX now has only the atlas UVs.** The second UV map `COD_original_UV` (COD's own UVs, kept so the textures can be converted again) used to be exported as UV1. Unity imported it as an unused extra channel, and any viewer that shows UV1 draws the atlas in the wrong places (one of the "face on the neck" looks, `docs/UV_TILES.md`). It is taken off for the export and put back unchanged afterwards, so converting textures again still works. (Queue item: *drop `COD_original_UV` from the FBX*.)
 - Tested headless (Blender 4.4) on brie: the FBX has one UV map per mesh, and the Blender meshes keep `COD_original_UV` byte-identical with the same active / render UV map.

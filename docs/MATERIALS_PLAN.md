@@ -168,3 +168,23 @@ Built from the measurements above. **Default stays `enc=2`** until the in-game A
 - Specular now equals COD's F0 (0.04 at F=0 for a dielectric). That's inside the 12 vanilla clothing materials (0.02–0.11, median 0.03–0.045) but below the 393-material medians (0.045–0.057). If enc=3 cloth looks too dull, that's the first knob.
 - MW2 Kleo's skin is glossier in COD (median 0.56–0.70) than the MW4 and BO7 skins (0.42–0.48). The pooled quantile map keeps that ranking, so Kleo's skin lands at 0.46–0.72, the top of vanilla head skin. First-person hands, which are mostly skin, come out at 0.38–0.40 against vanilla hands 0.27. Look at skin first in game.
 - `_d.a` of a dielectric is 0.04/0.55 ≈ 0.073, about 19 steps of 8 bits. Banding is unlikely, but check smooth skin.
+
+## Classifier check against hand labels (2026-10-01, COD2EFT 2.6.12)
+Labels: `docs/material_labels_2026-10-01.json` (259 keys `character|part|material`; skin / cloth / leather / metal / glass; `?` suffix = probable). Characters: Park 5_1, 6_1, 11_1, 24_1 (Cold War), BO7 orange_outlaw and silver_upgrade, BO5 esports female, MW 2019 azur and male_base_1_1, MW2 Kleo, MW4 milsim and valeria. Characters whose `_images` weren't in the cloud copy were left out.
+
+| On the 163 materials with a sure label | 2.6.11 | 2.6.12 |
+|---|---|---|
+| accuracy | 81 % | 90 % |
+| skin P / R | 98 / 93 % | 98 / 98 % |
+| cloth P / R | 79 / 92 % | 90 / 92 % |
+| leather P / R | 55 / 57 % | 70 / 90 % |
+| metal P / R | 89 / 38 % | 93 / 62 % |
+| glass P / R | 80 / 100 % | 100 / 100 % |
+
+The 2.6.12 rules were written after seeing these labels, so its numbers are optimistic. Next: label a fresh set (e.g. the WZ1 characters once their `_images` are sent) and measure without changing the rules first.
+
+**Remaining errors (sure labels):**
+- Cold War metal whose colour map has no metal mask (`X_c&X_s`, alpha 1): m60 bullets, gold bracelets (colour `$black_color`, separate gloss map), Makarov, a magazine. A rule would need the spec map's level; not done.
+- IR patches and an IR flag patch: COD gloss 0.64–0.86 → leather. They are reflective in game too, so this may be acceptable.
+- BO7 orange_outlaw `material_4dd0d61af4525ce3` (AB POS patch): colour alpha 1 on the cloth and 0 on the letters, read as 80 % metal. In enc=2 the patch comes out metallic. Not fixed: there is no second case to tell this alpha apart from a real metal mask.
+- A ribbon read as skin (skin-tone colour), a knee pad and boot soles as cloth, valeria's mouth (hashed name, red) as cloth.

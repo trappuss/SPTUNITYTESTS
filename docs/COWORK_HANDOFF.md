@@ -31,7 +31,7 @@ For the Cowork session on the user's PC. Read `CLAUDE.md` first (rules), then th
 ## Current versions (in the repo)
 | Part | Version | Verified |
 |---|---|---|
-| COD2EFT (Blender) | **2.6.11** | export fix tested headless (Blender 4.4 + 5.0, real template, full Park 24_1 conversion); the user runs 2.6.8 |
+| COD2EFT (Blender) | **2.6.12** | export fix tested headless (Blender 4.4 + 5.0, real template, full Park 24_1 conversion); the user runs 2.6.8 |
 | EFT Tools (Unity) | **1.7.6** | not compiled; the user loaded 1.7.5 (Editor.log 2026-10-01) |
 | COD2EFT Inspector (SPT plugin) | **0.10.0** | compiled with mono against reference DLLs; the user built and ran 0.10.0 |
 
