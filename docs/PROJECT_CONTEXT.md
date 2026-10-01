@@ -118,7 +118,7 @@ Hands `_Specularness` ≈ **0.55**. That is a first estimate from 3 characters a
 
 **Superseded:** the `_skin` slot plan (Blender 2.5.0 / Unity 1.7.0 per-class values) is replaced by the enc=3 plan. The version numbers 2.5.x went to other fixes.
 
-**Regression noise (found 2026-10-01):** two runs of the same code can differ by 1 step of 8 bits in `_d` alpha on a few to ~70 pixels of a 2048² atlas (seen on Kleo Head, milsim Upper, valeria Upper). A changed PNG hash in `tools/regress.py` therefore needs a pixel check (max difference > 1, or many pixels) before it counts as a real change.
+**Regression noise (found 2026-10-01):** two runs of the same code can differ by 1 step of 8 bits in `_d` alpha on a few to ~70 pixels of a 2048² atlas (seen on Kleo Head, milsim Upper, valeria Upper). `tools/regress.py` now stores 16 × 16 block-mean signatures per PNG and reports such a change as a `note:` (block means within 1e-4); a real texture change moves them by far more (brie's wrinkle fix: 0.57). Baselines from `cod2eft_2.6.11.json` on have the signatures.
 
 ## Version compatibility
 | Texture tag | Blender (COD2EFT) | Unity (EFT Tools) |

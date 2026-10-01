@@ -11,7 +11,10 @@ What it records per character (from the batch report and the output folder):
     limited section centres, head height, posture after fit (2.6.6+; compared only when the
     baseline has it, tolerance 0.3 deg)
   - per converted part: vertex / face counts (from the .blend)
-  - every PNG: sha256 (texture output byte-identical or not)
+  - every PNG: sha256 (texture output byte-identical or not) and a 16 x 16 block-mean signature
+    (2026-10-01): two runs of the same code can differ by 1 step of 8 bits on a few dozen pixels
+    (float noise), which changes the hash but not the signature. A hash change whose signature
+    stays within PNG_NOISE is reported as a note, not as a difference.
 Compare: numbers that moved more than --tol (cm, default 0.2), changed hashes, parts that
 appeared / disappeared.  Exit code 1 when anything differs (0 = identical within tolerance).
 """
@@ -119,6 +122,33 @@ def mesh_counts(blend):
     return {}
 
 
+PNG_NOISE = 1e-4      # max block-mean change (0..1) still counted as float noise
+
+
+def png_signature(path):
+    """16 x 16 block means per channel (0..1), as uint16 in base64; None without Pillow."""
+    try:
+        import base64
+        import numpy as np
+        from PIL import Image
+    except ImportError:
+        return None
+    a = np.asarray(Image.open(path).convert("RGBA"), np.float64) / 255.0
+    h, w = a.shape[0] // 16 * 16, a.shape[1] // 16 * 16
+    if h == 0 or w == 0:
+        return None
+    b = a[:h, :w].reshape(16, h // 16, 16, w // 16, 4).mean((1, 3))
+    return base64.b64encode(np.round(b * 65535).astype("<u2").tobytes()).decode("ascii")
+
+
+def png_sig_diff(s1, s2):
+    import base64
+    import numpy as np
+    x = np.frombuffer(base64.b64decode(s1), "<u2").astype(np.float64)
+    y = np.frombuffer(base64.b64decode(s2), "<u2").astype(np.float64)
+    return float(np.abs(x - y).max() / 65535) if x.shape == y.shape else 1.0
+
+
 def collect(out):
     res = {}
     for rep in sorted(glob.glob(os.path.join(out, "**", "*_EFT_report.txt"), recursive=True)):
@@ -127,14 +157,19 @@ def collect(out):
         rec = parse_report(rep)
         blend = os.path.join(d, name + "_EFT.blend")
         rec["meshes"] = mesh_counts(blend) if os.path.isfile(blend) else {}
+        pngs = sorted(glob.glob(os.path.join(d, name + "_*.png")))
         rec["png"] = {os.path.basename(p): hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
-                      for p in sorted(glob.glob(os.path.join(d, name + "_*.png")))}
+                      for p in pngs}
+        sigs = {os.path.basename(p): png_signature(p) for p in pngs}
+        if any(sigs.values()):
+            rec["png_sig"] = sigs
         res[name] = rec
     return res
 
 
-def compare(old, new, tol, tol_deg=0.3):
+def compare(old, new, tol, tol_deg=0.3, notes=None):
     diffs = []
+    notes = notes if notes is not None else []
     for name in sorted(set(old) | set(new)):
         if name not in new:
             diffs.append(f"{name}: MISSING in new run")
@@ -166,6 +201,12 @@ def compare(old, new, tol, tol_deg=0.3):
                 diffs.append(f"{name}: mesh {m} {a.get('meshes', {}).get(m)} -> {b.get('meshes', {}).get(m)}")
         for p in sorted(set(a.get("png", {})) | set(b.get("png", {}))):
             if a.get("png", {}).get(p) != b.get("png", {}).get(p):
+                sa, sb = a.get("png_sig", {}).get(p), b.get("png_sig", {}).get(p)
+                if sa and sb and p in a.get("png", {}) and p in b.get("png", {}):
+                    dv = png_sig_diff(sa, sb)
+                    if dv <= PNG_NOISE:
+                        notes.append(f"{name}: png {p} hash changed, block means within {dv:.1e} (float noise)")
+                        continue
                 diffs.append(f"{name}: png {p} {a.get('png', {}).get(p)} -> {b.get('png', {}).get(p)}")
     return diffs
 
@@ -210,10 +251,13 @@ def main():
         json.dump(res, open(args.save_baseline, "w"), indent=1)
         print(f"baseline saved: {args.save_baseline}")
     if args.baseline:
-        diffs = compare(json.load(open(args.baseline)), res, args.tol)
+        notes = []
+        diffs = compare(json.load(open(args.baseline)), res, args.tol, notes=notes)
         print(f"\n{len(diffs)} difference(s) vs {args.baseline}:" if diffs else f"\nidentical to {args.baseline} (tol {args.tol})")
         for d in diffs:
             print("  " + d)
+        for n in notes:
+            print("  note: " + n)
         sys.exit(1 if diffs else 0)
 
 
