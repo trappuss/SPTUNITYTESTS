@@ -2,6 +2,13 @@
 
 One version number for everything in this folder. The number is shown at the top of the EFT Auto Prefabber and EFT Mod Builder windows, and logged in the Console as `[EFT Tools] vX.Y.Z loaded`.
 
+## 1.7.7 — 2026-10-01
+- **Fix: SPT profiles turned "invalid" after rebuilding a mod.** Evidence in the user's SPT server log: every profile marked invalid since 2026-09-27 (11 different suites) failed with `InvalidModdedClothingException: Clothing item ... Type = suite ... found in profile that does not exist in SPT` (plus a pending `InvalidPmcHeadFix`). The profile owned a suite of an earlier build; when its prefab was renamed / deleted (e.g. re-converted as EFTENC2 / EFTENC3) or unticked, the Mod Builder left it out of `Clothes.json` and removed its old bundle, so SPT refused the profile. *Clean* itself never touches profiles.
+  - Tops, bottoms and heads this mod has shipped stay in the mod after they leave the project or are unticked: same ids, their last bundle kept in the mod folder (or the build folder's copy). If that bundle is gone too, the ids point at another shipped bundle of the same kind; if there is none, the log says WARNING and which profiles are at risk. Listed under *No longer in the project* and as a warning, with a note in the build log.
+  - *Forget* / *Forget all* now ask first and name the SPT profiles (`user/profiles/*.json`, read only) that contain the ids.
+  - Items track `shipped` in `modbuilder.json`; older projects are read from the generated-file list.
+  - Checked by reading (+ an mcs parse); **not compiled in Unity yet.**
+
 ## 1.7.6 — 2026-10-01
 - **Scan: clear message for an FBX without skinning.** When a model has meshes but no SkinnedMeshRenderers (an FBX exported without its armature), the log now says so and points to COD2EFT 2.6.9, instead of only "no SkinnedMeshRenderers found". User report: Park 24_1 enc2 FBX scanned as 0 meshes; the FBX had no armature (COD2EFT export bug, fixed in 2.6.9).
 

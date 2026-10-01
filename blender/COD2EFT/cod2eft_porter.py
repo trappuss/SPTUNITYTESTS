@@ -41,7 +41,7 @@ ADDON_DIR = os.path.dirname(os.path.abspath(__file__))
 # Add-on version - goes up with every update (keep bl_info in addon_init.py the same;
 # build_addon.py refuses to build when they differ).  Shown at the top of the panel, in
 # Preferences > Add-ons, and on every report / batch log.
-VERSION = (2, 6, 12)
+VERSION = (2, 6, 13)
 VERSION_STR = ".".join(str(v) for v in VERSION)
 VERSION_RE = re.compile(r"^VERSION = \((\d+), (\d+), (\d+)\)", re.M)
 
@@ -2392,8 +2392,31 @@ def make_fp_hands(eft, parts, fp_file=None, log=None, source="AUTO", max_influen
         return None
 
 
+def source_export_reason(path):
+    """2.6.13: why `path` looks like a COD source export that an export must not overwrite, else None.
+    User report 2026-10-01: brie's body_..._LOD0.fbx had been overwritten by a converted export (Blender 4.4.3,
+    11:04 that day), so the next import found no body and imported the head only."""
+    if not os.path.isfile(path):
+        return None
+    try:
+        from . import cod2eft_files as F
+    except ImportError:
+        import cod2eft_files as F
+    name = os.path.basename(path)
+    if F.skeleton_sniff(path) != "other":
+        return f"{name} has a COD skeleton (it is a source export)"
+    if not F.written_by_blender(path):
+        return f"{name} was not written by Blender (a source export)"
+    if F.other_format(path):
+        return f"{name} sits next to its .cast twin (a source export)"
+    return None
+
+
 def export_fbx(eft, objs, path, log):
     ensure_object_mode()
+    why = source_export_reason(path)
+    if why:
+        raise RuntimeError(f"Not exported: {why}. Pick another file name - the default is <name>_EFT.fbx.")
     try:
         from . import cod2eft_tools as TL
     except ImportError:

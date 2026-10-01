@@ -28,6 +28,7 @@ namespace EFTAutoPrefab
         public int kind;                      // ClothingKind
         public bool include = true;
         public bool missing;                  // not found in the project any more
+        public bool shipped;                  // 1.7.7: its ids were written to this mod's Clothes.json / Heads.json
         public bool foldout = true;
         public string name = "";
         public string description = "";
@@ -241,7 +242,7 @@ namespace EFTAutoPrefab
             // bundles that are gone from the project and were never part of this mod's build are just leftovers: forget them.
             // Ones this mod has shipped keep their ids (listed under "No longer in the project") in case the prefab comes back.
             var shippedBefore = new HashSet<string>(_p.generatedFiles.Select(Norm));
-            int forgotten = _p.items.RemoveAll(i => i.missing && !shippedBefore.Contains(Norm("bundles/" + i.bundleKey)));
+            int forgotten = _p.items.RemoveAll(i => i.missing && !i.shipped && !shippedBefore.Contains(Norm("bundles/" + i.bundleKey)));
             if (forgotten > 0) Log($"Forgot {forgotten} bundle(s) that are no longer in the project and were never built into this mod.");
 
             AutoPickHands();
@@ -348,6 +349,19 @@ namespace EFTAutoPrefab
             return _p.items.Where(i => i.kind == (int)ClothingKind.Hands && !i.missing && keys.Contains(i.bundleKey)).ToList();
         }
 
+        static bool IsWearable(ModItemState i) =>
+            i.kind == (int)ClothingKind.Top || i.kind == (int)ClothingKind.Bottom || i.kind == (int)ClothingKind.Head;
+
+        bool WasShipped(ModItemState i) =>
+            i.shipped || _p.generatedFiles.Any(g => Norm(g) == Norm("bundles/" + i.bundleKey));
+
+        /// <summary>
+        /// 1.7.7: tops / bottoms / heads this mod shipped before that are now gone from the project or unticked. SPT 4.1
+        /// marks a profile INVALID when it owns a suite that no mod defines any more (InvalidModdedClothingException,
+        /// found in the user's server log 2026-10-01), so these keep their ids and entries in the mod (old bundle kept).
+        /// </summary>
+        List<ModItemState> Kept() => _p.items.Where(i => IsWearable(i) && (i.missing || !i.include) && WasShipped(i)).ToList();
+
         /// <summary>Bundles that go into the mod: included tops/bottoms/heads + the hands those tops use.</summary>
         List<ModItemState> ShippedBundles() =>
             Included.Where(i => i.kind == (int)ClothingKind.Top || i.kind == (int)ClothingKind.Bottom || i.kind == (int)ClothingKind.Head)
@@ -424,6 +438,9 @@ namespace EFTAutoPrefab
                     File.GetLastWriteTimeUtc(it.prefabPath) > File.GetLastWriteTimeUtc(src))
                     _warnings.Add($"'{it.bundleKey}': the prefab changed after the bundle was built - use 'Build bundles + mod' to include the change.");
             }
+            foreach (var it in Kept())
+                _warnings.Add($"'{it.name}' is {(it.missing ? "no longer in the project" : "unticked")} but this mod shipped it before: it stays in the mod " +
+                              "(old bundle kept) so SPT profiles that own it stay valid. 'Forget' removes it for good.");
             foreach (var h in _p.items.Where(i => i.kind == (int)ClothingKind.Hands && i.include && !i.missing).Except(UsedHands()))
                 _warnings.Add($"Hands '{h.bundleKey}' is not used by any included top, so it is left out.");
 
@@ -431,7 +448,7 @@ namespace EFTAutoPrefab
             if (Directory.Exists(_modsFolder))
             {
                 string mine = string.IsNullOrEmpty(ModFolder) ? "" : Path.GetFullPath(ModFolder).TrimEnd('\\', '/');
-                var ourKeys = new HashSet<string>(shipped.Select(s => s.bundleKey));
+                var ourKeys = new HashSet<string>(shipped.Concat(Kept()).Select(s => s.bundleKey));
                 foreach (var dir in Directory.GetDirectories(_modsFolder))
                 {
                     if (Path.GetFullPath(dir).TrimEnd('\\', '/').Equals(mine, StringComparison.OrdinalIgnoreCase)) continue;
@@ -541,6 +558,69 @@ namespace EFTAutoPrefab
             Log($"Indexed {idx.Count} game bundle CABs (cached in {CabIndexCachePath}).");
         }
 
+        sealed class KeptEntry { public ModItemState It; public string Bundle, Hands; }
+
+        /// <summary>
+        /// 1.7.7: entries for Kept() items. Bundle: the copy already in the mod folder (what profiles saw), else the build
+        /// folder's (an unticked item), else another shipped bundle of the same kind (the ids must exist; what they show
+        /// matters less). A top's hands: game / other-mod hands as they are, this project's hands kept the same way, else
+        /// the game's default hands. Adds kept files to the manifest and the generated list, so the old-file removal
+        /// keeps them. Logs a WARNING when an item cannot be kept at all.
+        /// </summary>
+        List<KeptEntry> ResolveKept(string mod, List<ModItemState> shipped, List<KeyValuePair<string, List<string>>> manifest,
+                                    List<string> generated, List<string> defaults, List<string> notes)
+        {
+            var result = new List<KeptEntry>();
+            var inManifest = new HashSet<string>(manifest.Select(m => m.Key));
+            Func<string, bool> keepFile = key =>
+            {
+                if (string.IsNullOrEmpty(key)) return false;
+                if (inManifest.Contains(key)) return true;
+                string rel = "bundles/" + key;
+                string dst = Path.Combine(mod, rel.Replace('/', Path.DirectorySeparatorChar));
+                if (!IsUnder(mod, dst)) return false;
+                if (!File.Exists(dst))
+                {
+                    string src = string.IsNullOrEmpty(BuildFolderAbs) ? null : Path.Combine(BuildFolderAbs, key);
+                    if (src == null || !IsUnder(BuildFolderAbs, src) || !File.Exists(src)) return false;
+                    Directory.CreateDirectory(Path.GetDirectoryName(dst));
+                    File.Copy(src, dst, true);
+                }
+                generated.Add(rel);
+                manifest.Add(new KeyValuePair<string, List<string>>(key, DependencyKeysFor(dst, defaults, notes)));
+                inManifest.Add(key);
+                return true;
+            };
+            foreach (var it in Kept())
+            {
+                string kind = KindNames[Mathf.Clamp(it.kind, 0, KindNames.Length - 1)];
+                string bundle = it.bundleKey, hands = it.handsKey, how;
+                if (keepFile(bundle)) how = "its last bundle stays in the mod";
+                else
+                {
+                    var sub = shipped.FirstOrDefault(s => s.kind == it.kind);
+                    if (sub == null)
+                    {
+                        Log($"WARNING: '{it.name}' ({it.bundleKey}) was in this mod before, but its bundle is gone and the mod has no other " +
+                            $"{kind} to show instead - SPT profiles that own it will be marked INVALID. Put the prefab back, or include another {kind}.");
+                        continue;
+                    }
+                    bundle = sub.bundleKey;
+                    how = $"its bundle is gone, so it shows '{sub.bundleKey}'";
+                }
+                if (it.kind == (int)ClothingKind.Top)
+                {
+                    bool own = _p.items.Any(x => x.bundleKey == hands);
+                    bool ok = !string.IsNullOrEmpty(hands) && (!own || keepFile(hands));
+                    if (!ok) { hands = DefaultGameHands().Value; how += ", with the game's default hands"; }
+                }
+                result.Add(new KeptEntry { It = it, Bundle = bundle, Hands = hands });
+                notes.Add($"kept '{it.name}' ({(it.missing ? "no longer in the project" : "unticked")}): this mod shipped it before, so its ids stay " +
+                          $"and {how} - SPT marks a profile invalid when it owns clothing no mod defines. 'Forget' removes it for good.");
+            }
+            return result;
+        }
+
         List<string> DependencyKeysFor(string bundleFile, List<string> defaults, List<string> notes)
         {
             var keys = new List<string>(defaults);
@@ -584,6 +664,13 @@ namespace EFTAutoPrefab
                     else if (k == ClothingKind.Bottom) { Id(ref it.suiteId); Id(ref it.outfitId); Id(ref it.bottomId); }
                     else if (k == ClothingKind.Head) Id(ref it.headId);
                 }
+                foreach (var it in Kept())   // ids they shipped with; Id() only fills a gap
+                {
+                    var k = (ClothingKind)it.kind;
+                    if (k == ClothingKind.Top) { Id(ref it.suiteId); Id(ref it.outfitId); Id(ref it.topId); Id(ref it.handsId); }
+                    else if (k == ClothingKind.Bottom) { Id(ref it.suiteId); Id(ref it.outfitId); Id(ref it.bottomId); }
+                    else Id(ref it.headId);
+                }
 
                 // bundles + manifest
                 var defaults = EFTModBuilderCore.SplitKeys(_p.dependencyKeys);
@@ -602,12 +689,16 @@ namespace EFTAutoPrefab
                     generated.Add(rel);
                     manifest.Add(new KeyValuePair<string, List<string>>(it.bundleKey, DependencyKeysFor(src, defaults, notes)));
                 }
+                // 1.7.7: what this mod shipped before and is now gone / unticked stays in (SPT profiles that own it stay valid)
+                var kept = ResolveKept(mod, shipped, manifest, generated, defaults, notes);
                 WriteText(mod, "bundles.json", EFTModBuilderCore.BundlesJson(manifest), generated);
 
                 // clothing
+                var wear = Included.Select(i => new KeptEntry { It = i, Bundle = i.bundleKey, Hands = i.handsKey }).Concat(kept).ToList();
                 var clothing = new List<EFTModBuilderCore.ClothingEntry>();
-                foreach (var it in Included.Where(i => i.kind == (int)ClothingKind.Top || i.kind == (int)ClothingKind.Bottom))
+                foreach (var w in wear.Where(e => e.It.kind == (int)ClothingKind.Top || e.It.kind == (int)ClothingKind.Bottom))
                 {
+                    var it = w.It;
                     bool top = it.kind == (int)ClothingKind.Top;
                     clothing.Add(new EFTModBuilderCore.ClothingEntry
                     {
@@ -615,7 +706,7 @@ namespace EFTAutoPrefab
                         SuiteId = it.suiteId, OutfitId = it.outfitId,
                         TopId = top ? it.topId : null, HandsId = top ? it.handsId : null, BottomId = top ? null : it.bottomId,
                         Name = it.name.Trim(), Description = it.description.Trim(),
-                        BundlePath = it.bundleKey, HandsBundlePath = top ? it.handsKey : null,
+                        BundlePath = w.Bundle, HandsBundlePath = top ? w.Hands : null,
                         Side = it.customSide ? Sides(it, true) : null,
                         Trader = it.trader >= 0 ? EFTModBuilderCore.TraderNames[it.trader] : it.customTraderId.Trim(),
                         LoyaltyLevel = it.loyalty, ProfileLevel = it.profileLevel, Standing = it.standing,
@@ -627,10 +718,10 @@ namespace EFTAutoPrefab
                     WriteText(mod, "db/CustomClothing/Clothes.json", EFTModBuilderCore.ClothingJson(clothing), generated);
 
                 // heads
-                var heads = Included.Where(i => i.kind == (int)ClothingKind.Head).Select(it => new EFTModBuilderCore.HeadEntry
+                var heads = wear.Where(e => e.It.kind == (int)ClothingKind.Head).Select(w => new EFTModBuilderCore.HeadEntry
                 {
-                    HeadId = it.headId, Name = it.name.Trim(), BundlePath = it.bundleKey,
-                    Side = Sides(it, false), AddHeadToPlayer = it.addHeadToPlayer,
+                    HeadId = w.It.headId, Name = w.It.name.Trim(), BundlePath = w.Bundle,
+                    Side = Sides(w.It, false), AddHeadToPlayer = w.It.addHeadToPlayer,
                 }).ToList();
                 if (heads.Count > 0)
                     WriteText(mod, "db/CustomHeads/Heads.json", EFTModBuilderCore.HeadsJson(heads), generated);
@@ -652,6 +743,7 @@ namespace EFTAutoPrefab
                     if (File.Exists(f)) { File.Delete(f); Log("Removed old file " + old); }
                 }
                 _p.generatedFiles = generated;
+                foreach (var w in wear) w.It.shipped = true;
                 if (_p.autoGuid) _p.guid = guid;
                 File.WriteAllText(Path.Combine(mod, ProjectFile), JsonUtility.ToJson(_p, true));
             }
@@ -1138,6 +1230,53 @@ namespace EFTAutoPrefab
             }
         }
 
+        /// <summary>
+        /// 1.7.7: SPT profiles (SPT_Runtime/user/profiles/*.json) that contain one of these items' ids. Plain text search
+        /// for the 24-hex ids (they are unique), so it works whatever the profile layout. Read-only.
+        /// </summary>
+        List<string> ProfilesOwning(IEnumerable<ModItemState> items)
+        {
+            var hits = new List<string>();
+            var ids = items.SelectMany(i => new[] { i.suiteId, i.topId, i.bottomId, i.headId, i.outfitId })
+                           .Where(EFTModBuilderCore.IsMongoId).Distinct().ToList();
+            string rt = SptRuntime();
+            string dir = rt == null ? null : Path.Combine(rt, "user", "profiles");
+            if (ids.Count == 0 || dir == null || !Directory.Exists(dir)) return hits;
+            foreach (var f in Directory.GetFiles(dir, "*.json", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    string text = File.ReadAllText(f);
+                    if (ids.Any(id => text.IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        var m = System.Text.RegularExpressions.Regex.Match(text, "\"Nickname\"\\s*:\\s*\"([^\"]*)\"");
+                        hits.Add(Path.GetFileName(f) + (m.Success ? $" ({m.Groups[1].Value})" : ""));
+                    }
+                }
+                catch (Exception e) { hits.Add(Path.GetFileName(f) + " (could not read: " + e.Message + ")"); }
+            }
+            return hits;
+        }
+
+        /// <summary>1.7.7: Forget = the ids leave the mod on the next build. Says which profiles own them and asks.</summary>
+        bool ConfirmForget(List<ModItemState> items)
+        {
+            var shippedOnes = items.Where(i => IsWearable(i) && WasShipped(i)).ToList();
+            if (shippedOnes.Count == 0) return true;
+            var owners = ProfilesOwning(shippedOnes);
+            string names = string.Join("\n", shippedOnes.Take(10).Select(i => "  " + i.name));
+            string msg = owners.Count > 0
+                ? $"These SPT profiles contain the ids of what you are forgetting:\n  {string.Join("\n  ", owners)}\n\n" +
+                  "After the next build SPT will mark them INVALID (it refuses profiles that own clothing no mod defines). " +
+                  "Only forget if you no longer need those profiles, or set removeModItemsFromProfile to true in SPT_Data/configs/core.json first."
+                : (SptRuntime() == null
+                    ? "The SPT profiles folder was not found (mods folder is not .../SPT_Runtime/user/mods), so profiles were not checked. "
+                    : "No SPT profile in user/profiles contains their ids. ") +
+                  "Any profile that owns them later becomes invalid after the next build.";
+            return EditorUtility.DisplayDialog("EFT Mod Builder - forget shipped clothing",
+                $"This mod shipped:\n{names}\n\n{msg}", "Forget", "Keep");
+        }
+
         void DrawItems()
         {
             EditorGUILayout.Space(4);
@@ -1152,9 +1291,9 @@ namespace EFTAutoPrefab
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    _showRemoved = EditorGUILayout.Foldout(_showRemoved, $"No longer in the project ({removed.Count}) - not built; ids kept in case they come back", true);
-                    if (GUILayout.Button(new GUIContent("Forget all", "Removes them from this list and their ids from modbuilder.json on the next build"), GUILayout.Width(80)))
-                    { _p.items.RemoveAll(i => i.missing); GUIUtility.ExitGUI(); }
+                    _showRemoved = EditorGUILayout.Foldout(_showRemoved, $"No longer in the project ({removed.Count}) - kept in the mod so profiles that own them stay valid", true);
+                    if (GUILayout.Button(new GUIContent("Forget all", "Removes them from the mod on the next build. Asks first: SPT marks a profile invalid when it owns clothing no mod defines."), GUILayout.Width(80)))
+                    { if (ConfirmForget(removed)) _p.items.RemoveAll(i => i.missing); GUIUtility.ExitGUI(); }
                 }
                 if (_showRemoved)
                     foreach (var it in removed)
@@ -1162,7 +1301,7 @@ namespace EFTAutoPrefab
                         {
                             GUILayout.Space(18);
                             GUILayout.Label(it.bundleKey + "  (" + KindNames[Mathf.Clamp(it.kind, 0, KindNames.Length - 1)] + ")", EditorStyles.miniLabel);
-                            if (GUILayout.Button("Forget", GUILayout.Width(60))) { _p.items.Remove(it); GUIUtility.ExitGUI(); }
+                            if (GUILayout.Button("Forget", GUILayout.Width(60))) { if (ConfirmForget(new List<ModItemState> { it })) _p.items.Remove(it); GUIUtility.ExitGUI(); }
                         }
             }
 

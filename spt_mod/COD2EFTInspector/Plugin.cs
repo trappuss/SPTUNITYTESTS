@@ -22,7 +22,7 @@ namespace COD2EFTInspector
     {
         public const string Guid = "com.cod2eft.inspector";
         public const string PluginName = "COD2EFT Inspector";
-        public const string Version = "0.10.0";
+        public const string Version = "0.11.0";
 
         internal static ManualLogSource Log;
         internal static InspectorPlugin Instance;
@@ -53,7 +53,7 @@ namespace COD2EFTInspector
         readonly Dictionary<Renderer, bool> _hidden = new Dictionary<Renderer, bool>();
         readonly PhotoMode _photo = new PhotoMode();
         ConfigEntry<float> _lightStrength;
-        ConfigEntry<bool> _blockInput, _invertAim, _playOnDoubleClick, _topsBringHands, _playCamTurns;
+        ConfigEntry<bool> _escSteps, _blockInput, _invertAim, _playOnDoubleClick, _topsBringHands, _playCamTurns;
         ConfigEntry<float> _winW, _winH;
         bool _resizing;
         ConfigEntry<string> _bgColor;
@@ -97,6 +97,8 @@ namespace COD2EFTInspector
                 "On: the camera stays behind / around the character as it turns. Off: the camera keeps its angle in the world (the character turns in front of it).");
             _topsBringHands = Config.Bind("4. Outfits", "Tops bring their hands", true,
                 "Wearing a top also puts on its first-person hands (the suite's pairing). Off: hands only change when you wear hands.");
+            _escSteps = Config.Bind("3. Panel", "Esc steps back", true,
+                "Esc leaves one level at a time: play mode -> photo mode with the panel -> panel closed -> photo mode off.");
             _invertAim = Config.Bind("5. Photo mode", "Invert aim drag", false, "Left-drag up/down turns the aim the other way.");
             _bgColor = Config.Bind("5. Photo mode", "Background colour", "#00B140", "Solid background colour for Isolate character (HTML colour; default chroma green).");
             _winW = Config.Bind("3. Panel", "Width", 600f, "Panel width (drag the bottom-right corner of the panel to change it).");
@@ -164,8 +166,11 @@ namespace COD2EFTInspector
                 TimeTick();
                 _photo.PlayCameraTurns = _playCamTurns.Value;   // F12 changes apply at once, also during play mode
                 // play mode (photo mode with full control): Esc or the panel key goes back
-                if (_photo.Play && (!_photo.Active || Input.GetKeyDown(KeyCode.Escape) || _panelKey.Value.IsDown())) SetPlay(false);
+                bool esc = Input.GetKeyDown(KeyCode.Escape);
+                if (_photo.Play && (!_photo.Active || esc || _panelKey.Value.IsDown())) SetPlay(false);
                 else if (_panelKey.Value.IsDown()) TogglePanel();
+                // 0.11.0: Esc steps back one level: play mode -> photo mode + panel -> photo mode -> off
+                else if (esc && _escSteps.Value) { if (_open) TogglePanel(); else if (_photo.Active) TogglePhoto(); }
                 if (_shotKey.Value.IsDown()) TakeScreenshot();
                 if (Time.unscaledTime >= _nextTick)
                 {
@@ -595,7 +600,8 @@ namespace COD2EFTInspector
             var runs = sets.Select(x => new KeyValuePair<string, List<Outfit>>(x.Name, WithHands(x.Pieces))).ToList();
             var player = Game.MainPlayer();
             // your own outfit last, as the reference (known once something was worn)
-            Log.LogInfo($"A/B: {runs.Count} outfit(s) of [{newest.Source}] + your own outfit");
+            string versus = string.Join("  vs  ", runs.Select(r => r.Key)) + "  vs  your own outfit";
+            Log.LogInfo($"A/B: {runs.Count} outfit(s) of [{newest.Source}] + your own outfit: {versus}");
             int done = 0;
             var sheetRows = new List<KeyValuePair<string, List<string>>>();
             for (int i = 0; i <= runs.Count; i++)
@@ -605,7 +611,7 @@ namespace COD2EFTInspector
                 if (i < runs.Count) { items = runs[i].Value; label = runs[i].Key; }
                 else { items = Wearer.OriginalOutfit(cat); label = "your own outfit (reference)"; }
                 if (items.Count == 0) continue;
-                _status = $"A/B {i + 1}/{runs.Count + 1}: {label}";
+                _status = $"A/B {i + 1}/{runs.Count + 1}: {label}   ({versus})";
                 string msg = null;
                 yield return StartCoroutine(Wearer.Wear(player, items, m => msg = m));
                 if (msg == null || msg.StartsWith("Try-on failed")) { Log.LogWarning($"A/B: skipped '{label}': {msg}"); continue; }
@@ -613,7 +619,8 @@ namespace COD2EFTInspector
                 Refresh(true);
                 int before = _captured.Count;
                 yield return StartCoroutine(Turntable());
-                sheetRows.Add(new KeyValuePair<string, List<string>>(label, _captured.Skip(before).ToList()));
+                string pieces = string.Join(" + ", items.Where(o => o.Part != "Hands").Select(o => o.Part + ": " + o.Name));
+                sheetRows.Add(new KeyValuePair<string, List<string>>(i < runs.Count ? $"{label}  ({pieces})" : label, _captured.Skip(before).ToList()));
                 done++;
             }
             _status = $"A/B done: {done} turntable(s) of 4 screenshots in {_outDir}";
@@ -621,7 +628,7 @@ namespace COD2EFTInspector
             yield return null;
             try
             {
-                var sheet = Sheet.Make(Path.Combine(_outDir, $"{Stamp()}_AB_sheet_{newest.Source}.png"), $"A/B  {newest.Source}  {DateTime.Now:yyyy-MM-dd HH:mm}", sheetRows);
+                var sheet = Sheet.Make(Path.Combine(_outDir, $"{Stamp()}_AB_sheet_{newest.Source}.png"), $"A/B  {versus}  {DateTime.Now:yyyy-MM-dd HH:mm}", sheetRows);
                 _status = $"A/B done: {done} turntable(s); sheet: {(sheet != null ? Path.GetFileName(sheet) : "none")}";
             }
             catch (Exception e) { _status = "A/B done; the comparison sheet failed: " + e.Message; Log.LogError("Sheet failed: " + e); }
@@ -635,6 +642,15 @@ namespace COD2EFTInspector
         {
             if (!CanWear() || items == null || items.Count == 0) return;
             var all = WithHands(items);
+            // 0.11.0: wearing one part keeps the other parts tried on before (an upper, then a lower = both on)
+            var cat = GetCatalog();
+            bool menu = Game.MainPlayer() == null;
+            foreach (var part in new[] { "Top", "Pants", "Head", "Hands" })
+            {
+                if (all.Any(o => o.Part == part)) continue;
+                var prev = cat.ById(menu ? MenuTryOn.TryOnId(part) : Wearer.TryOnId(Wearer.BodyKey(part)));
+                if (prev != null) all.Add(prev);
+            }
             _tuner.ClearView();   // the body is rebuilt: the view's material swap would point at old renderers
             _status = "Loading " + string.Join(", ", all.Select(o => o.Name)) + " ...";
             Action<string> done = msg => { _status = msg; _lastFilter = null; try { Refresh(true); } catch { } };
@@ -733,7 +749,9 @@ namespace COD2EFTInspector
                     GUILayout.Label($"{set.Source}  ·  {string.Join(" + ", set.Pieces.Select(o => o.Part))}", Ui.Small);
                     GUILayout.EndVertical();
                     GUILayout.FlexibleSpace();
-                    if (set.Pieces.Any(IsWorn)) Ui.Pill("WORN", Ui.Good);
+                    var shown = set.Pieces.Where(o => o.Part != "Hands").ToList();   // hands are often shared (game default hands)
+                    if (shown.Count > 0 && shown.All(IsWorn)) Ui.Pill("WORN", Ui.Good);
+                    else if (shown.Any(IsWorn)) Ui.Pill("PART WORN", Ui.Good);
                     GUI.enabled = can;
                     if (GUILayout.Button(new GUIContent("Wear", "Try this outfit on (not saved)"), Ui.Primary, GUILayout.Width(70))) WearItems(set.Pieces);
                     GUI.enabled = true;
@@ -976,6 +994,9 @@ namespace COD2EFTInspector
                 var newest = GetCatalog().ModSets().FirstOrDefault();
                 if (newest != null && GUILayout.Button(new GUIContent($"A/B turntables: {newest.Source}", "A turntable of every outfit of the newest mod, then of your own outfit, same camera and lights"), Ui.Button))
                     { if (!_capturing && !Wearer.Busy) StartCoroutine(CompareBatch()); }
+                if (newest != null)
+                    GUILayout.Label("Compares:  " + string.Join("   vs   ", GetCatalog().ModSets().Where(x => x.Source == newest.Source).Select(x => x.Name)) +
+                                    "   vs   your own outfit", Ui.Small);
                 GUILayout.Label("Files: " + _outDir, Ui.Small);
                 EndSection();
             }

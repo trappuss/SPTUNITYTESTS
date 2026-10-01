@@ -14,7 +14,7 @@ namespace EFTAutoPrefab
     [InitializeOnLoad]
     public static class EFTToolsVersion
     {
-        public const string Version = "1.7.6";
+        public const string Version = "1.7.7";
         public const string Date = "2026-10-01";
 
         static EFTToolsVersion()

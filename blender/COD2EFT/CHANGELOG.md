@@ -2,6 +2,12 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.13 — 2026-10-01
+- **Fix: BO7 brie imported only the head.** Evidence on the PC: `body_c_sat_usa_pl_brie_brioche_LOD0.fbx` was overwritten on 2026-10-01 11:04 by a *converted* export (written by Blender 4.4.3, holds `c_sat_usa_pl_brie_brioche_Upper/Lower/Head` and `COD_original_UV`, no COD bones), so the importer rightly found no COD skeleton in it and skipped it. Its `.cast` twin from the original export (2026-06-20) is intact.
+  - Import: when a source FBX has no COD skeleton but its `.cast` twin has one, the `.cast` is used and the log says why (`... was saved by Blender - probably overwritten by an export`). Without a twin the skip reason says so and asks for a re-export.
+  - Export (*Export FBX for Unity* and the batch): refuses to write over a COD source export (a file with COD bones, not written by Blender, or next to its `.cast` twin) and tells you to pick another name; the default stays `<name>_EFT.fbx`.
+  - Tested on synthetic files (cloud); `check_addon_zip.py` OK. The regression characters don't hit either path. Not yet run in Blender on the PC.
+
 ## 2.6.12 — 2026-10-01
 - **Material classes (enc=3) checked against hand labels, and three rule fixes.** 259 COD materials of 12 characters were labelled by eye on contact sheets (166 of them sure) (`docs/material_labels_2026-10-01.json`; only materials with their textures in the cloud copy). On the 163 materials with a *sure* label in both runs, accuracy went from **81 % to 90 %**:
   - **Cold War all-metal parts** (`default_black_0&<name>_s` colour maps: the RGB is the metal's specular colour, the alpha is 1 everywhere) were read as "no alpha", i.e. grey or gold paint. They are metal now: a steel zipper pull, a brass part, a gold sunglasses frame, a button. This also changes their **enc=2** `_d` (metal F0 instead of 0.04) on the Park characters.

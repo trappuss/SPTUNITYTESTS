@@ -1191,7 +1191,11 @@ class COD2EFT_OT_export(bpy.types.Operator):
         if not eft or not objs:
             self.report({"ERROR"}, "Nothing converted to export")
             return {"CANCELLED"}
-        C.export_fbx(eft, objs, bpy.path.abspath(self.filepath), C.Log())
+        try:
+            C.export_fbx(eft, objs, bpy.path.abspath(self.filepath), C.Log())
+        except RuntimeError as e:   # 2.6.13: e.g. refusing to overwrite a COD source export
+            self.report({"ERROR"}, str(e))
+            return {"CANCELLED"}
         self.report({"INFO"}, f"Exported {self.filepath}")
         return {"FINISHED"}
 

@@ -3,6 +3,14 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.11.0 (2026-10-01)
+User feedback on 0.10.0 (compiled with mcs, `tests/run_tests.sh` passes; untested in game):
+- **Catalog: wearing an upper and then a lower keeps both.** Each Wear used to start again from your real outfit, so the second part undid the first. Parts tried on before are now kept (hideout / raid and the menu preview); *Restore my outfit* / *Reset all* still go back to your real outfit, and the menu forgets the try-on when the game shows the preview itself.
+- **WORN on outfit sets ignores the hands.** The enc2 and enc3 tops both use the game's default USEC hands, so both sets showed WORN (BepInEx log: `Hands=Usec_hands_skin` for both). A set is WORN when all its top / pants / head are worn, PART WORN when some are.
+- **A/B names:** the Photo tab shows `Compares: A vs B vs your own outfit` under the button, the status and log name all of them while it runs, and the sheet's title and row labels name the outfits and their pieces.
+- **Esc steps back one level:** play mode → photo mode with the panel → panel closed → photo mode off (setting *Esc steps back*, on by default).
+- Not changed (hunch, needs a test): *main-menu customization not working after using the mod* - the SPT server marked that profile invalid at 22:55 (a suite from an older build), which by itself breaks clothing in the menu; retest with a valid profile and EFT Tools 1.7.7 before changing the plugin.
+
 ## 0.10.0 (2026-09-30)
 The five suggestions, all added (compiled with mcs only, untested in game):
 - **Materials tab** (new, between Photo and Meshes):

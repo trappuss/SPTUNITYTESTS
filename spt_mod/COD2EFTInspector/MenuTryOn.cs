@@ -21,6 +21,9 @@ namespace COD2EFTInspector
         sealed class Call { public Component View; public MethodBase Method; public object[] Args; }
         static readonly List<Call> Calls = new List<Call>();
         public static bool Busy;
+        // 0.11.0: catalog part (Top / Pants / Head / Hands) -> id the preview shows now (try-on), so wearing one part keeps the others
+        static readonly Dictionary<string, string> _tryOn = new Dictionary<string, string>();
+        public static string TryOnId(string part) { string id; return _tryOn.TryGetValue(part, out id) ? id : null; }
 
         static void Log(string m) => InspectorPlugin.Log.LogInfo("Menu try-on: " + m);
         static void Warn(string m) => InspectorPlugin.Log.LogWarning("Menu try-on: " + m);
@@ -31,6 +34,7 @@ namespace COD2EFTInspector
             {
                 var view = __instance as Component;
                 if (view == null || __args == null) return;
+                if (!Busy) _tryOn.Clear();   // the game showed the real outfit again
                 Calls.RemoveAll(c => c.View == null || c.View == view);
                 Calls.Add(new Call { View = view, Method = __originalMethod, Args = (object[])__args.Clone() });
                 Game.LogOnce("menu-show:" + __originalMethod, $"Menu try-on: recorded {__originalMethod.DeclaringType?.Name}.Show(" +
@@ -137,6 +141,7 @@ namespace COD2EFTInspector
             Busy = false;
             string after = call != null ? Skins(call.View) : "";
             if (error == null && after == before) error = "the preview did not change (see the log)";
+            if (error == null) foreach (var o in items) _tryOn[o.Part] = o.Id;
             string msg = error == null ? "Menu preview wearing: " + string.Join(", ", items.Select(o => $"{o.Part} '{o.Name}'")) + " (not saved)" : "Menu try-on failed: " + error;
             Log(msg + $"  [{before}] -> [{after}]");
             try { BodyScan.LogBodies(call != null ? Game.Get(call.View, "PlayerBody") as Component : null); } catch { }
@@ -149,6 +154,7 @@ namespace COD2EFTInspector
             var call = Pick(null);
             string err = null;
             if (call != null) yield return Invoke(call, m => err = m);
+            if (err == null) _tryOn.Clear();
             done(call == null ? "no menu preview" : err ?? "Menu preview shows your real outfit again");
         }
     }

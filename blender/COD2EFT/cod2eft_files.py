@@ -103,6 +103,24 @@ def skeleton_sniff(path):
     return "other"
 
 
+def written_by_blender(path):
+    """True when an FBX was saved by Blender (a COD export is written by Greyhound / Saluki / Cast tools)."""
+    try:
+        with open(path, "rb") as fh:
+            return b"Blender (stable FBX IO)" in fh.read(4096)
+    except OSError:
+        return False
+
+
+def other_format(path):
+    """The same export in the other format (<stem>.cast for <stem>.fbx and back), or None."""
+    base, ext = os.path.splitext(path)
+    for e in MODEL_EXT:
+        if e != ext.lower() and os.path.isfile(base + e):
+            return base + e
+    return None
+
+
 def discover(inputs, prefer_cast=False, log=print):
     files = []
     for p in inputs:
@@ -166,8 +184,18 @@ def group(files, log=print):
         k = kind_of(st)
         sn = skeleton_sniff(f)
         if sn == "other":
-            skipped.append((f, "no COD character skeleton in the file"))
-            continue
+            # 2.6.13: a source FBX that was overwritten (e.g. a converted export saved over body_X_LOD0.fbx) has no COD
+            # bones; its .cast twin from the same export still has them, so use that instead of dropping the part
+            alt = other_format(f)
+            if alt and skeleton_sniff(alt) != "other":
+                why = " (it was saved by Blender - probably overwritten by an export)" if written_by_blender(f) else ""
+                log(f"{os.path.basename(f)} has no COD skeleton{why}: using {os.path.basename(alt)} instead")
+                f, sn = alt, skeleton_sniff(alt)
+            else:
+                skipped.append((f, "no COD character skeleton in the file" +
+                                (" - it was saved by Blender, probably overwritten by an export; re-export it from the game"
+                                 if written_by_blender(f) else "")))
+                continue
         if sn == "viewmodel" and k != "firstperson":
             k = "firstperson"
         if k in ("firstperson", "accessory"):
