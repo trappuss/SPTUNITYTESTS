@@ -1,5 +1,7 @@
 # UV tiles and the "face on the neck" (2026-09-30, COD2EFT 2.6.8)
 
+**Update 2026-10-01 (COD2EFT 2.6.10): a second, real cause on brie's Head.** brie's skin material (`material_58764a61b3621e6e`) has two NOG-like maps. COD2EFT took the **wrinkle map** (semantic `c`: a 2 × 2 tile of four expression versions of the face, gloss 0.92 ± 0.05) instead of the real NOG (semantic `47`, gloss 0.44). Results in 2.6.9: skin gloss 0.95 on the whole head and neck (wet, grey highlights under the jaw), and a `_n` with **four small faces**, one of them over the neck area of the head's UVs, so the shading shows face features on the neck with UV0 too. 2.6.10 detects 2 × 2 tiles (quadrant correlation ≥ 0.8; wrinkle maps 0.91–1.0, real maps ≤ 0.61 over 494 maps) and skips them when there is another NOG. Before/after: `docs/previews/brie_gloss_before_after.png`, `brie_normal_before_after.png`. Needs the user's look in Blender to confirm it is the look he reported. The findings below (UV tiles, `COD_original_UV`) still hold.
+
 **Short answer:** the UV tiles are not the cause. COD uses tiles outside 0..1 as a *repeating*
 texture (left/right copies shifted by one tile), which is what `convert_part` already does. The
 "face on the neck" look reproduces exactly when the atlas is sampled with the **second** UV layer,

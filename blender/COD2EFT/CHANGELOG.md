@@ -2,6 +2,13 @@
 
 The version is shown at the top of the add-on panel. It goes up with every update.
 
+## 2.6.10 — 2026-10-01
+- **Fix: BO7 brie's head got its wrinkle map instead of its normal/gloss map** (likely the grey, shiny neck and the "face on the neck": see `docs/UV_TILES.md`, update at the top). Skin materials can carry a *wrinkle map*: a 2 × 2 tile of four expression versions of the face. Until now the picker skipped it only when its gloss was a flat 1.0; brie's varies a little (0.92 ± 0.05), so it won. Result: skin gloss 0.95 instead of 0.44, and a normal map with four small faces, one over the neck.
+  - New check: a NOG map whose four quadrants repeat (correlation ≥ 0.8) is a wrinkle map and loses to any other NOG. Measured on all 494 NOG-like maps of the test exports: wrinkle maps 0.91–1.0 (11), every other map ≤ 0.61.
+  - Over all 716 test materials only brie's pick changes; the report says `(content; 1 wrinkle map(s) skipped)` where one was found.
+  - brie's skin gloss after the fix: 0.43–0.48 at every height (was 0.93–0.96).
+  - Tested headless (Blender 4.4, real template) on brie; regression (4 test characters, `--export-fbx`): identical to 2.6.9. Not yet seen in Blender on the PC.
+
 ## 2.6.9 — 2026-10-01
 - **Fix: *Export FBX for Unity* could write an FBX with no armature and no skinning** (user report: Park 24_1 enc2, Unity's Scan found 0 skinned meshes). Blender's FBX exporter skips objects that aren't visible, so a hidden `Body EFT Armature` (eye or monitor icon on it or on its `EFT_Template` collection, or the collection excluded) was silently left out. Reproduced in Blender 4.4 and 5.0 for all four ways of hiding it.
   - The armature and the meshes are now made visible and selectable for the export (object and collections), and put back exactly as they were afterwards.

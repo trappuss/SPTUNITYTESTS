@@ -396,6 +396,27 @@ def _stats(path):
     return a.reshape(-1, 4).mean(0), a.reshape(-1, 4).std(0), a.shape[1], a.shape[0]
 
 
+WRINKLE_TILE_CORR = 0.8
+
+
+def _tile_corr(path):
+    """How alike the four quadrants of a map are (normal G channel, mean pairwise correlation).
+    A COD wrinkle map is a 2 x 2 tile of expression versions of the same face, so its quadrants
+    repeat: 0.91 - 1.0 on every wrinkle map of the test characters (11), while every real NOG /
+    normal map scores 0.61 or less (483 maps)."""
+    a = load_image(path, max_size=128)
+    h, w = (a.shape[0] // 2) * 2, (a.shape[1] // 2) * 2
+    g = a[:h, :w, 1].astype(np.float64)
+    q = [g[:h // 2, :w // 2], g[:h // 2, w // 2:], g[h // 2:, :w // 2], g[h // 2:, w // 2:]]
+    q = [x - x.mean() for x in q]
+    cs = []
+    for i in range(4):
+        for j in range(i + 1, 4):
+            d = np.sqrt((q[i] ** 2).sum() * (q[j] ** 2).sum())
+            cs.append(float((q[i] * q[j]).sum() / d) if d > 0 else 0.0)
+    return float(np.mean(cs))
+
+
 def _is_nog(m, s):
     return m[2] > 0.7 and abs(m[1] - 0.5) < 0.15 and abs(m[3] - 0.5) < 0.15 and \
         (s[1] > 0.015 or s[3] > 0.015)
@@ -594,17 +615,29 @@ def find_textures(mat, model_file, log=None):
         if nogs:
             # Several NOG-like maps: skin materials also carry wrinkle maps (e.g. BO7
             # orange_outlaw's face: a 2 x 2 tile of expression wrinkles, same size as the real
-            # NOG, gloss a flat 1.0).  So prefer a map whose gloss (R) actually varies, then one
-            # the size of the colour map, then the biggest; ties keep the exporter's order.
+            # NOG, gloss a flat 1.0).  So prefer a map that is not a 2 x 2 tile (2.6.10: BO7
+            # brie's wrinkle map has a gloss that varies a little, 0.92 +- 0.05, so the gloss test
+            # alone took it and his skin came out at gloss 0.95 instead of 0.44), then one whose
+            # gloss (R) actually varies, then one the size of the colour map, then the biggest;
+            # ties keep the exporter's order.
             try:
                 cres = image_size(roles["color"]) if "color" in roles else None
             except Exception:
                 cres = None
-            p = max(nogs, key=lambda c: (c[3][0] > 0.005,
+            tiled = set()
+            if len(nogs) > 1:
+                for c in nogs:
+                    try:
+                        if _tile_corr(c[0]) >= WRINKLE_TILE_CORR:
+                            tiled.add(c[0])
+                    except Exception:
+                        pass
+            p = max(nogs, key=lambda c: (c[0] not in tiled, c[3][0] > 0.005,
                                          cres is not None and image_size(c[0]) == tuple(cres),
                                          c[4]))[0]
             roles["nog"] = p
-            how.append(f"nog={os.path.basename(p)} (content)")
+            how.append(f"nog={os.path.basename(p)} (content" +
+                       (f"; {len(tiled)} wrinkle map(s) skipped)" if tiled else ")"))
         elif rgs:
             p = max(rgs, key=lambda c: c[4])[0]
             roles["normal"] = p

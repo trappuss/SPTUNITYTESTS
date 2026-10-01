@@ -31,7 +31,7 @@ For the Cowork session on the user's PC. Read `CLAUDE.md` first (rules), then th
 ## Current versions (in the repo)
 | Part | Version | Verified |
 |---|---|---|
-| COD2EFT (Blender) | **2.6.9** | export fix tested headless (Blender 4.4 + 5.0, real template, full Park 24_1 conversion); the user runs 2.6.8 |
+| COD2EFT (Blender) | **2.6.10** | export fix tested headless (Blender 4.4 + 5.0, real template, full Park 24_1 conversion); the user runs 2.6.8 |
 | EFT Tools (Unity) | **1.7.6** | not compiled; the user loaded 1.7.5 (Editor.log 2026-10-01) |
 | COD2EFT Inspector (SPT plugin) | **0.10.0** | compiled with mono against reference DLLs; the user built and ran 0.10.0 |
 
@@ -49,7 +49,7 @@ All cloud sessions are idle. Their work is in the repo, and nothing is in flight
 
 ## Results of the first Cowork session (2026-10-01)
 - **Step 1 done:** sync OK, `[EFT Tools] v1.7.5 loaded`, Inspector 0.10.0 built and loaded.
-- **Step 2 answered:** brie's render UV is `map1` (UV0) and the face is right; the face-on-neck look appears only with `COD_original_UV` as render UV. Left: 39 head faces cross a texture repeat (grey stretched strip under the jaw) - not looked at yet.
+- **Step 2 answered:** brie's render UV is `map1` (UV0) and the face is right; the face-on-neck look appears only with `COD_original_UV` as render UV. **Then found (2.6.10):** the grey shiny neck came from the wrong map: brie's skin used its 2 × 2 *wrinkle map* as normal/gloss (gloss 0.95, four small faces in `_n`, one on the neck). Fixed; please look at brie again in Blender. (The 39 faces across a texture repeat are on the beret band at the top of the head, overhanging by ~0.02 UV: minor.)
 - **Step 3 blocked → fixed:** Unity's Scan found 0 skinned meshes in Park's enc2 FBX because the FBX had **no armature**: Blender's exporter skips hidden objects and the `EFT_Template` collection was hidden. COD2EFT 2.6.9 makes everything visible for the export and checks the written FBX; EFT Tools 1.7.6 explains an unskinned FBX. The enc3 FBX (exported while visible) is fine but wasn't scanned yet.
 - **Step 7:** the dark ring at Park's neck is in her own texture (nothing to do). The real template is located (table above).
 - **Commit `0bd79fa` (2.6.9 / 1.7.6) and the reorganisation commit are NOT on GitHub yet**: the VM has no GitHub login. `SEND_RESULTS_TO_CLAUDE.bat` pushes them; the sync deploys them meanwhile.
