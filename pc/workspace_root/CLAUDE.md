@@ -23,6 +23,9 @@ never delete or overwrite another SPT mod's files.
   that blocks the user's sync.
 - **Commits can't be pushed from the VM.** The sync deploys from the local clone anyway (it does `pull --rebase`, which
   keeps local commits). `SEND_RESULTS_TO_CLAUDE.bat` pushes them. Tell the user when a commit is still unpushed.
+- To test exactly what is in the PC clone (including unpushed commits) in the cloud container: `git bundle` (see
+  `SPTUNITYTESTS/CLAUDE.md` → *Moving commits between the PC clone and a cloud workspace*). Bring cloud commits back the
+  same way and `git pull --ff-only` them on the PC.
 - Blender tests: run in the cloud container (`bpy` 4.4 venv; see `SPTUNITYTESTS/CLAUDE.md` → *Testing in a cloud
   session*). Stage only the files needed. The real template is `Testing/CUSTOM/EFT BASIC [Template].blend`.
 - Unity's `Editor.log`: request folder access to `C:\Users\notso\AppData\Local\Unity\Editor` (mounted as
