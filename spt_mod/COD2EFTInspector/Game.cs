@@ -35,6 +35,7 @@ namespace COD2EFTInspector
             return (object)uo != null ? uo != null : o != null;
         }
 
+        // 0.12.0: misses are cached too - a type that isn't there used to scan every assembly on every call
         public static Type FindType(string fullName)
         {
             if (Types.TryGetValue(fullName, out var t)) return t;
@@ -43,42 +44,77 @@ namespace COD2EFTInspector
                 try { t = a.GetType(fullName, false); } catch { t = null; }
                 if (t != null) { Types[fullName] = t; return t; }
             }
+            Types[fullName] = null;
             LogOnce("type:" + fullName, $"Type not found: {fullName}");
             return null;
+        }
+
+        // 0.12.0: (type, name) -> the property / field found, so Get no longer walks the type with reflection on every call
+        // (the panel called it hundreds of times per frame through MainPlayer / CanWear: the main cause of its lag).
+        static readonly Dictionary<Type, Dictionary<string, MemberInfo>> Members_ = new Dictionary<Type, Dictionary<string, MemberInfo>>();
+
+        static MemberInfo Resolve(Type type, string name)
+        {
+            Dictionary<string, MemberInfo> byName;
+            if (!Members_.TryGetValue(type, out byName)) Members_[type] = byName = new Dictionary<string, MemberInfo>();
+            MemberInfo m;
+            if (byName.TryGetValue(name, out m)) return m;
+            m = null;
+            for (var t = type; t != null && m == null; t = t.BaseType)
+            {
+                try
+                {
+                    var p = t.GetProperty(name, Any);
+                    if (p != null && p.GetIndexParameters().Length == 0 && p.GetGetMethod(true) != null) m = p;
+                    else
+                    {
+                        var f = t.GetField(name, Any);
+                        if (f != null) m = f;
+                    }
+                }
+                catch (AmbiguousMatchException) { }
+            }
+            byName[name] = m;
+            return m;
         }
 
         /// <summary>Property or field (any visibility, base classes too). Null when missing or when it throws.</summary>
         public static object Get(object o, string name)
         {
             if (o == null) return null;
-            for (var t = o.GetType(); t != null; t = t.BaseType)
+            var m = Resolve(o.GetType(), name);
+            if (m == null) return null;
+            try
             {
-                try
-                {
-                    var p = t.GetProperty(name, Any);
-                    if (p != null && p.GetIndexParameters().Length == 0) return p.GetValue(p.GetGetMethod(true).IsStatic ? null : o, null);
-                    var f = t.GetField(name, Any);
-                    if (f != null) return f.GetValue(f.IsStatic ? null : o);
-                }
-                catch (AmbiguousMatchException) { }
-                catch (Exception e)
-                {
-                    LogOnce($"get:{t.FullName}.{name}", $"Reading {t.FullName}.{name} failed: {(e.InnerException ?? e).Message}");
-                    return null;
-                }
+                var p = m as PropertyInfo;
+                if (p != null) return p.GetValue(p.GetGetMethod(true).IsStatic ? null : o, null);
+                var f = (FieldInfo)m;
+                return f.GetValue(f.IsStatic ? null : o);
             }
-            return null;
+            catch (Exception e)
+            {
+                LogOnce($"get:{m.DeclaringType?.FullName}.{name}", $"Reading {m.DeclaringType?.FullName}.{name} failed: {(e.InnerException ?? e).Message}");
+                return null;
+            }
         }
+
+        static PropertyInfo _worldInstance;
+        static bool _worldResolved;
 
         public static object GameWorld()
         {
             var gw = FindType("EFT.GameWorld");
             if (gw == null) return null;
-            var single = FindType("Comfort.Common.Singleton`1");
-            if (single == null) return UnityEngine.Object.FindObjectOfType(gw);
             try
             {
-                var inst = single.MakeGenericType(gw).GetProperty("Instance", BindingFlags.Static | BindingFlags.Public)?.GetValue(null, null);
+                if (!_worldResolved)
+                {
+                    _worldResolved = true;
+                    var single = FindType("Comfort.Common.Singleton`1");
+                    _worldInstance = single?.MakeGenericType(gw).GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+                }
+                if (_worldInstance == null) return UnityEngine.Object.FindObjectOfType(gw);
+                var inst = _worldInstance.GetValue(null, null);
                 return Alive(inst) ? inst : null;
             }
             catch (Exception e)
@@ -88,10 +124,17 @@ namespace COD2EFTInspector
             }
         }
 
+        static int _mainFrame = -1;
+        static Component _main;
+
+        /// <summary>The local player (raid / hideout), else null. Looked up once per frame.</summary>
         public static Component MainPlayer()
         {
+            if (_mainFrame == Time.frameCount && (_main == null || _main)) return _main;
+            _mainFrame = Time.frameCount;
             var p = Get(GameWorld(), "MainPlayer") as Component;
-            return p != null ? p : null;
+            _main = p != null ? p : null;
+            return _main;
         }
 
         public static string Location(Component player) => Get(player, "Location") as string;

@@ -3,6 +3,34 @@
 The version is `InspectorPlugin.Version` in `Plugin.cs` (the build script passes it to the DLL). It shows in the
 panel title and in the BepInEx log (`COD2EFT Inspector v… loaded`).
 
+## 0.12.0 (2026-10-01)
+**Complete panel rework** (user: "inconsistent and confusing, laggy and inconvenient"; layout chosen by the user: 4 pages +
+fixed bar, compact design, diagnostics moved to Settings, every feature kept). Compiled with mcs and `tests/run_tests.sh`
+passes; **not run in game yet**.
+- **Layout:** header (where you are, PHOTO MODE, ×) · pages **Outfits / Photo / Inspect / Settings** · fixed bottom bar
+  (Photo mode, Screenshot, Reset all, status line). Before: 5 tabs, try-on in two places, screenshot buttons in three,
+  the character picker only on Meshes, options only in F12.
+  - Outfits: *Wearing now* (all 4 parts, TRY-ON marks, Restore my outfit, Keep this head), then *Mod outfits* (sets) or
+    *All items* (full catalog with filters).
+  - Photo: four short sub-pages (Camera, Character, Scene, Shots) instead of one long scroll; A/B names shown before it runs.
+  - Inspect: Meshes and Materials together, with the character picker.
+  - Settings: every option (also the ones that were only in F12), hotkeys, Diagnostics.
+- **Look:** one compact theme; one widget per job (page tabs, sub-tab row, small-caps section headers with a *reset* link,
+  Primary = the page's main action); docked to the right edge by default; position and size remembered.
+- **Lag, causes found in the code:**
+  - `Game.MainPlayer()` did fresh reflection (MakeGenericType + member lookups) on every call, and the panel called it per
+    row and per event (`CanWear` in the 300-row catalog): now members are cached and the player is looked up once a frame.
+    `FindType` also cached misses.
+  - The full character search (FindObjectsOfType + GetComponentsInChildren + path strings) ran every second while the panel
+    was open: now on open / Wear / Rescan / every 10 s; each second only the shown character's outfit is compared.
+  - Catalog sets, worn state, the "wearing now" list, missing bundles and the material lists were rebuilt with LINQ on every
+    GUI event: now once per change (`EnsureView`, Layout only).
+  - The catalog list laid out up to 300 rows: now only the rows in view.
+  - Sliders that change config values (size, light strength, colour) wrote the .cfg file on every drag step: now at most once
+    a second and on quit.
+- **Robustness:** clicks that add or remove controls (page switch, folds, Isolate, presets, picking a material) are applied
+  on the next Layout, avoiding IMGUI "Getting control N's position" errors that broke a frame of the panel.
+
 ## 0.11.0 (2026-10-01)
 User feedback on 0.10.0 (compiled with mcs, `tests/run_tests.sh` passes; untested in game):
 - **Catalog: wearing an upper and then a lower keeps both.** Each Wear used to start again from your real outfit, so the second part undid the first. Parts tried on before are now kept (hideout / raid and the menu preview); *Restore my outfit* / *Reset all* still go back to your real outfit, and the menu forgets the try-on when the game shows the preview itself.

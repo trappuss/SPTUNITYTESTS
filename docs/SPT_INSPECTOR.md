@@ -17,11 +17,27 @@ Source: `spt_mod/COD2EFTInspector/`. Changelog there. Queue item 10 in `docs/PRO
 | F9 | panel (frees the mouse in raid / hideout; since 0.7.0 the character takes no look / aim / fire / walk input while it is open: *3. Panel / Block game input while open*) |
 | F10 | screenshot |
 
-**Panel (0.8.0):** title bar (location, A- / A+ text size, × close; drag by the title, resize from the bottom-right corner),
-tabs *Try on* · *Photo* · *Meshes* · *Catalog*, a status bar at the bottom (hover help, last message coloured, click for the
-full text). Styles in `Ui.cs`.
+**Panel (0.12.0 rework; replaces the 0.8.0 layout described in older notes below):** docked to the right edge by default
+(drag the header to move it, the position and size are remembered; Settings > *Dock right*), resize from the bottom-right corner.
+- Header: name, version, where you are (Hideout / Raid / Main menu), PHOTO MODE when on, × close.
+- Four pages: **Outfits** (Wearing now with TRY-ON marks + *Restore my outfit* / *Keep this head*; *Mod outfits* = whole sets,
+  newest mod first; *All items* = the full catalog with search / part / source filters), **Photo** (sub-pages Camera,
+  Character = pose / play mode / time, Scene = studio lights / background, Shots = supersize, turntables, A/B, presets),
+  **Inspect** (Meshes = show / hide / solo; Materials = live shader values, channel view, save tuning), **Settings** (every
+  option, hotkeys, Diagnostics: material report, log all bodies, write / reload catalog).
+- The character picker (◄ name ► Rescan) sits on Outfits and Inspect.
+- Fixed bottom bar on every page: *Photo mode* / *Exit photo mode*, *Screenshot (F10)*, *Reset all*, then the status line
+  (hover help, last message coloured, click for the full text).
+- Code: `Panel.cs` (frame, view model, deferred clicks, virtual list), `PageOutfits.cs`, `PagePhoto.cs`, `PageInspect.cs`,
+  `PageSettings.cs`, styles and widgets in `Ui.cs`; `Plugin.cs` keeps the logic (scan, wear, capture, presets, time).
+- Speed rules: nothing expensive in OnGUI (derived lists are rebuilt on the Layout event after `InvalidateView()`), long
+  lists draw only the visible rows, `Game` caches reflection and the main player per frame, the full character search runs
+  on open / Wear / Rescan / every 10 s (the shown character's outfit is checked every second, cheaply), and the config file
+  is written at most once a second.
+- Clicks that add or remove controls are applied on the next Layout (`Later`), so IMGUI never replays a layout that no longer
+  matches.
 
-Meshes tab: `◄` `►` switch between characters found (you, menu previews; bots only with *Include other players*).
+Inspect > Meshes (was the Meshes tab): `◄` `►` switch between characters found (you, menu previews; bots only with *Include other players*).
 Groups: Head, Top, Pants, Hands (first-person), then `Gear: <item>` and `Other: …`. The checkbox on a group line
 shows/hides the whole group; `+`/`-` folds it. *Hide gear* hides everything that is not a body part.
 Flags: `[inactive]` = the game has this mesh switched off right now (e.g. the top's armor/vest alternative mesh),
